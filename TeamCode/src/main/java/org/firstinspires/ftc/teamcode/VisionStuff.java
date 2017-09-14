@@ -80,8 +80,7 @@ import java.util.List;
  * is explained below.
  */
 
-@Autonomous(name="Concept: Vuforia Navigation", group ="Concept")
-@Disabled
+@Autonomous(name="Vuforia", group ="Concept")
 public class VisionStuff extends LinearOpMode {
 
     public static final String TAG = "Vuforia Navigation Sample";
