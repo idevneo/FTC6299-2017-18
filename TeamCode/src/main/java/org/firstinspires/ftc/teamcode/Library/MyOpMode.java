@@ -185,6 +185,30 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setPower(right);
     }
 
+    public void setMotorsMec(double leftTr, double rightTr) {
+        if (!opModeIsActive())
+            return;
+
+        if (gamepad1.left_trigger > .1) {
+            motorFL.setPower(-leftTr);
+            motorBL.setPower(leftTr);
+            motorFR.setPower(rightTr);
+            motorBR.setPower(-rightTr);
+        }
+        else if (gamepad1.right_trigger > .1){
+            motorFL.setPower(leftTr);
+            motorBL.setPower(-leftTr);
+            motorFR.setPower(-rightTr);
+            motorBR.setPower(rightTr);
+        }
+        else {
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+        }
+    }
+
     public void stopMotors() {
         if (!opModeIsActive())
             return;
