@@ -46,6 +46,9 @@ public abstract class MyOpMode extends LinearOpMode {
     public static DcMotor motorFL;
     public static DcMotor motorFR;
 
+    public static DcMotor liftLeft;
+    public static DcMotor liftRight;
+
     public static DcMotor manip;
     public static DcMotor flywheel;
 
@@ -85,6 +88,9 @@ public abstract class MyOpMode extends LinearOpMode {
         beaconR = hardwareMap.colorSensor.get("beaconR");
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
         ultra = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "ultra");
+
+        liftLeft = hardwareMap.dcMotor.get("liftLeft");
+        liftRight = hardwareMap.dcMotor.get("liftRight");
 
         manip = hardwareMap.dcMotor.get("manip");
         flywheel = hardwareMap.dcMotor.get("fly");
@@ -208,6 +214,33 @@ public abstract class MyOpMode extends LinearOpMode {
             motorBR.setPower(0);
         }
     }
+
+    public void lift(double liftL, double liftR)
+    {
+        if(!opModeIsActive())
+            return;
+
+        if (gamepad2.dpad_up)
+        {
+            liftLeft.setPower(liftL);
+            liftRight.setPower(liftR);
+        }
+
+        else if (gamepad2.dpad_down)
+        {
+            liftLeft.setPower(-liftL);
+            liftRight.setPower(-liftR);
+        }
+
+        else
+        {
+            liftLeft.setPower(0);
+            liftRight.setPower(0);
+        }
+
+    }
+
+
 
     public void stopMotors() {
         if (!opModeIsActive())
