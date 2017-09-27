@@ -27,15 +27,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.Teleop;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 
@@ -52,8 +59,19 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
-public class Teleop extends MyOpMode {
+@Autonomous(name="RedRight", group="Linear Opmode")
+
+public class AutoRedRight extends MyOpMode {
+
+
+    double servoOneDeploy = 0.0;
+    double servoOneStart = 0.0;
+    double servoTwoDeploy = 0.0;
+    double servoTwoStart = 0.0;
+    VuforiaLocalizer vuforia;
+    VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+    VuforiaTrackable relicTemplate = relicTrackables.get(0);
+    RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -65,51 +83,30 @@ public class Teleop extends MyOpMode {
     DcMotor liftLeft;
     DcMotor liftRight;
 
-    float gamepad1_left;
-    float gamepad1_right;
-
+    Servo jewelOne;
+    Servo jewelTwo;
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+
         hardwareMap();
+
+
 
         waitForStart();
         runtime.reset();
 
         while (opModeIsActive()) {
 
-            gamepad1_left = gamepad1.left_stick_y;
-            gamepad1_right = gamepad1.right_stick_y;
-
-            if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
-                motorBL.setPower(gamepad1_right);
-                motorBR.setPower(-gamepad1_left);
-                motorFL.setPower(gamepad1_right);
-                motorFR.setPower(-gamepad1_left);
+            jewelKnockerRed(servoOneDeploy, servoTwoDeploy, servoOneStart, servoTwoStart);
+            if (vuMark = RelicRecoveryVuMark.LEFT){
+                
             }
 
-            else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
-                motorBL.setPower(gamepad1_left);
-                motorBR.setPower(-gamepad1_right);
-                motorFL.setPower(gamepad1_left);
-                motorFR.setPower(-gamepad1_right);
-            }
-
-            else {
-                motorBL.setPower(0);
-                motorBR.setPower(0);
-                motorFL.setPower(0);
-                motorFR.setPower(0);
-            }
-
-            setMotorsMec(.75,.75);
-            lift(.75,.75);
 
 
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-            telemetry.update();
         }
     }
 }

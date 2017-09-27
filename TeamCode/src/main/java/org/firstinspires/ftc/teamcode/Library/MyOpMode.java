@@ -39,6 +39,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static final double BUTTONP_LEFT = 1;
     public static final double BUTTONP_RIGHT = .31;
 
+
     public boolean flyWheelRunning = true;
 
     public static DcMotor motorBL;
@@ -58,6 +59,9 @@ public abstract class MyOpMode extends LinearOpMode {
     public static Servo liftArm;
     public static Servo boot;
     public static Servo hold;
+
+    public static Servo jewelOne;
+    public static Servo jewelTwo;
 
     public static OpticalDistanceSensor floorL;
     public static OpticalDistanceSensor floorR;
@@ -104,6 +108,9 @@ public abstract class MyOpMode extends LinearOpMode {
         liftArm = hardwareMap.servo.get("liftArm");
         boot = hardwareMap.servo.get("boot");
         hold = hardwareMap.servo.get("hold");
+
+        jewelOne = hardwareMap.servo.get("jewelOne");
+        jewelTwo = hardwareMap.servo.get("jewelTwo");
 
         telemetry.addData("Status", "Hardware Mapped");
         telemetry.update();
@@ -239,6 +246,40 @@ public abstract class MyOpMode extends LinearOpMode {
         }
 
     }
+
+    public void jewelKnockerRed(double servoOneD, double servoTwoD, double servoOneS, double servoTwoS)
+    {
+        if(!opModeIsActive())
+            return;
+
+        jewelOne.setPosition(servoOneD);
+        if (beaconL.red() > beaconL.blue())
+        {
+            jewelTwo.setPosition((servoTwoD));
+        }
+
+        jewelTwo.setPosition(servoTwoS);
+        jewelOne.setPosition(servoOneS);
+
+
+    }
+
+    public void jewelKnockerBlue(double servoOne, double servoTwo, double servoOneS, double servoTwoS)
+    {
+        if(!opModeIsActive())
+            return;
+
+        jewelOne.setPosition(servoOne);
+        if (beaconL.blue() > beaconL.red())
+        {
+            jewelTwo.setPosition((servoTwo));
+        }
+
+        jewelTwo.setPosition(servoTwoS);
+        jewelOne.setPosition(servoOneS);
+    }
+
+
 
 
 
@@ -501,6 +542,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (!opModeIsActive())
             return;
+
 
         ElapsedTime time = new ElapsedTime();
 
