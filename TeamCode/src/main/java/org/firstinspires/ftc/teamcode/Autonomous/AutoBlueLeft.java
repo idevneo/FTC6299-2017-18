@@ -30,27 +30,15 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 
@@ -67,9 +55,9 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="RedRight", group="Linear Opmode")
+@Autonomous(name="BlueLeft", group="Linear Opmode")
 
-public class AutoRedRight extends MyOpMode {
+public class AutoBlueLeft extends MyOpMode {
 
 
     double servoOneDeploy = 0.0;
@@ -149,8 +137,8 @@ public class AutoRedRight extends MyOpMode {
                 unknown = true;
             }
             moveTo(.25, 1000, .6, 2.2);
-            mecAutoRight(.25, .25, 32, 3500);
-            mecAutoLeft(.25, .25, 70, 8000);
+            mecAutoLeft(.25, .25, 32, 3500);
+            mecAutoRight(.25, .25, 70, 8000);
 
             if (center = true) {
                 moveTo(.25,100, .6, 2.2);

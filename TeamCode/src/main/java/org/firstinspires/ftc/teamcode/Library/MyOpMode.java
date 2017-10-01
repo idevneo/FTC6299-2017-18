@@ -222,6 +222,59 @@ public abstract class MyOpMode extends LinearOpMode {
         }
     }
 
+    public void mecAutoLeft(double left, double right, double distance ,int tim ) {
+        if (!opModeIsActive())
+            return;
+        ElapsedTime time = new ElapsedTime();
+
+        time.reset();
+        resetStartTime();
+
+
+        if (distance < 0 && getUltraDistance() < 92 && time.milliseconds() < tim) {
+            motorFL.setPower(-left);
+            motorBL.setPower(left);
+            motorFR.setPower(right);
+            motorBR.setPower(-right);
+        }
+        else {
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+        }
+    }
+
+    public void mecAutoRight(double left, double right, double distance ,int time ) {
+        if (!opModeIsActive())
+            return;
+
+        if (distance < 0 && getUltraDistance() < 92) {
+            motorFL.setPower(left);
+            motorBL.setPower(-left);
+            motorFR.setPower(-right);
+            motorBR.setPower(right);
+        }
+        else {
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+        }
+    }
+
+    public void depositBlockAuto(double dep) {
+        if (dep > 0.1) {
+            manip.setPower(dep);
+        } else if (dep < -0.1) {
+            manip.setPower(-dep);
+        } else {
+            manip.setPower(0);
+        }
+        manip.setPower(0);
+
+
+    }
     public void lift(double liftL, double liftR)
     {
         if(!opModeIsActive())
