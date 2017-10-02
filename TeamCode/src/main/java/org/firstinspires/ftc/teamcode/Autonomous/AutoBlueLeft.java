@@ -60,10 +60,11 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 public class AutoBlueLeft extends MyOpMode {
 
 
-    double servoOneDeploy = 0.0;
-    double servoOneStart = 0.0;
-    double servoTwoDeploy = 0.0;
-    double servoTwoStart = 0.0;
+    double servoArmD = 0.0;
+    double servoArmS = 0.0;
+    double servoHandL = 0.0;
+    double servoHandR = 0.0;
+    double servoHandS = 0.0;
 
 
     boolean left = false;
@@ -121,7 +122,7 @@ public class AutoBlueLeft extends MyOpMode {
 
         while (opModeIsActive()) {
 
-            jewelKnockerRed(servoOneDeploy, servoTwoDeploy, servoOneStart, servoTwoStart);
+            jewelKnockerRed(servoArmD, servoArmS, servoHandL, servoHandR, servoHandS);
 
 
             if (vuMark == RelicRecoveryVuMark.CENTER) {

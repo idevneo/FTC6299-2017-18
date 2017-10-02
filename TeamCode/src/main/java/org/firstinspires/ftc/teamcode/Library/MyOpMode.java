@@ -60,8 +60,8 @@ public abstract class MyOpMode extends LinearOpMode {
     public static Servo boot;
     public static Servo hold;
 
-    public static Servo jewelOne;
-    public static Servo jewelTwo;
+    public static Servo jewelArm;
+    public static Servo jewelHand;
 
     public static OpticalDistanceSensor floorL;
     public static OpticalDistanceSensor floorR;
@@ -109,8 +109,8 @@ public abstract class MyOpMode extends LinearOpMode {
         boot = hardwareMap.servo.get("boot");
         hold = hardwareMap.servo.get("hold");
 
-        jewelOne = hardwareMap.servo.get("jewelOne");
-        jewelTwo = hardwareMap.servo.get("jewelTwo");
+        jewelArm = hardwareMap.servo.get("jewelArm");
+        jewelHand = hardwareMap.servo.get("jewelHand");
 
         telemetry.addData("Status", "Hardware Mapped");
         telemetry.update();
@@ -263,6 +263,7 @@ public abstract class MyOpMode extends LinearOpMode {
         }
     }
 
+
     public void depositBlockAuto(double dep) {
         if (dep > 0.1) {
             manip.setPower(dep);
@@ -300,36 +301,35 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
 
-    public void jewelKnockerRed(double servoOneD, double servoTwoD, double servoOneS, double servoTwoS)
+    public void jewelKnockerRed(double servoArmD, double servoArmS, double servoHandL, double servoHandR, double servoHandS)
     {
         if(!opModeIsActive())
             return;
 
-        jewelOne.setPosition(servoOneD);
-        if (beaconL.red() > beaconL.blue())
+        jewelArm.setPosition(servoArmD);
+        if (beaconL.blue() < beaconL.red())
         {
-            jewelTwo.setPosition((servoTwoD));
+            jewelHand.setPosition((servoHandR));
         }
 
-        jewelTwo.setPosition(servoTwoS);
-        jewelOne.setPosition(servoOneS);
-
-
+        jewelHand.setPosition(servoHandS);
+        jewelArm.setPosition(servoArmS);
     }
 
-    public void jewelKnockerBlue(double servoOne, double servoTwo, double servoOneS, double servoTwoS)
+    public void jewelKnockerBlue(double servoArmD, double servoArmS, double servoHandL, double servoHandR, double servoHandS)
     {
         if(!opModeIsActive())
             return;
 
-        jewelOne.setPosition(servoOne);
+        jewelArm.setPosition(servoArmD);
         if (beaconL.blue() > beaconL.red())
         {
-            jewelTwo.setPosition((servoTwo));
+            jewelHand.setPosition((servoHandR));
         }
 
-        jewelTwo.setPosition(servoTwoS);
-        jewelOne.setPosition(servoOneS);
+
+        jewelHand.setPosition(servoHandS);
+        jewelArm.setPosition(servoArmS);
     }
 
 

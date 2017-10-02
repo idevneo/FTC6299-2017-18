@@ -72,10 +72,11 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 public class AutoRedRight extends MyOpMode {
 
 
-    double servoOneDeploy = 0.0;
-    double servoOneStart = 0.0;
-    double servoTwoDeploy = 0.0;
-    double servoTwoStart = 0.0;
+    double servoArmD = 0.0;
+    double servoArmS = 0.0;
+    double servoHandL = 0.0;
+    double servoHandR = 0.0;
+    double servoHandS = 0.0;
 
 
     boolean left = false;
@@ -133,7 +134,7 @@ public class AutoRedRight extends MyOpMode {
 
         while (opModeIsActive()) {
 
-            jewelKnockerRed(servoOneDeploy, servoTwoDeploy, servoOneStart, servoTwoStart);
+            jewelKnockerRed(servoArmD, servoArmS, servoHandL, servoHandR, servoHandS);
 
 
             if (vuMark == RelicRecoveryVuMark.CENTER) {
@@ -148,6 +149,9 @@ public class AutoRedRight extends MyOpMode {
             else {
                 unknown = true;
             }
+
+            mecAutoRight(.25,.25,61,2500);
+            moveTo(.25, -1-00, .6, 2.2);
             moveTo(.25, 1000, .6, 2.2);
             mecAutoRight(.25, .25, 32, 3500);
             mecAutoLeft(.25, .25, 70, 8000);
@@ -169,10 +173,6 @@ public class AutoRedRight extends MyOpMode {
                 depositBlockAuto(0.75);
             }
 //end of auto
-
-
-
-
 
         }
     }
