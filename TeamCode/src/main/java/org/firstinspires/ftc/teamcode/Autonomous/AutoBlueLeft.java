@@ -137,9 +137,19 @@ public class AutoBlueLeft extends MyOpMode {
             else {
                 unknown = true;
             }
-            moveTo(.25, 1000, .6, 2.2);
-            mecAutoLeft(.25, .25, 32, 3500);
-            mecAutoRight(.25, .25, 70, 8000);
+
+            // If jewel knocker is on the right side
+            moveTo(.5, -1000, .6, 2.2);
+            turn(.25, 180, 2500);
+            mecAutoLeft(.25, .25, 62, 3500);
+            mecAutoRight(.25, .25, 93, 8000);
+
+            // If jewel knocker is in the back
+//            mecAutoLeft(.25, .25, 62, 3500);
+//            moveTo(.5, -1000, .6, 2.2);
+//            moveTo(.5, 1500, .6, 2.2);
+//            turn(.25, -90, 1500);
+
 
             if (center = true) {
                 moveTo(.25,100, .6, 2.2);

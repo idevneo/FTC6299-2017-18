@@ -91,6 +91,7 @@ public class AutoRedRight extends MyOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
+
     DcMotor motorBL;
     DcMotor motorBR;
     DcMotor motorFL;
@@ -150,11 +151,18 @@ public class AutoRedRight extends MyOpMode {
                 unknown = true;
             }
 
-            mecAutoRight(.25,.25,61,2500);
-            moveTo(.25, -1-00, .6, 2.2);
+            //For if the jewel knocker is on the right side
             moveTo(.25, 1000, .6, 2.2);
-            mecAutoRight(.25, .25, 32, 3500);
-            mecAutoLeft(.25, .25, 70, 8000);
+            mecAutoRight(.25, .25, 62, 5000);
+            mecAutoLeft(.25, .25, 93, 7000);
+
+
+            //For if the jewel knocker is on the back
+//            mecAutoRight(.25,.25,61,2500);
+//            moveTo(.25, -100, .6, 2.2);
+//            moveTo(.25, 1000, .6, 2.2);
+//            mecAutoRight(.25, .25, 32, 3500);
+//            mecAutoLeft(.25, .25, 70, 8000);
 
             if (center = true) {
                 moveTo(.25,100, .6, 2.2);
@@ -162,10 +170,12 @@ public class AutoRedRight extends MyOpMode {
             }
             else if (left = true) {
                 mecAutoLeft(.25, .25, 16, 2000);
+                moveTo(.25,100, .6, 2.2);
                 depositBlockAuto(0.75);
             }
             else if (right = true) {
                 mecAutoRight(.25, .25, 16, 2000);
+                moveTo(.25,100, .6, 2.2);
                 depositBlockAuto(0.75);
             }
             else if (unknown = true) {
