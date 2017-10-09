@@ -102,6 +102,10 @@ public class VisionTest extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+            if(robotLocationTransform != null) {
+                lastLocation = robotLocationTransform;
+            }
 
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {

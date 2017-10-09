@@ -311,6 +311,10 @@ public abstract class MyOpMode extends LinearOpMode {
         {
             jewelHand.setPosition((servoHandR));
         }
+        else if (beaconL.blue() > beaconL.red())
+        {
+            jewelHand.setPosition((servoHandL));
+        }
 
         jewelHand.setPosition(servoHandS);
         jewelArm.setPosition(servoArmS);
@@ -325,6 +329,10 @@ public abstract class MyOpMode extends LinearOpMode {
         if (beaconL.blue() > beaconL.red())
         {
             jewelHand.setPosition((servoHandR));
+        }
+        else if (beaconL.blue() < beaconL.red())
+        {
+            jewelHand.setPosition((servoHandL));
         }
 
 
