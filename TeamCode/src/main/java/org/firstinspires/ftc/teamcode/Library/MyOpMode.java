@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
@@ -71,6 +72,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static BNO055IMU gyro;
     public static BNO055IMU.Parameters gyroParam;
 
+    private static ModernRoboticsI2cRangeSensor range;
     private static ModernRoboticsI2cRangeSensor ultra;
 
     public double grayL;
@@ -79,6 +81,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public double gyroError = 0;
 
     public double ultraDistance;
+    public double rangeDistance;
 
     public void hardwareMap() {
         motorBL = hardwareMap.dcMotor.get("motorBL");
@@ -91,7 +94,7 @@ public abstract class MyOpMode extends LinearOpMode {
         beaconL = hardwareMap.colorSensor.get("beaconL");
         beaconR = hardwareMap.colorSensor.get("beaconR");
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
-        ultra = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "ultra");
+        range = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
 
         liftLeft = hardwareMap.dcMotor.get("liftLeft");
         liftRight = hardwareMap.dcMotor.get("liftRight");
@@ -128,7 +131,7 @@ public abstract class MyOpMode extends LinearOpMode {
         beaconR = hardwareMap.colorSensor.get("beaconR");
 
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
-        ultra = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "ultra");
+        range = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
 
         telemetry.addData("Status", "Hardware Mapped");
         telemetry.update();
@@ -231,7 +234,7 @@ public abstract class MyOpMode extends LinearOpMode {
         resetStartTime();
 
 
-        if (distance < 0 && getUltraDistance() < 92 && time.milliseconds() < tim) {
+        if (distance < 0 && getRangeDistance() < distance && time.milliseconds() < tim) {
             motorFL.setPower(-left);
             motorBL.setPower(left);
             motorFR.setPower(right);
@@ -245,11 +248,16 @@ public abstract class MyOpMode extends LinearOpMode {
         }
     }
 
-    public void mecAutoRight(double left, double right, double distance ,int time ) {
+    public void mecAutoRight(double left, double right, double distance ,int tim) {
         if (!opModeIsActive())
             return;
 
-        if (distance < 0 && getUltraDistance() < 92) {
+        ElapsedTime time = new ElapsedTime();
+
+        time.reset();
+        resetStartTime();
+
+        if (distance < 0 && getRangeDistance() < distance && time.milliseconds() < tim) {
             motorFL.setPower(left);
             motorBL.setPower(-left);
             motorFR.setPower(-right);
@@ -261,6 +269,13 @@ public abstract class MyOpMode extends LinearOpMode {
             motorFR.setPower(0);
             motorBR.setPower(0);
         }
+    }
+
+    public double getRangeDistance() {
+        double value = range.getDistance(DistanceUnit.CM);
+        if (value != 255)
+            rangeDistance = value;
+        return rangeDistance;
     }
 
 

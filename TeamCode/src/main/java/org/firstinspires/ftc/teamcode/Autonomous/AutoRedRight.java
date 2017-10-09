@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -77,12 +78,14 @@ public class AutoRedRight extends MyOpMode {
     double servoHandL = 0.0;
     double servoHandR = 0.0;
     double servoHandS = 0.0;
-
+    double ultraDistance = 0.0;
 
     boolean left = false;
     boolean right = false;
     boolean center = false;
     boolean unknown = false;
+
+
 
     OpenGLMatrix lastLocation = null;
 
@@ -104,6 +107,8 @@ public class AutoRedRight extends MyOpMode {
 
     Servo jewelOne;
     Servo jewelTwo;
+
+    ModernRoboticsI2cRangeSensor rightUltra;
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
@@ -157,6 +162,14 @@ public class AutoRedRight extends MyOpMode {
             moveTo(.25, 1000, .6, 2.2);
             mecAutoRight(.25, .25, 62, 5000);
             mecAutoLeft(.25, .25, 93, 7000);
+
+            //Omni, add code for 2nd move to command into the if statement
+//            moveTo(.25, 1000, .6, 2.2);
+//            turnCorr(.25, -90, 2500);
+//            moveTo(.25, 400, .6, 2.2);
+//            turnCorr(.25, 90, 2500);
+
+
 
 
             //For if the jewel knocker is on the back
