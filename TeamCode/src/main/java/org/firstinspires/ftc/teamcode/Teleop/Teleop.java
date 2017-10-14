@@ -79,6 +79,7 @@ public class Teleop extends MyOpMode {
 
         while (opModeIsActive()) {
 
+
             gamepad1_left = gamepad1.left_stick_y;
             gamepad1_right = gamepad1.right_stick_y;
 
@@ -97,11 +98,10 @@ public class Teleop extends MyOpMode {
             }
 
             else {
-                motorBL.setPower(0);
-                motorBR.setPower(0);
-                motorFL.setPower(0);
-                motorFR.setPower(0);
+                slowDown(.1);
             }
+
+
 
 
             //comment out the first strafing method if you want to use strafing with dpad commands

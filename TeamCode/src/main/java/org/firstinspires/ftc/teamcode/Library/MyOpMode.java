@@ -237,6 +237,30 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
 
+    public void slowDown (double reduction){
+        //first reduction making power 0.1
+        //wait(100);
+        motorFL.setPower(motorFL.getPower() * reduction);
+        motorBL.setPower(motorBL.getPower() * reduction);
+        motorFR.setPower(motorFL.getPower() * reduction);
+        motorBR.setPower(motorBL.getPower() * reduction);
+        //second reduction making power 0.01
+        //wait(100);
+        motorFL.setPower(motorFL.getPower() * reduction);
+        motorBL.setPower(motorBL.getPower() * reduction);
+        motorFR.setPower(motorFL.getPower() * reduction);
+        motorBR.setPower(motorBL.getPower() * reduction);
+
+        if(motorFL.getPower() < 0.05 && motorBL.getPower() < 0.05 && motorFR.getPower() < 0.05 && motorFL.getPower() < 0.05){
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+        }
+
+    }
+
+
     public void mecAutoLeft(double left, double right, double distance ,int tim ) {
         if (!opModeIsActive())
             return;
@@ -1415,7 +1439,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 break;
         }
     }
-    
+
 
 
 
