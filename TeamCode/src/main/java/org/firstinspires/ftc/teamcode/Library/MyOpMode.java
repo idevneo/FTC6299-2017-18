@@ -22,6 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 /**
  * Created by jspspike on 1/15/2016.
  */
+
 public abstract class MyOpMode extends LinearOpMode {
 
     public static boolean fail;
@@ -201,21 +202,61 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setPower(right);
     }
 
-    public void setMotorsMec(double leftTr, double rightTr) {
+//    public void setMotorsMec() {
+//        if (!opModeIsActive())
+//            return;
+//
+//        if (gamepad1.left_trigger > .1) {
+//            motorFL.setPower(-gamepad1.left_trigger);
+//            motorBL.setPower(gamepad1.left_trigger);
+//            motorFR.setPower(gamepad1.left_trigger);
+//            motorBR.setPower(-gamepad1.left_trigger);
+//        }
+//        else if (gamepad1.right_trigger > .1){
+//            motorFL.setPower(gamepad1.right_trigger);
+//            motorBL.setPower(-gamepad1.right_trigger);
+//            motorFR.setPower(-gamepad1.right_trigger);
+//            motorBR.setPower(gamepad1.right_trigger);
+//        }
+//        else {
+//            motorFL.setPower(0);
+//            motorBL.setPower(0);
+//            motorFR.setPower(0);
+//            motorBR.setPower(0);
+//        }
+//    }
+
+    // code for strafing using the dpad on driver 1 controller
+
+    public void setMotorsMecDPAD(double left, double right, double lessenPower, double increasePower) {
         if (!opModeIsActive())
             return;
+        double less = lessenPower;
+        double increase = increasePower;
 
-        if (gamepad1.left_trigger > .1) {
-            motorFL.setPower(-leftTr);
-            motorBL.setPower(leftTr);
-            motorFR.setPower(rightTr);
-            motorBR.setPower(-rightTr);
+        if (gamepad1.dpad_up &&  left <= .75 && right <= .75) {
+            left += increasePower;
+            right += increasePower;
         }
-        else if (gamepad1.right_trigger > .1){
-            motorFL.setPower(leftTr);
-            motorBL.setPower(-leftTr);
-            motorFR.setPower(-rightTr);
-            motorBR.setPower(rightTr);
+
+        else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25){
+            left += lessenPower;
+            right += lessenPower;
+
+        }
+
+
+        if (gamepad1.dpad_left) {
+            motorFL.setPower(-left);
+            motorBL.setPower(left);
+            motorFR.setPower(right);
+            motorBR.setPower(-right);
+        }
+        else if (gamepad1.dpad_right){
+            motorFL.setPower(left);
+            motorBL.setPower(-left);
+            motorFR.setPower(-right);
+            motorBR.setPower(right);
         }
         else {
             motorFL.setPower(0);
@@ -223,6 +264,7 @@ public abstract class MyOpMode extends LinearOpMode {
             motorFR.setPower(0);
             motorBR.setPower(0);
         }
+
     }
 
     public void mecAutoLeft(double left, double right, double distance ,int tim ) {

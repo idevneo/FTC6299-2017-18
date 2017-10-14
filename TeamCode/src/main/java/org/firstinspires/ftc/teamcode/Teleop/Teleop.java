@@ -103,7 +103,9 @@ public class Teleop extends MyOpMode {
                 motorFR.setPower(0);
             }
 
-            setMotorsMec(.75,.75);
+
+            //comment out the first strafing method if you want to use strafing with dpad commands
+            setMotorsMecDPAD(.25,.25,.25,.25);
             lift(.75,.75);
 
 
