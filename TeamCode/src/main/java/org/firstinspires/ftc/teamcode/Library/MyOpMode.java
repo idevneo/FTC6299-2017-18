@@ -6,6 +6,8 @@ import android.util.Log;
 //import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -29,20 +31,14 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public static final int MOVEMENT_DELAY = 300;
 
-    public static final double DOOR_OPEN = .2;
-    public static final double DOOR_CLOSED = .6;
-    public static final double ARM_CLOSED =  0.0;
-    public static final double BOOT_CLOSED = .2;
-    public static final double BOOT_HOLD = 0.615;
-    public static final double HOLD_DISABLED = .8;
-    public static final double HOLD_HOLD = .32;
+
 
     public static final double BUTTONP_CENTER = .47;
     public static final double BUTTONP_LEFT = 1;
     public static final double BUTTONP_RIGHT = .31;
 
 
-    public boolean flyWheelRunning = true;
+
 
     public static DcMotor motorBL;
     public static DcMotor motorBR;
@@ -53,28 +49,25 @@ public abstract class MyOpMode extends LinearOpMode {
     public static DcMotor liftRight;
 
     public static DcMotor manip;
-    public static DcMotor flywheel;
 
-    public static Servo buttonPusher;
-    public static Servo door;
-    public static CRServo winch;
-    public static Servo liftArm;
-    public static Servo boot;
-    public static Servo hold;
 
     public static Servo jewelArm;
     public static Servo jewelHand;
 
     public static OpticalDistanceSensor floorL;
     public static OpticalDistanceSensor floorR;
-    public static ColorSensor beaconL;
-    public static ColorSensor beaconR;
+
+
 
     public static BNO055IMU gyro;
     public static BNO055IMU.Parameters gyroParam;
+    public static ModernRoboticsI2cColorSensor jewelColor;
 
     private static ModernRoboticsI2cRangeSensor range;
     private static ModernRoboticsI2cRangeSensor ultra;
+
+
+
 
     public double grayL;
     public double grayR;
@@ -90,28 +83,21 @@ public abstract class MyOpMode extends LinearOpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
 
-        floorL = hardwareMap.opticalDistanceSensor.get("floorL");
-        floorR = hardwareMap.opticalDistanceSensor.get("floorR");
-        beaconL = hardwareMap.colorSensor.get("beaconL");
-        beaconR = hardwareMap.colorSensor.get("beaconR");
+
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
         range = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
+        jewelColor = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "jewelColor");
+
+
+        floorL = hardwareMap.get(OpticalDistanceSensor.class, "floorL");
+        floorR = hardwareMap.get(OpticalDistanceSensor.class, "floorR");
+
 
         liftLeft = hardwareMap.dcMotor.get("liftLeft");
         liftRight = hardwareMap.dcMotor.get("liftRight");
 
         manip = hardwareMap.dcMotor.get("manip");
-        flywheel = hardwareMap.dcMotor.get("fly");
 
-        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        buttonPusher = hardwareMap.servo.get("buttonP");
-        door = hardwareMap.servo.get("door");
-        winch = hardwareMap.crservo.get("winch");
-        liftArm = hardwareMap.servo.get("liftArm");
-        boot = hardwareMap.servo.get("boot");
-        hold = hardwareMap.servo.get("hold");
 
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
@@ -126,10 +112,7 @@ public abstract class MyOpMode extends LinearOpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
 
-        floorL = hardwareMap.opticalDistanceSensor.get("floorL");
-        floorR = hardwareMap.opticalDistanceSensor.get("floorR");
-        beaconL = hardwareMap.colorSensor.get("beaconL");
-        beaconR = hardwareMap.colorSensor.get("beaconR");
+
 
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
         range = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
@@ -143,16 +126,10 @@ public abstract class MyOpMode extends LinearOpMode {
         telemetry.addData("Sensors", "Initializing...");
         telemetry.update();
 
-        beaconL.setI2cAddress(I2cAddr.create8bit(0x20));
-        beaconR.setI2cAddress(I2cAddr.create8bit(0x2a));
 
-        floorL.enableLed(false);
-        floorR.enableLed(false);
-        beaconL.enableLed(false);
-        beaconR.enableLed(false);
 
-        grayL = floorL.getRawLightDetected();
-        grayR = floorR.getRawLightDetected();
+        //grayL = floorL.getRawLightDetected();
+        //grayR = floorR.getRawLightDetected();
 
         Log.w("grayL", "" + grayL);
         Log.w("grayR", "" + grayR);
@@ -173,16 +150,9 @@ public abstract class MyOpMode extends LinearOpMode {
         telemetry.addData("Sensors", "Initialized");
         telemetry.update();
     }
-
+    // Add all servos in later
     public void initServos() {
-        buttonPusher.setPosition(BUTTONP_CENTER);
 
-        door.setPosition(DOOR_CLOSED);
-
-        winch.setPower(0);
-        liftArm.setPosition(ARM_CLOSED);
-        boot.setPosition(BOOT_CLOSED);
-        hold.setPosition(HOLD_DISABLED);
     }
 
     public void delay(long milliseconds) throws InterruptedException {
@@ -364,11 +334,11 @@ public abstract class MyOpMode extends LinearOpMode {
             return;
 
         jewelArm.setPosition(servoArmD);
-        if (beaconL.blue() < beaconL.red())
+        if (jewelColor.blue() < jewelColor.red())
         {
             jewelHand.setPosition((servoHandR));
         }
-        else if (beaconL.blue() > beaconL.red())
+        else if (jewelColor.blue() > jewelColor.red())
         {
             jewelHand.setPosition((servoHandL));
         }
@@ -383,11 +353,11 @@ public abstract class MyOpMode extends LinearOpMode {
             return;
 
         jewelArm.setPosition(servoArmD);
-        if (beaconL.blue() > beaconL.red())
+        if (jewelColor.blue() > jewelColor.red())
         {
             jewelHand.setPosition((servoHandR));
         }
-        else if (beaconL.blue() < beaconL.red())
+        else if (jewelColor.blue() < jewelColor.red())
         {
             jewelHand.setPosition((servoHandL));
         }
@@ -507,12 +477,6 @@ public abstract class MyOpMode extends LinearOpMode {
         manip.setPower(pow);
     }
 
-    public void setFly(double pow) {
-        if (!opModeIsActive())
-            return;
-
-        flywheel.setPower(pow);
-    }
 
     public void setServoSlow(Servo servo, double pos) throws InterruptedException {
         double currentPosition = servo.getPosition();
@@ -1451,118 +1415,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 break;
         }
     }
-
-    public void pressRed() throws InterruptedException {
-
-        if (!opModeIsActive())
-            return;
-
-        delay(MOVEMENT_DELAY);
-
-        int redLeft;
-
-        redLeft = 0;
-        redLeft += beaconL.red() - beaconR.red();
-        redLeft += beaconR.blue() - beaconL.blue();
-
-            if (beaconL.red()>=5 && beaconR.red()>=5) {
-                return;
-            }
-            if (redLeft > 0) {
-                buttonPusher.setPosition(BUTTONP_CENTER - .03);
-                delay(100);
-                buttonPusher.setPosition(BUTTONP_LEFT);
-                delay(800);
-                buttonPusher.setPosition(BUTTONP_CENTER);
-            } else {
-                buttonPusher.setPosition(BUTTONP_CENTER + .03);
-                delay(100);
-                buttonPusher.setPosition(BUTTONP_RIGHT);
-                delay(800);
-                buttonPusher.setPosition(BUTTONP_CENTER);
-            }
-
-        }
-
-    public void pressBlue() throws InterruptedException {
-
-        if (!opModeIsActive())
-            return;
-
-        delay(MOVEMENT_DELAY);
-
-        int blueLeft;
-
-        blueLeft = 0;
-        blueLeft += beaconL.blue() - beaconR.blue();
-        blueLeft += beaconR.red() - beaconL.red();
-
-        if (beaconL.blue()>=5 && beaconR.blue()>=5)
-            return;
-        if (blueLeft > 0) {
-            buttonPusher.setPosition(BUTTONP_CENTER - .03);
-            delay(100);
-            buttonPusher.setPosition(BUTTONP_LEFT);
-            delay(800);
-            buttonPusher.setPosition(BUTTONP_CENTER);
-        } else {
-            buttonPusher.setPosition(BUTTONP_CENTER + .03);
-            delay(100);
-            buttonPusher.setPosition(BUTTONP_RIGHT);
-            delay(800);
-            buttonPusher.setPosition(BUTTONP_CENTER);
-        }
-
-    }
-
-
-    public void flyWheel(final double desiredSpeed) {
-        Runnable flyLoop = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    delay(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                int prevEncoderVal;
-                double pow = .65;
-
-                flywheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                flywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-                prevEncoderVal = flywheel.getCurrentPosition();
-
-                double speed;
-                double error;
-
-                while (flyWheelRunning && opModeIsActive()) {
-                    resetStartTime();
-
-                    flywheel.setPower(pow);
-
-                    try {
-                        idle();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    try {
-                        delay(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    speed = (flywheel.getCurrentPosition() - prevEncoderVal) / getRuntime();
-                    prevEncoderVal = flywheel.getCurrentPosition();
-
-                    error = desiredSpeed - speed;
-                    pow += error * .002;
-                }
-            }
-        };
-    }
+    
 
 
 
