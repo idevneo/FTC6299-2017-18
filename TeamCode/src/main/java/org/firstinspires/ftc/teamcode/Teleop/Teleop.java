@@ -65,8 +65,14 @@ public class Teleop extends MyOpMode {
     DcMotor liftLeft;
     DcMotor liftRight;
 
+    DcMotor relic;
+
     float gamepad1_left;
     float gamepad1_right;
+
+    double jewelHandStart;
+    boolean halfDriveSpeed;
+
 
     @Override
     public void runOpMode() {
@@ -76,6 +82,10 @@ public class Teleop extends MyOpMode {
 
         waitForStart();
         runtime.reset();
+
+        //Change later
+        jewelHandStart = 0.0;
+        halfDriveSpeed = false;
 
         while (opModeIsActive()) {
 
@@ -88,30 +98,70 @@ public class Teleop extends MyOpMode {
                 motorBR.setPower(-gamepad1_left);
                 motorFL.setPower(gamepad1_right);
                 motorFR.setPower(-gamepad1_left);
-            }
-
-            else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
+            } else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
                 motorBL.setPower(gamepad1_left);
                 motorBR.setPower(-gamepad1_right);
                 motorFL.setPower(gamepad1_left);
                 motorFR.setPower(-gamepad1_right);
-            }
-
-            else {
+            } else {
                 slowDown(.1);
             }
 
 
 
+            // Code for changing the driving speed by 0.5
+            if (gamepad1.a){
+                halfDriveSpeed = true;
+            }
 
-            //comment out the first strafing method if you want to use strafing with dpad commands
-            setMotorsMecDPAD(.25,.25,.25,.25);
-            lift(.75,.75);
+            if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) ) {
+                motorBL.setPower(gamepad1_right);
+                motorBR.setPower(-gamepad1_left);
+                motorFL.setPower(gamepad1_right);
+                motorFR.setPower(-gamepad1_left);
+            } else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
+                motorBL.setPower(gamepad1_left);
+                motorBR.setPower(-gamepad1_right);
+                motorFL.setPower(gamepad1_left);
+                motorFR.setPower(-gamepad1_right);
+            } else {
+                slowDown(.1);
+            }
+
+            //Code for the relic extension
+            if (gamepad2.right_stick_y > .05 || gamepad2.right_stick_y < .05) {
+                relic.setPower(gamepad2.left_stick_y);
 
 
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            //telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-            telemetry.update();
+            } else {
+                relic.setPower(0);
+
+            }
+
         }
+
+        // Code for the lift up and down
+        if (gamepad2.left_stick_y > .05 || gamepad2.left_stick_y < .05) {
+            liftLeft.setPower(gamepad2.left_stick_y);
+            liftRight.setPower(gamepad2.left_stick_y);
+
+        } else {
+            liftLeft.setPower(0);
+            liftRight.setPower(0);
+        }
+
+        //Code for the jewel knocker start position
+        if (gamepad2.y){
+            jewelHand.setPosition(jewelHandStart);
+        }
+
+
+        setMotorsMecDPAD(.25,.25,.25,.25);
     }
+
+
+
+
 }
+
+

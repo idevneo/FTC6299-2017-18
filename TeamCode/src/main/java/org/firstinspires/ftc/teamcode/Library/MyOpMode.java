@@ -48,6 +48,8 @@ public abstract class MyOpMode extends LinearOpMode {
     public static DcMotor liftLeft;
     public static DcMotor liftRight;
 
+    public static DcMotor relic;
+
     public static DcMotor manip;
 
 
@@ -95,6 +97,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
         liftLeft = hardwareMap.dcMotor.get("liftLeft");
         liftRight = hardwareMap.dcMotor.get("liftRight");
+
+        relic = hardwareMap.dcMotor.get("relic");
 
         manip = hardwareMap.dcMotor.get("manip");
 
@@ -237,6 +241,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
 
+
     public void slowDown (double reduction){
         //first reduction making power 0.1
         //wait(100);
@@ -250,6 +255,7 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBL.setPower(motorBL.getPower() * reduction);
         motorFR.setPower(motorFL.getPower() * reduction);
         motorBR.setPower(motorBL.getPower() * reduction);
+
 
         if(motorFL.getPower() < 0.05 && motorBL.getPower() < 0.05 && motorFR.getPower() < 0.05 && motorFL.getPower() < 0.05){
             motorFL.setPower(0);
@@ -325,32 +331,12 @@ public abstract class MyOpMode extends LinearOpMode {
         }
         manip.setPower(0);
 
-
     }
-    public void lift(double liftL, double liftR)
-    {
-        if(!opModeIsActive())
-            return;
 
-        if (gamepad2.dpad_up)
-        {
-            liftLeft.setPower(liftL);
-            liftRight.setPower(liftR);
-        }
 
-        else if (gamepad2.dpad_down)
-        {
-            liftLeft.setPower(-liftL);
-            liftRight.setPower(-liftR);
-        }
 
-        else
-        {
-            liftLeft.setPower(0);
-            liftRight.setPower(0);
-        }
 
-    }
+
 
     public void jewelKnockerRed(double servoArmD, double servoArmS, double servoHandL, double servoHandR, double servoHandS)
     {
