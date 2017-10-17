@@ -155,6 +155,29 @@ public class Teleop extends MyOpMode {
             jewelHand.setPosition(jewelHandStart);
         }
 
+        if (gamepad1.right_trigger > .05) {
+            if (gamepad1.right_trigger < .5) {
+                manip.setPower(.25);
+            }
+            else if (gamepad1.right_trigger >= .5) {
+                manip.setPower(.5);
+            }
+            else {
+                manip.setPower(0);
+            }
+        }
+        if (gamepad1.left_trigger > .05) {
+            if (gamepad1.left_trigger < .5) {
+                manip.setPower(-.25);
+            }
+            else if (gamepad1.left_trigger >= .5) {
+                manip.setPower(-.5);
+            }
+            else {
+                manip.setPower(0);
+            }
+        }
+
 
         setMotorsMecDPAD(.25,.25,.25,.25);
     }
