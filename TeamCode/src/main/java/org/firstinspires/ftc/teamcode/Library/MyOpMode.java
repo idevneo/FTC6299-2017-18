@@ -243,13 +243,13 @@ public abstract class MyOpMode extends LinearOpMode {
 
 
     public void slowDown (double reduction){
-        //first reduction making power 0.1
+        //first reduction making power 0.5
         //wait(100);
         motorFL.setPower(motorFL.getPower() * reduction);
         motorBL.setPower(motorBL.getPower() * reduction);
         motorFR.setPower(motorFL.getPower() * reduction);
         motorBR.setPower(motorBL.getPower() * reduction);
-        //second reduction making power 0.01
+        //second reduction making power 0.05
         //wait(100);
         motorFL.setPower(motorFL.getPower() * reduction);
         motorBL.setPower(motorBL.getPower() * reduction);

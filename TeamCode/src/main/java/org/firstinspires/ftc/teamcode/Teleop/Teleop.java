@@ -104,7 +104,7 @@ public class Teleop extends MyOpMode {
                 motorFL.setPower(gamepad1_left);
                 motorFR.setPower(-gamepad1_right);
             } else {
-                slowDown(.1);
+                slowDown(.5);
             }
 
 
@@ -125,7 +125,7 @@ public class Teleop extends MyOpMode {
                 motorFL.setPower(gamepad1_left);
                 motorFR.setPower(-gamepad1_right);
             } else {
-                slowDown(.1);
+                slowDown(.5);
             }
 
             //Code for the relic extension
