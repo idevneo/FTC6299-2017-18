@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -67,11 +68,17 @@ public class Teleop extends MyOpMode {
 
     DcMotor relic;
 
+    Servo relicGrabber;
+    Servo jewelHand;
+
     float gamepad1_left;
     float gamepad1_right;
 
     double jewelHandStart;
-    boolean halfDriveSpeed;
+    double relicDeploy;
+    double relicGrab;
+
+    int lessenPow = 0;
 
 
     @Override
@@ -85,13 +92,27 @@ public class Teleop extends MyOpMode {
 
         //Change later
         jewelHandStart = 0.0;
-        halfDriveSpeed = false;
+        relicDeploy = 0.0;
+        relicGrab = 0.0;
 
         while (opModeIsActive()) {
 
-
+            //gamepad1 start
             gamepad1_left = gamepad1.left_stick_y;
             gamepad1_right = gamepad1.right_stick_y;
+
+
+            if (gamepad1.x) {
+                gamepad1_left *= -1;
+                gamepad1_right *= -1;
+            }
+
+            if (gamepad1.y) {
+                gamepad1_left = gamepad1.left_stick_y;
+                gamepad1_right = gamepad1.right_stick_y;
+                setMotorsMecDPAD(.25,.25,.25,.25);
+                lessenPow = 0;
+            }
 
             if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
                 motorBL.setPower(gamepad1_right);
@@ -110,29 +131,65 @@ public class Teleop extends MyOpMode {
 
 
             // Code for changing the driving speed by 0.5
-            if (gamepad1.a){
-                halfDriveSpeed = true;
+
+            if (gamepad1.a && lessenPow == 0) {
+                lessenPow = 1;
+            }
+            if (gamepad1.a && lessenPow == 1) {
+                lessenPow = 0;
             }
 
-            if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) ) {
+            if (lessenPow == 1) {
+                gamepad1_left *= .5;
+                gamepad1_right *= .5;
+            }
+            if (lessenPow == 0) {
+                gamepad1_left = gamepad1.left_stick_y;
+                gamepad1_right = gamepad1.right_stick_y;
+            }
+
+            if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
                 motorBL.setPower(gamepad1_right);
                 motorBR.setPower(-gamepad1_left);
                 motorFL.setPower(gamepad1_right);
                 motorFR.setPower(-gamepad1_left);
-            } else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
-                motorBL.setPower(gamepad1_left);
-                motorBR.setPower(-gamepad1_right);
-                motorFL.setPower(gamepad1_left);
-                motorFR.setPower(-gamepad1_right);
             } else {
                 slowDown(.5);
             }
 
+
+            if (gamepad1.right_trigger > .05) {
+                if (gamepad1.right_trigger < .5) {
+                    manip.setPower(.25);
+                }
+                else if (gamepad1.right_trigger >= .5) {
+                    manip.setPower(.5);
+                }
+                else {
+                    manip.setPower(0);
+                }
+            }
+            if (gamepad1.left_trigger > .05) {
+                if (gamepad1.left_trigger < .5) {
+                    manip.setPower(-.25);
+                }
+                else if (gamepad1.left_trigger >= .5) {
+                    manip.setPower(-.5);
+                }
+                else {
+                    manip.setPower(0);
+                }
+            }
+
+
+            setMotorsMecDPAD(.25,.25,.25,.25);
+            //gamepad1 end
+
+
+            //gamepad2 start
             //Code for the relic extension
-            if (gamepad2.right_stick_y > .05 || gamepad2.right_stick_y < .05) {
-                relic.setPower(gamepad2.left_stick_y);
-
-
+            if ((Math.abs(gamepad2.right_stick_y) > .05 )){
+                relic.setPower(gamepad2.right_stick_y);
             } else {
                 relic.setPower(0);
 
@@ -141,8 +198,8 @@ public class Teleop extends MyOpMode {
         }
 
         // Code for the lift up and down
-        if (gamepad2.left_stick_y > .05 || gamepad2.left_stick_y < .05) {
-            liftLeft.setPower(gamepad2.left_stick_y);
+        if ((Math.abs(gamepad2.left_stick_y) > .05 )) {
+            liftLeft.setPower(-gamepad2.left_stick_y);
             liftRight.setPower(gamepad2.left_stick_y);
 
         } else {
@@ -154,36 +211,16 @@ public class Teleop extends MyOpMode {
         if (gamepad2.y){
             jewelHand.setPosition(jewelHandStart);
         }
-
-        if (gamepad1.right_trigger > .05) {
-            if (gamepad1.right_trigger < .5) {
-                manip.setPower(.25);
-            }
-            else if (gamepad1.right_trigger >= .5) {
-                manip.setPower(.5);
-            }
-            else {
-                manip.setPower(0);
-            }
+        if (gamepad2.a) {
+            relicGrabber.setPosition(relicDeploy);
         }
-        if (gamepad1.left_trigger > .05) {
-            if (gamepad1.left_trigger < .5) {
-                manip.setPower(-.25);
-            }
-            else if (gamepad1.left_trigger >= .5) {
-                manip.setPower(-.5);
-            }
-            else {
-                manip.setPower(0);
-            }
+        if (gamepad2.x) {
+            relicGrabber.setPosition(relicGrab);
         }
 
+        //gamepad2 end
 
-        setMotorsMecDPAD(.25,.25,.25,.25);
     }
-
-
-
 
 }
 

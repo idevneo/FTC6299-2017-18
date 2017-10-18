@@ -55,6 +55,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public static Servo jewelArm;
     public static Servo jewelHand;
+    public static Servo relicGrabber;
 
     public static OpticalDistanceSensor floorL;
     public static OpticalDistanceSensor floorR;
@@ -105,6 +106,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
+        relicGrabber = hardwareMap.servo.get("relicGrabber");
 
         telemetry.addData("Status", "Hardware Mapped");
         telemetry.update();
@@ -244,18 +246,17 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public void slowDown (double reduction){
         //first reduction making power 0.5
-        //wait(100);
-        motorFL.setPower(motorFL.getPower() * reduction);
-        motorBL.setPower(motorBL.getPower() * reduction);
-        motorFR.setPower(motorFL.getPower() * reduction);
-        motorBR.setPower(motorBL.getPower() * reduction);
-        //second reduction making power 0.05
-        //wait(100);
-        motorFL.setPower(motorFL.getPower() * reduction);
-        motorBL.setPower(motorBL.getPower() * reduction);
-        motorFR.setPower(motorFL.getPower() * reduction);
-        motorBR.setPower(motorBL.getPower() * reduction);
-
+        while (motorFL.getPower() > 0.05 && motorBL.getPower() > 0.05 && motorFR.getPower() > 0.05 && motorFL.getPower() > 0.05) {
+            try {
+                wait(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            motorFL.setPower(motorFL.getPower() * reduction);
+            motorBL.setPower(motorBL.getPower() * reduction);
+            motorFR.setPower(motorFL.getPower() * reduction);
+            motorBR.setPower(motorBL.getPower() * reduction);
+        }
 
         if(motorFL.getPower() < 0.05 && motorBL.getPower() < 0.05 && motorFR.getPower() < 0.05 && motorFL.getPower() < 0.05){
             motorFL.setPower(0);
