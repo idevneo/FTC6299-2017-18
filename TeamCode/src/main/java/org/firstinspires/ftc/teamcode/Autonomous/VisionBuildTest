@@ -16,20 +16,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.teamcode.Library.MyOpMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 //This file is to not  be incorporated into the code, but used to help build complicated Vuforia Code without effecting the actual autonomous.
 //It is implied that the Vuforia code itself is already loaded into the program, and that we just need to input sets.
+//The main idea for the Autonomous is included here as well as dataset importation:
 
-
-//The main idea for the Autonomous is included here:
-
-//Importing in the datasets and assets:
-
-
-
-
+public class VisionBuildTest extends MyOpMode {
 //Actual Jewel Strategy
 //         Phone will check which ball it sees (blue or red) Then
 //        Determine the position of each ball position in relation to each other.
@@ -48,15 +44,30 @@ import java.util.List;
 //        If Blue is on left
 //        Swing left)
 
-//The asset dataset will be called "Jewels", the Red Ball will be called redTarget and the blue target blueTarget in vuforia.
+    public void runOpMode() throws InterruptedException {
+        //The asset dataset will be called "Jewels", the Red Ball will be called redTarget and the blue target blueTarget in vuforia.
         VuforiaTrackables Jewels = this.vuforia.loadTrackablesFromAsset("Jewels"); //need to add to assets folder, after uploading to vuforia
         VuforiaTrackable redTarget = Jewels.get(0);
-        redTarget.setName("RedJewel");  // Red Ball
+        redTarget.setName("RedJewel");  //Red Ball
 
-        VuforiaTrackable blueTarget  = Jewels.get(1);
+        VuforiaTrackable blueTarget = Jewels.get(1);
         blueTarget.setName("BlueJewel");  // Blue Ball
 
-                /** For convenience, gather together all the trackable objects in one easily-iterable collection */
-                List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
-                allTrackables.addAll(Jewels);
+        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+        allTrackables.addAll(Jewels);
 
+        Jewels.activate();
+
+        while(opModeIsActive();
+        {
+            if (vuMark == Jewels.RedJewel) {
+                findPos;  //function Find pos will find the position of two balls
+
+            } else if (vuMark == Jewels.BlueJewel) {
+                findPos;
+
+            }
+        }
+    }
+}
+//Have to figure out why code works in VisionStuff but not in this one.
