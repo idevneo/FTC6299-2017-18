@@ -48,6 +48,14 @@ public static final String TAG = "Vuforia Navigation Sample";
     OpenGLMatrix lastLocation = null;
 
     VuforiaLocalizer vuforia;
+    float mmPerInch        = 25.4f;
+    float mmBotWidth       = 18 * mmPerInch;            // ... or whatever is right for your robot
+    float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
+
+    VuforiaTrackables Jewels = this.vuforia.loadTrackablesFromAsset("Jewels");
+    VuforiaTrackable redTarget = Jewels.get(0);
+    VuforiaTrackable blueTarget = Jewels.get(1);
+
 
     @Override public void runOpMode() {
         /*
@@ -62,19 +70,13 @@ public static final String TAG = "Vuforia Navigation Sample";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
-        VuforiaTrackables Jewels = this.vuforia.loadTrackablesFromAsset("Jewels");
-        VuforiaTrackable redTarget = Jewels.get(0);
         redTarget.setName("RedTarget");  // Red Ball
 
-        VuforiaTrackable blueTarget = Jewels.get(1);
         blueTarget.setName("BlueTarget");  // Blue Ball
         /** For convenience, gather together all the trackable objects in one easily-iterable collection */
         List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
         allTrackables.addAll(Jewels);
 
-        float mmPerInch        = 25.4f;
-        float mmBotWidth       = 18 * mmPerInch;            // ... or whatever is right for your robot
-        float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
 
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix //Locating the phone
                 .translation(mmBotWidth/2,0,0)
