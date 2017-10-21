@@ -103,7 +103,7 @@ public class AutoRedLeft extends MyOpMode {
 
         parameters.vuforiaLicenseKey = "AebyfAz/////AAAAGQSk/SMIskOBiTwNytA2g40Z5EJHh/B+wOuXdcD3Am6MKfF5dFAXVTowhe3r4WWOLOXgM06SKRsGgwb/Wscw0JUVeut2HxkDwYkp/MXJcjzTLcr8Ss5QdCAUtyLX6x1QH+mp1fZ+k8CaVpYE2AgrLmclq4D6gCG5x0CVespmrQ4yGLHSsiiY8kxZAujvYcdXTldK3Utr6J7cL0EAgLSm590bcVaHkjIi3IZg9jX1168Ejz1q4B39gfL5aM6Icr4SyMbPG3cmPNko4Y3Ebf8OmzEanypRjKXGzbWAV237TJzu/wHcmWSEf8hRt1yZTAfZTUPkSwabx6qpyRSZdpK1lTnLLnGA/LqxM1N5oX/T1VG+";
 
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
