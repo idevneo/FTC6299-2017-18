@@ -55,7 +55,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="RedRight", group="Linear Opmode")
+@Autonomous(name="RedLeft", group="Linear Opmode")
 
 public class AutoRedLeft extends MyOpMode {
 

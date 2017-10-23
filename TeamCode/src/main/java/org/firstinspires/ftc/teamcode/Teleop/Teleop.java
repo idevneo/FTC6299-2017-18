@@ -53,7 +53,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
+@TeleOp(name="Teleop", group="Linear Opmode")
 public class Teleop extends MyOpMode {
 
     // Declare OpMode members.
@@ -95,18 +95,22 @@ public class Teleop extends MyOpMode {
         relicDeploy = 0.0;
         relicGrab = 0.0;
 
+
         while (opModeIsActive()) {
+
+            setMotorsMecDPAD(.25,.25,.25,.25);
 
             //gamepad1 start
             gamepad1_left = gamepad1.left_stick_y;
             gamepad1_right = gamepad1.right_stick_y;
 
-
+            // inverting front and back
             if (gamepad1.x) {
                 gamepad1_left *= -1;
                 gamepad1_right *= -1;
             }
 
+            //reseting all values
             if (gamepad1.y) {
                 gamepad1_left = gamepad1.left_stick_y;
                 gamepad1_right = gamepad1.right_stick_y;
@@ -114,19 +118,6 @@ public class Teleop extends MyOpMode {
                 lessenPow = 0;
             }
 
-            if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
-                motorBL.setPower(gamepad1_right);
-                motorBR.setPower(-gamepad1_left);
-                motorFL.setPower(gamepad1_right);
-                motorFR.setPower(-gamepad1_left);
-            } else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
-                motorBL.setPower(gamepad1_left);
-                motorBR.setPower(-gamepad1_right);
-                motorFL.setPower(gamepad1_left);
-                motorFR.setPower(-gamepad1_right);
-            } else {
-                slowDown(.5);
-            }
 
 
 
@@ -148,6 +139,8 @@ public class Teleop extends MyOpMode {
                 gamepad1_right = gamepad1.right_stick_y;
             }
 
+
+            //Normal driving code with slowdown method
             if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
                 motorBL.setPower(gamepad1_right);
                 motorBR.setPower(-gamepad1_left);
@@ -157,7 +150,7 @@ public class Teleop extends MyOpMode {
                 slowDown(.5);
             }
 
-
+            // manipulator depositing and pulling in blocks
             if (gamepad1.right_trigger > .05) {
                 if (gamepad1.right_trigger < .5) {
                     manip.setPower(.25);
@@ -181,8 +174,6 @@ public class Teleop extends MyOpMode {
                 }
             }
 
-
-            setMotorsMecDPAD(.25,.25,.25,.25);
             //gamepad1 end
 
 
@@ -211,6 +202,8 @@ public class Teleop extends MyOpMode {
         if (gamepad2.y){
             jewelHand.setPosition(jewelHandStart);
         }
+
+        // grabbing and depositing the relic using servos
         if (gamepad2.a) {
             relicGrabber.setPosition(relicDeploy);
         }
