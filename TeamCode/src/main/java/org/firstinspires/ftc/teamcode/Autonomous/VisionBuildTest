@@ -133,7 +133,7 @@ public static final String TAG = "Vuforia Navigation Sample";
     public void findPos() { /*Find pos should locate the not only the phone, but the allowed limit of 2 targets (red and blue) to figure out the positions in relation
         eachother */
         OpenGLMatrix redbalocation = OpenGLMatrix //how to locate the phone, needs to be changed to locating the blue ball.
-                .translation(mmBotWidth / 2, 0, 0)
+                .translation(mmBotWidth/ 2, 0, 0)
                 .multiplied(Orientation.getRotationMatrix(
                         AxesReference.EXTRINSIC, AxesOrder.YZY,
                         AngleUnit.DEGREES, -90, 0, 0));
@@ -144,36 +144,34 @@ public static final String TAG = "Vuforia Navigation Sample";
                         AxesReference.EXTRINSIC, AxesOrder.YZY,
                         AngleUnit.DEGREES, -90, 0, 0));
 
-        ((VuforiaTrackableDefaultListener)redTarget.getListener()).setPhoneInformation(redbalocation, parameters.cameraDirection);
-        ((VuforiaTrackableDefaultListener)blueTarget.getListener()).setPhoneInformation(bluebalocation, parameters.cameraDirection);
     }
 
-    public void findRelation(); {
-        float toberenamed;
-        /*Should find the relation of the balls to eachother and determine which side we need to swing*\
-        left = **** (is the opposing ball on the left?)
-        right = **** (Is the opposing b all on the right?)
-        teamside = **** (red side (1) or blue side(0)?)
-        red = (Determined red position of trackable)
-        blue = (determined blue position of trackable.
-
-        if (red == (left numbers) {
-        left = true
-        }
-        else if (red == (right numbers) {
-        left = false
-        }
-          if (red == (left numbers) {
-        right = true
-        }
-        else if (red == (right numbers) {
-        right = false
-        }
-
-        if (left == true) && teamside = 1 (we are on the red side and the red ball is located on the left side {
-        knockRight
-        } */
-
-    }
+//    public void findRelation(); {
+//        float toberenamed;
+//        /*Should find the relation of the balls to eachother and determine which side we need to swing*\
+//        left = **** (is the opposing ball on the left?)
+//        right = **** (Is the opposing b all on the right?)
+//        teamside = **** (red side (1) or blue side(0)?)
+//        red = (Determined red position of trackable)
+//        blue = (determined blue position of trackable.
+//
+//        if (red == (left numbers) {
+//        left = true
+//        }
+//        else if (red == (right numbers) {
+//        left = false
+//        }
+//          if (red == (left numbers) {
+//        right = true
+//        }
+//        else if (red == (right numbers) {
+//        right = false
+//        }
+//
+//        if (left == true) && teamside = 1 (we are on the red side and the red ball is located on the left side {
+//        knockRight
+//        } */
+//
+//    }
 
 }
