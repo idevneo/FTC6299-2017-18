@@ -31,6 +31,7 @@
 //
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.hardware.DcMotor;
+//import com.qualcomm.robotcore.hardware.CRServo;
 //import com.qualcomm.robotcore.hardware.Servo;
 //import com.qualcomm.robotcore.util.ElapsedTime;
 //
@@ -88,8 +89,8 @@
 //    DcMotor liftLeft;
 //    DcMotor liftRight;
 //
-//    Servo jewelOne;
-//    Servo jewelTwo;
+//    CRServo jewelArm;
+//    CRServo jewelHand;
 //    @Override
 //    public void runOpMode() throws InterruptedException {
 //        telemetry.addData("Status", "Initialized");
@@ -145,8 +146,8 @@
 //
 //
 //            //For if the jewel knocker is on the back
-////            mecAutoRight(.25,.25,62,2500);
-////            turn(.25, 180, 2500);
+////            mecAutoRight(.25,.25,62,2500); //move 35 in to side  = 2.7852115040 encoder ticks
+////            turn(.25, 180, 2500); //move 29 in foward = 2.3077466748 encoder ticks
 //
 //
 //            if (center = true) {

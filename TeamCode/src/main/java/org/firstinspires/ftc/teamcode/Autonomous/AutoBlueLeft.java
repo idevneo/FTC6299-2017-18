@@ -32,6 +32,7 @@
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.hardware.DcMotor;
 //import com.qualcomm.robotcore.hardware.Servo;
+//import com.qualcomm.robotcore.hardware.CRServo;
 //import com.qualcomm.robotcore.util.ElapsedTime;
 //
 //import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -87,8 +88,8 @@
 //    DcMotor liftLeft;
 //    DcMotor liftRight;
 //
-//    Servo jewelOne;
-//    Servo jewelTwo;
+//    CRServo jewelArme;
+//    CRServo jewelHand;
 //    @Override
 //    public void runOpMode() throws InterruptedException {
 //        telemetry.addData("Status", "Initialized");
@@ -139,7 +140,7 @@
 //            }
 //
 //            // If jewel knocker is on the right side
-////            moveTo(.5, -1000, .6, 2.2);
+////            moveTo(.5, -1000, .6, 2.2); //autored right encoder ticks but different direction
 ////            turn(.25, 180, 2500);
 //            mecAutoLeft(.25, .25, 62, 3500);
 //            mecAutoRight(.25, .25, 93, 8000);

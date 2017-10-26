@@ -35,6 +35,7 @@
 //import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 //import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //import com.qualcomm.robotcore.hardware.DcMotor;
+//import com.qualcomm.robotcore.hardware.CRServo;
 //import com.qualcomm.robotcore.hardware.Servo;
 //import com.qualcomm.robotcore.util.ElapsedTime;
 //import com.qualcomm.robotcore.util.Range;
@@ -105,8 +106,8 @@
 //    DcMotor liftLeft;
 //    DcMotor liftRight;
 //
-//    Servo jewelOne;
-//    Servo jewelTwo;
+//    CRServo jewelArm;
+//    CRServo jewelHand;
 //
 //    ModernRoboticsI2cRangeSensor rightUltra;
 //    @Override
@@ -159,18 +160,16 @@
 //            }
 //
 //            //For if the jewel knocker is on the right side
-////            moveTo(.25, 1000, .6, 2.2);
-//            mecAutoRight(.25, .25, 62, 5000);
-//            mecAutoLeft(.25, .25, 93, 7000);
+////            moveTo(.25, 1000, .6, 2.2); //move 28in foward = move 2.2281692032 encoder ticks
+//            mecAutoRight(.25, .25, 62, 5000); //hit wall is 23 in right = move 1.8302818455 encoder ticks
+//            mecAutoLeft(.25, .25, 93, 7000); //move to center left = move 2.7852115040 encoder ticks
+//            //move foward 20 in = 1.59154943092 encoder ticks
 //
 //            //Omni, add code for 2nd move to command into the if statement
 ////            moveTo(.25, 1000, .6, 2.2);
 ////            turnCorr(.25, -90, 2500);
 ////            moveTo(.25, 400, .6, 2.2);
 ////            turnCorr(.25, 90, 2500);
-//
-//
-//
 //
 //            //For if the jewel knocker is on the back
 ////            mecAutoRight(.25,.25,61,2500);
