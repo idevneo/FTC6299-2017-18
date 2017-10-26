@@ -32,8 +32,8 @@ package org.firstinspires.ftc.teamcode.Teleop;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -66,39 +66,72 @@ public class Teleop extends MyOpMode {
     DcMotor liftLeft;
     DcMotor liftRight;
 
-    DcMotor relic;
-
-    Servo relicGrabber;
-    Servo jewelHand;
+    DcMotor manip;
+//
+//    DcMotor relic;
+//
+//    Servo relicGrabber;
+    CRServo jewelHand;
+    CRServo jewelArm;
 
     float gamepad1_left;
     float gamepad1_right;
 
     double jewelHandStart;
-    double relicDeploy;
-    double relicGrab;
+//    double relicDeploy;
+//    double relicGrab;
 
     int lessenPow = 0;
+
+    double left = .5;
+    double right = .5;
+    double less = .25;
+    double increase = .25;
 
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        hardwareMap();
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorFL = hardwareMap.dcMotor.get("motorFL");
+        motorFR = hardwareMap.dcMotor.get("motorFR");
+
+//        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
+//        range = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
+//        jewelColor = hardwareMap.get(ModernRoboticsI2cColorSensor.class, "jewelColor");
+//
+//        floorL = hardwareMap.get(OpticalDistanceSensor.class, "floorL");
+//        floorR = hardwareMap.get(OpticalDistanceSensor.class, "floorR");
+//
+        liftLeft = hardwareMap.dcMotor.get("liftL");
+        liftRight = hardwareMap.dcMotor.get("liftR");
+//
+//        relic = hardwareMap.dcMotor.get("relic");
+//
+        manip = hardwareMap.dcMotor.get("manip");
+//
+        jewelArm = hardwareMap.crservo.get("jewelArm");
+        jewelHand = hardwareMap.crservo.get("jewelHand");
+
+//        relicGrabber = hardwareMap.servo.get("relicGrabber");
+//
+//        telemetry.addData("Status", "Hardware Mapped");
+//        telemetry.update();
 
         waitForStart();
         runtime.reset();
 
         //Change later
-        jewelHandStart = 0.0;
-        relicDeploy = 0.0;
-        relicGrab = 0.0;
+//        jewelHandStart = 0.0;
+//        relicDeploy = 0.0;
+//        relicGrab = 0.0;
 
 
         while (opModeIsActive()) {
 
-            setMotorsMecDPAD(.25,.25,.25,.25);
+            //setMotorsMecDPAD(.25, .25, .25, .25);
 
             //gamepad1 start
             gamepad1_left = gamepad1.left_stick_y;
@@ -114,11 +147,9 @@ public class Teleop extends MyOpMode {
             if (gamepad1.y) {
                 gamepad1_left = gamepad1.left_stick_y;
                 gamepad1_right = gamepad1.right_stick_y;
-                setMotorsMecDPAD(.25,.25,.25,.25);
+                //setMotorsMecDPAD(.25, .25, .25, .25);
                 lessenPow = 0;
             }
-
-
 
 
             // Code for changing the driving speed by 0.5
@@ -142,12 +173,51 @@ public class Teleop extends MyOpMode {
 
             //Normal driving code with slowdown method
             if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
-                motorBL.setPower(gamepad1_right);
-                motorBR.setPower(-gamepad1_left);
-                motorFL.setPower(gamepad1_right);
-                motorFR.setPower(-gamepad1_left);
+                motorBL.setPower(gamepad1_left);
+                motorBR.setPower(-gamepad1_right);
+                motorFL.setPower(gamepad1_left);
+                motorFR.setPower(-gamepad1_right);
             } else {
-                slowDown(.5);
+                motorBL.setPower(0);
+                motorBR.setPower(0);
+                motorFL.setPower(0);
+                motorFR.setPower(0);
+            }
+
+
+            if (gamepad1.dpad_up &&  left <= .75 && right <= .75) {
+                left += increase;
+                right += increase;
+                telemetry.addData("Left:", left);
+                telemetry.addData("Right:", right);
+                telemetry.update();
+            }
+
+            else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25){
+                left += less;
+                right += less;
+                telemetry.addData("Left:", left);
+                telemetry.addData("Right:", right);
+                telemetry.update();
+            }
+
+            if (gamepad1.dpad_left) {
+                motorFL.setPower(left);
+                motorBL.setPower(-left);
+                motorFR.setPower(right);
+                motorBR.setPower(-right);
+            }
+            else if (gamepad1.dpad_right){
+                motorFL.setPower(-left);
+                motorBL.setPower(left);
+                motorFR.setPower(-right);
+                motorBR.setPower(right);
+            }
+            else {
+                motorFL.setPower(0);
+                motorBL.setPower(0);
+                motorFR.setPower(0);
+                motorBR.setPower(0);
             }
 
             // manipulator depositing and pulling in blocks
@@ -179,14 +249,14 @@ public class Teleop extends MyOpMode {
 
             //gamepad2 start
             //Code for the relic extension
-            if ((Math.abs(gamepad2.right_stick_y) > .05 )){
-                relic.setPower(gamepad2.right_stick_y);
-            } else {
-                relic.setPower(0);
-
-            }
-
-        }
+//            if ((Math.abs(gamepad2.right_stick_y) > .05 )){
+//                relic.setPower(gamepad2.right_stick_y);
+//            } else {
+//                relic.setPower(0);
+//
+//            }
+//
+//        }
 
         // Code for the lift up and down
         if ((Math.abs(gamepad2.left_stick_y) > .05 )) {
@@ -198,23 +268,33 @@ public class Teleop extends MyOpMode {
             liftRight.setPower(0);
         }
 
-        //Code for the jewel knocker start position
+//        //Code for the jewel knocker start position
         if (gamepad2.y){
-            jewelHand.setPosition(jewelHandStart);
+            jewelHand.setPower(jewelHandStart);
         }
 
-        // grabbing and depositing the relic using servos
-        if (gamepad2.a) {
-            relicGrabber.setPosition(relicDeploy);
-        }
-        if (gamepad2.x) {
-            relicGrabber.setPosition(relicGrab);
+        if (gamepad2.left_trigger >.05){
+            jewelHand.setPower(-1);
         }
 
-        //gamepad2 end
+        if (gamepad2.right_trigger > .05){
+            jewelHand.setPower(1);
+        }
 
+//
+//        // grabbing and depositing the relic using servos
+//        if (gamepad2.a) {
+//            relicGrabber.setPosition(relicDeploy);
+//        }
+//        if (gamepad2.x) {
+//            relicGrabber.setPosition(relicGrab);
+//        }
+//
+//        //gamepad2 end
+//
+//    }
+
+        }
     }
-
 }
-
 
