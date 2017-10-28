@@ -171,12 +171,7 @@
 ////            moveTo(.25, 400, .6, 2.2);
 ////            turnCorr(.25, 90, 2500);
 //
-//            //For if the jewel knocker is on the back
-////            mecAutoRight(.25,.25,61,2500);
-////            moveTo(.25, -100, .6, 2.2);
-////            moveTo(.25, 1000, .6, 2.2);
-////            mecAutoRight(.25, .25, 32, 3500);
-////            mecAutoLeft(.25, .25, 70, 8000);
+//
 //
 ////            if (center = true) {
 ////                moveTo(.25,100, .6, 2.2);

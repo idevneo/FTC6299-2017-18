@@ -53,9 +53,9 @@ public abstract class MyOpMode extends LinearOpMode {
     //public static DcMotor manip;
 
 
-//    public static Servo jewelArm;
-//    public static Servo jewelHand;
-//    public static Servo relicGrabber;
+//    public static CRServo jewelArm;
+//    public static CRServo jewelHand;
+//    public static CRServo relicGrabber;
 
 //    public static OpticalDistanceSensor floorL;
 //    public static OpticalDistanceSensor floorR;
@@ -204,44 +204,46 @@ public abstract class MyOpMode extends LinearOpMode {
 
     // code for strafing using the dpad on driver 1 controller
 
-    public void setMotorsMecDPAD(double left, double right, double lessenPower, double increasePower) {
-        if (!opModeIsActive())
-            return;
-        double less = lessenPower;
-        double increase = increasePower;
 
-        if (gamepad1.dpad_up &&  left <= .75 && right <= .75) {
-            left += increasePower;
-            right += increasePower;
-        }
-
-        else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25){
-            left += lessenPower;
-            right += lessenPower;
-
-        }
-
-
-        if (gamepad1.dpad_left) {
-            motorFL.setPower(left);
-            motorBL.setPower(-left);
-            motorFR.setPower(-right);
-            motorBR.setPower(right);
-        }
-        else if (gamepad1.dpad_right){
-            motorFL.setPower(-left);
-            motorBL.setPower(left);
-            motorFR.setPower(right);
-            motorBR.setPower(-right);
-        }
-        else {
-            motorFL.setPower(0);
-            motorBL.setPower(0);
-            motorFR.setPower(0);
-            motorBR.setPower(0);
-        }
-
-    }
+    //Why do we have this method if we do the same thing in TeleOp ????
+//    public void setMotorsMecDPAD(double left, double right, double lessenPower, double increasePower) {
+//        if (!opModeIsActive())
+//            return;
+//        double less = lessenPower;
+//        double increase = increasePower;
+//
+//        if (gamepad1.dpad_up &&  left <= .75 && right <= .75) {
+//            left += increasePower;
+//            right += increasePower;
+//        }
+//
+//        else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25){
+//            left += lessenPower;
+//            right += lessenPower;
+//
+//        }
+//
+//
+//        if (gamepad1.dpad_left) {
+//            motorFL.setPower(left);
+//            motorBL.setPower(-left);
+//            motorFR.setPower(-right);
+//            motorBR.setPower(right);
+//        }
+//        else if (gamepad1.dpad_right){
+//            motorFL.setPower(-left);
+//            motorBL.setPower(left);
+//            motorFR.setPower(right);
+//            motorBR.setPower(-right);
+//        }
+//        else {
+//            motorFL.setPower(0);
+//            motorBL.setPower(0);
+//            motorFR.setPower(0);
+//            motorBR.setPower(0);
+//        }
+//
+//    }
 
 
     public void slowDown (double reduction){
@@ -646,6 +648,12 @@ public abstract class MyOpMode extends LinearOpMode {
 //
 //        time.reset();
 //
+//        If user wants robot to move forward (1st if), (else): the user wants to move backwards
+//        While the opMode is running, and the robot still has to move, 
+//        and it has not passed the timeout seconds
+//        If the gyro is not correct, then turn the robot until gyro value is within the amount of degrees it is allowed off perfect
+
+
 //        if (deg > 0) {
 //            while (opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
 //                if (getGyroYaw() + gyroError > threshold)
@@ -662,6 +670,8 @@ public abstract class MyOpMode extends LinearOpMode {
 //                idle();
 //            }
 //        } else {
+
+
 //            while (opModeIsActive() && Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
 //                if (getGyroYaw() + gyroError > threshold)
 //                    setMotors(-pow, -pow / red);

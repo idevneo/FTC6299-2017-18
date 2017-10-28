@@ -193,6 +193,7 @@ public class Teleop extends MyOpMode {
                 telemetry.update();
             }
 
+            //Doesn't this need to be -= ????, because less is set to .25
             else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25){
                 left += less;
                 right += less;
@@ -220,7 +221,11 @@ public class Teleop extends MyOpMode {
                 motorBR.setPower(0);
             }
 
-            // manipulator depositing and pulling in blocks
+
+
+
+
+            //Deposit / push blocks out
             if (gamepad1.right_trigger > .05) {
                 if (gamepad1.right_trigger < .5) {
                     manip.setPower(.25);
@@ -232,6 +237,8 @@ public class Teleop extends MyOpMode {
                     manip.setPower(0);
                 }
             }
+
+            //Pull in blocks
             if (gamepad1.left_trigger > .05) {
                 if (gamepad1.left_trigger < .5) {
                     manip.setPower(-.25);
