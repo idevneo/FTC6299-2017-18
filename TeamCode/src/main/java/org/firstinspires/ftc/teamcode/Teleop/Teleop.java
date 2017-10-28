@@ -33,6 +33,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -66,13 +68,13 @@ public class Teleop extends MyOpMode {
     DcMotor liftLeft;
     DcMotor liftRight;
 
-    DcMotor manip;
+//    DcMotor manip;
 //
 //    DcMotor relic;
 //
 //    Servo relicGrabber;
-    CRServo jewelHand;
-    CRServo jewelArm;
+    Servo jewelHand;
+    Servo jewelArm;
 
     float gamepad1_left;
     float gamepad1_right;
@@ -110,10 +112,10 @@ public class Teleop extends MyOpMode {
 //
 //        relic = hardwareMap.dcMotor.get("relic");
 //
-        manip = hardwareMap.dcMotor.get("manip");
+//        manip = hardwareMap.dcMotor.get("manip");
 //
-        jewelArm = hardwareMap.crservo.get("jewelArm");
-        jewelHand = hardwareMap.crservo.get("jewelHand");
+        jewelArm = hardwareMap.servo.get("jewelArm");
+        jewelHand = hardwareMap.servo.get("jewelHand");
 
 //        relicGrabber = hardwareMap.servo.get("relicGrabber");
 //
@@ -138,45 +140,45 @@ public class Teleop extends MyOpMode {
             gamepad1_right = gamepad1.right_stick_y;
 
             // inverting front and back
-            if (gamepad1.x) {
-                gamepad1_left *= -1;
-                gamepad1_right *= -1;
-            }
+//            if (gamepad1.x) {
+//                gamepad1_left *= -1;
+//                gamepad1_right *= -1;
+//            }
 
             //reseting all values
-            if (gamepad1.y) {
-                gamepad1_left = gamepad1.left_stick_y;
-                gamepad1_right = gamepad1.right_stick_y;
-                //setMotorsMecDPAD(.25, .25, .25, .25);
-                lessenPow = 0;
-            }
-
-
-            // Code for changing the driving speed by 0.5
-
-            if (gamepad1.a && lessenPow == 0) {
-                lessenPow = 1;
-            }
-            if (gamepad1.a && lessenPow == 1) {
-                lessenPow = 0;
-            }
-
-            if (lessenPow == 1) {
-                gamepad1_left *= .5;
-                gamepad1_right *= .5;
-            }
-            if (lessenPow == 0) {
-                gamepad1_left = gamepad1.left_stick_y;
-                gamepad1_right = gamepad1.right_stick_y;
-            }
+//            if (gamepad1.y) {
+//                gamepad1_left = gamepad1.left_stick_y;
+//                gamepad1_right = gamepad1.right_stick_y;
+//                //setMotorsMecDPAD(.25, .25, .25, .25);
+//                lessenPow = 0;
+//            }
+//
+//
+//            // Code for changing the driving speed by 0.5
+//
+//            if (gamepad1.a && lessenPow == 0) {
+//                lessenPow = 1;
+//            }
+//            if (gamepad1.a && lessenPow == 1) {
+//                lessenPow = 0;
+//            }
+//
+//            if (lessenPow == 1) {
+//                gamepad1_left *= .5;
+//                gamepad1_right *= .5;
+//            }
+//            if (lessenPow == 0) {
+//                gamepad1_left = gamepad1.left_stick_y;
+//                gamepad1_right = gamepad1.right_stick_y;
+//            }
 
 
             //Normal driving code with slowdown method
-            if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
-                motorBL.setPower(gamepad1_left);
-                motorBR.setPower(-gamepad1_right);
-                motorFL.setPower(gamepad1_left);
-                motorFR.setPower(-gamepad1_right);
+            if ((Math.abs(gamepad1.left_stick_y) >.05) || Math.abs(gamepad1.right_stick_y) > .05){
+                motorBL.setPower(gamepad1.left_stick_y);
+                motorBR.setPower(gamepad1.right_stick_y);
+                motorFL.setPower(gamepad1.left_stick_y);
+                motorFR.setPower(-gamepad1.right_stick_y);
             } else {
                 motorBL.setPower(0);
                 motorBR.setPower(0);
@@ -184,72 +186,73 @@ public class Teleop extends MyOpMode {
                 motorFR.setPower(0);
             }
 
-
-            if (gamepad1.dpad_up &&  left <= .75 && right <= .75) {
-                left += increase;
-                right += increase;
-                telemetry.addData("Left:", left);
-                telemetry.addData("Right:", right);
-                telemetry.update();
-            }
-
-            //Doesn't this need to be -= ????, because less is set to .25
-            else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25){
-                left += less;
-                right += less;
-                telemetry.addData("Left:", left);
-                telemetry.addData("Right:", right);
-                telemetry.update();
-            }
-
-            if (gamepad1.dpad_left) {
-                motorFL.setPower(left);
-                motorBL.setPower(-left);
-                motorFR.setPower(right);
-                motorBR.setPower(-right);
-            }
-            else if (gamepad1.dpad_right){
-                motorFL.setPower(-left);
-                motorBL.setPower(left);
-                motorFR.setPower(-right);
-                motorBR.setPower(right);
-            }
-            else {
-                motorFL.setPower(0);
-                motorBL.setPower(0);
-                motorFR.setPower(0);
-                motorBR.setPower(0);
-            }
+            telemetry.addData("RightStick", gamepad1.right_stick_y);
+            telemetry.update();
+//            if (gamepad1.dpad_up &&  left <= .75 && right <= .75) {
+//                left += increase;
+//                right += increase;
+//                telemetry.addData("Left:", left);
+//                telemetry.addData("Right:", right);
+//                telemetry.update();
+//            }
+//
+//            //Doesn't this need to be -= ????, because less is set to .25
+//            else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25){
+//                left += less;
+//                right += less;
+//                telemetry.addData("Left:", left);
+//                telemetry.addData("Right:", right);
+//                telemetry.update();
+//            }
+//
+//            if (gamepad1.dpad_left) {
+//                motorFL.setPower(left);
+//                motorBL.setPower(-left);
+//                motorFR.setPower(right);
+//                motorBR.setPower(-right);
+//            }
+//            else if (gamepad1.dpad_right){
+//                motorFL.setPower(-left);
+//                motorBL.setPower(left);
+//                motorFR.setPower(-right);
+//                motorBR.setPower(right);
+//            }
+//            else {
+//                motorFL.setPower(0);
+//                motorBL.setPower(0);
+//                motorFR.setPower(0);
+//                motorBR.setPower(0);
+//            }
 
 
 
 
 
             //Deposit / push blocks out
-            if (gamepad1.right_trigger > .05) {
-                if (gamepad1.right_trigger < .5) {
-                    manip.setPower(.25);
-                }
-                else if (gamepad1.right_trigger >= .5) {
-                    manip.setPower(.5);
-                }
-                else {
-                    manip.setPower(0);
-                }
-            }
-
-            //Pull in blocks
-            if (gamepad1.left_trigger > .05) {
-                if (gamepad1.left_trigger < .5) {
-                    manip.setPower(-.25);
-                }
-                else if (gamepad1.left_trigger >= .5) {
-                    manip.setPower(-.5);
-                }
-                else {
-                    manip.setPower(0);
-                }
-            }
+//            if (gamepad1.right_trigger > .05) {
+//                if (gamepad1.right_trigger < .5) {
+//                    manip.setPower(.25);
+//                }
+//                else if (gamepad1.right_trigger >= .5) {
+//                    manip.setPower(.5);
+//                }
+//                else {
+//                    manip.setPower(0);
+//                }
+//            }
+//
+//            //Pull in blocks
+//            if (gamepad1.left_trigger > .05) {
+//                if (gamepad1.left_trigger < .5) {
+//                    manip.setPower(-.25);
+//                }
+//                else if (gamepad1.left_trigger >= .5) {
+//                    manip.setPower(-.5);
+//                }
+//                else {
+//                    manip.setPower(0);
+//                }
+//            }
 
             //gamepad1 end
 
@@ -277,16 +280,10 @@ public class Teleop extends MyOpMode {
 
 //        //Code for the jewel knocker start position
         if (gamepad2.y){
-            jewelHand.setPower(jewelHandStart);
+            jewelHand.setPosition(jewelHandStart);
         }
 
-        if (gamepad2.left_trigger >.05){
-            jewelHand.setPower(-1);
-        }
 
-        if (gamepad2.right_trigger > .05){
-            jewelHand.setPower(1);
-        }
 
 //
 //        // grabbing and depositing the relic using servos

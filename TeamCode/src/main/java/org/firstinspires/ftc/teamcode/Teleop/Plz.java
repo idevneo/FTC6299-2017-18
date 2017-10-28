@@ -27,14 +27,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 
 /**
@@ -50,65 +51,103 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
+@TeleOp(name="Plz 123dsakhd", group="Linear Opmode")
 
-public class BasicOpMode_Linear extends LinearOpMode {
+public class Plz extends LinearOpMode {
 
     // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
+    DcMotor motorFL;
+    DcMotor motorBL;
+    DcMotor motorFR;
+    DcMotor motorBR;
+
+    float gamepad1_left;
+    float gamepad1_right;
+
+    double left = .5;
+    double right = .5;
+    double strafeMod = .25;
+
+
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
-        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorFL = hardwareMap.dcMotor.get("motorFL");
+        motorFR = hardwareMap.dcMotor.get("motorFR");
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        // Wait for the game to start (driver presses PLAY)
+
         waitForStart();
-        runtime.reset();
+
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
-            double rightPower;
+            gamepad1_left = gamepad1.left_stick_y;
+            gamepad1_right = gamepad1.right_stick_y;
 
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
+            //Movement (Gamepad 1: Left Stick, Right Stick, DPAD)
+            //Driving forward/backwards
+            if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
+                motorFL.setPower(gamepad1_left);
+                motorBL.setPower(gamepad1_left);
+                motorFR.setPower(-gamepad1_right);
+                motorBR.setPower(-gamepad1_right);
+            } else {
+                motorFL.setPower(0);
+                motorBL.setPower(0);
+                motorFR.setPower(0);
+                motorBR.setPower(0);
 
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
-            double drive = -gamepad1.left_stick_y;
-            double turn  =  gamepad1.right_stick_x;
-            leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+                // Increasing/decreasing strafing power
+                if (gamepad1.dpad_up &&  left <= .75 && right <= .75) {
+                left += strafeMod;
+                right += strafeMod;
+                telemetry.addData("Left:", left);
+                telemetry.addData("Right:", right);
+                telemetry.update();
+            }
 
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = -gamepad1.left_stick_y ;
-            // rightPower = -gamepad1.right_stick_y ;
+            else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25){
+                left  -= strafeMod;
+                right -= strafeMod;
+                telemetry.addData("Left:", left);
+                telemetry.addData("Right:", right);
+                telemetry.update();
+            }
 
-            // Send calculated power to wheels
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
+            //Strafe left
+                if (gamepad1.dpad_left) {
+                motorFL.setPower(left);
+                motorBL.setPower(-left);
+                motorFR.setPower(right);
+                motorBR.setPower(-right);
+            }
 
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-            telemetry.update();
+            //Strafe right
+            else if (gamepad1.dpad_right){
+                motorFL.setPower(-left);
+                motorBL.setPower(left);
+                motorFR.setPower(-right);
+                motorBR.setPower(right);
+            }
+            else {
+                motorFL.setPower(0);
+                motorBL.setPower(0);
+                motorFR.setPower(0);
+                motorBR.setPower(0);
+            }
+            //End of Movement
+            //Movement Modifiers (Gamepad 1: ga,b,x,y)
+
+
+
+            }
         }
     }
 }

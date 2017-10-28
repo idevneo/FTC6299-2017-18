@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
@@ -53,9 +54,9 @@ public abstract class MyOpMode extends LinearOpMode {
     //public static DcMotor manip;
 
 
-//    public static CRServo jewelArm;
-//    public static CRServo jewelHand;
-//    public static CRServo relicGrabber;
+//    public static Servo jewelArm;
+//    public static Servo jewelHand;
+//    public static Servo relicGrabber;
 
 //    public static OpticalDistanceSensor floorL;
 //    public static OpticalDistanceSensor floorR;
@@ -64,7 +65,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
 //    public static BNO055IMU gyro;
 //    public static BNO055IMU.Parameters gyroParam;
-//    public static ModernRoboticsI2cColorSensor jewelColor;
+//    public static SensorREVColorDistance jewelColor;
 
 //    private static ModernRoboticsI2cRangeSensor range;
 //    private static ModernRoboticsI2cRangeSensor ultra;

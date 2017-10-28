@@ -88,7 +88,7 @@
 //    DcMotor liftLeft;
 //    DcMotor liftRight;
 //
-//    CRServo jewelArme;
+//    CRServo jewelArm;
 //    CRServo jewelHand;
 //    @Override
 //    public void runOpMode() throws InterruptedException {
