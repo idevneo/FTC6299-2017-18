@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode.Teleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -51,7 +52,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Plz 123dsakhd", group="Linear Opmode")
+@TeleOp(name="TELEOP", group="Linear Opmode")
 
 public class Plz extends LinearOpMode {
 
@@ -60,6 +61,12 @@ public class Plz extends LinearOpMode {
     DcMotor motorBL;
     DcMotor motorFR;
     DcMotor motorBR;
+    DcMotor manip;
+    DcMotor liftLeft;
+    DcMotor liftRight;
+
+    Servo jewelHand;
+    Servo jewelArm;
 
     float gamepad1_left;
     float gamepad1_right;
@@ -67,6 +74,11 @@ public class Plz extends LinearOpMode {
     double left = .5;
     double right = .5;
     double strafeMod = .25;
+    double jewelHandStart = 0.1;
+    double jewelHandDeploy = 0.9;
+
+    int lessenPow = 0;
+
 
 
 
@@ -80,6 +92,13 @@ public class Plz extends LinearOpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
 
+        liftLeft = hardwareMap.dcMotor.get("liftL");
+        liftRight = hardwareMap.dcMotor.get("liftR");
+        manip = hardwareMap.dcMotor.get("manip");
+
+
+        jewelArm = hardwareMap.servo.get("jewelArm");
+        jewelHand = hardwareMap.servo.get("jewelHand");
 
 
         waitForStart();
@@ -108,6 +127,7 @@ public class Plz extends LinearOpMode {
                 if (gamepad1.dpad_up &&  left <= .75 && right <= .75) {
                 left += strafeMod;
                 right += strafeMod;
+                sleep(250);
                 telemetry.addData("Left:", left);
                 telemetry.addData("Right:", right);
                 telemetry.update();
@@ -116,6 +136,7 @@ public class Plz extends LinearOpMode {
             else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25){
                 left  -= strafeMod;
                 right -= strafeMod;
+                sleep(250);
                 telemetry.addData("Left:", left);
                 telemetry.addData("Right:", right);
                 telemetry.update();
@@ -144,10 +165,77 @@ public class Plz extends LinearOpMode {
             }
             //End of Movement
             //Movement Modifiers (Gamepad 1: ga,b,x,y)
+                if (gamepad1.y) {
+                    gamepad1_left = gamepad1.left_stick_y;
+                    gamepad1_right = gamepad1.right_stick_y;
+                    lessenPow = 0;
+                }
 
+                if (gamepad1.x) {
+                    gamepad1_left *= -1;
+                    gamepad1_right *= -1;
+                }
+            if (gamepad1.a && lessenPow == 0) {
+                lessenPow = 1;
+            }
+            if (gamepad1.a && lessenPow == 1) {
+                lessenPow = 0;
+            }
+
+            if (lessenPow == 1) {
+                gamepad1_left *= .5;
+                gamepad1_right *= .5;
+            }
+            if (lessenPow == 0) {
+                gamepad1_left = gamepad1.left_stick_y;
+                gamepad1_right = gamepad1.right_stick_y;
+            }
+
+
+                if (gamepad2.y){
+                jewelHand.setPosition(.5);
+                }
+
+                if (gamepad2.a){
+                    jewelHand.setPosition(.6);
+                }
+
+
+                if (gamepad1.right_trigger < .5) {
+                    manip.setPower(.25);
+                }
+                else if (gamepad1.right_trigger >= .5) {
+                    manip.setPower(.5);
+                }
+                else {
+                    manip.setPower(0);
+                }
+            }
+
+            //Pull in blocks
+            if (gamepad1.left_trigger > .05) {
+                if (gamepad1.left_trigger < .5) {
+                    manip.setPower(-.25);
+                }
+                else if (gamepad1.left_trigger >= .5) {
+                    manip.setPower(-.5);
+                }
+                else {
+                    manip.setPower(0);
+                }
+            }
+
+            if ((Math.abs(gamepad2.left_stick_y) > .05 )) {
+                liftLeft.setPower(gamepad2.left_stick_y);
+                liftRight.setPower(gamepad2.left_stick_y);
+
+            } else {
+                liftLeft.setPower(0);
+                liftRight.setPower(0);
+            }
 
 
             }
         }
     }
-}
+

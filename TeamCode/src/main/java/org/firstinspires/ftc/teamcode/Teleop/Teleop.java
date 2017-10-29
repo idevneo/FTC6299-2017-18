@@ -55,7 +55,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Teleop", group="Linear Opmode")
+@TeleOp(name="old tele", group="Linear Opmode")
 public class Teleop extends MyOpMode {
 
     // Declare OpMode members.
