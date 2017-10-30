@@ -79,13 +79,17 @@ public class Plz extends LinearOpMode {
 
     int lessenPow = 0;
 
+    boolean bothStix = false;
+
 
 
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
+        telemetry.addData("bothStix", bothStix);
         telemetry.update();
+
 
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
@@ -170,18 +174,20 @@ public class Plz extends LinearOpMode {
                     gamepad1_right = gamepad1.right_stick_y;
                     lessenPow = 0;
                 }
-
+                //Inversion of movement
                 if (gamepad1.x) {
                     gamepad1_left *= -1;
                     gamepad1_right *= -1;
                 }
+            //Half-speed of drive-train toggle
             if (gamepad1.a && lessenPow == 0) {
                 lessenPow = 1;
             }
+            //Full speed of drive-train toggle
             if (gamepad1.a && lessenPow == 1) {
                 lessenPow = 0;
             }
-
+            //Lesson Pow Parameters
             if (lessenPow == 1) {
                 gamepad1_left *= .5;
                 gamepad1_right *= .5;
@@ -191,8 +197,8 @@ public class Plz extends LinearOpMode {
                 gamepad1_right = gamepad1.right_stick_y;
             }
 
-
-                if (gamepad2.y){
+            //Jewel Testing (Gamepad 2: x,a)
+                if (gamepad2.x){
                 jewelHand.setPosition(.5);
                 }
 
@@ -200,8 +206,9 @@ public class Plz extends LinearOpMode {
                     jewelHand.setPosition(.6);
                 }
 
-
-                if (gamepad1.right_trigger < .5) {
+                //Block Manipulation (Gamepad 1: Right trigger, Left trigger) (Gamepad 2: y, Left stick, Right Stick)
+                //Block Manipulation Inwards
+                if (.05 < gamepad1.right_trigger && gamepad1.right_trigger < .5) {
                     manip.setPower(.25);
                 }
                 else if (gamepad1.right_trigger >= .5) {
@@ -212,9 +219,9 @@ public class Plz extends LinearOpMode {
                 }
             }
 
-            //Pull in blocks
+            //Block Manipulation Outwards
             if (gamepad1.left_trigger > .05) {
-                if (gamepad1.left_trigger < .5) {
+                if (.05 < gamepad1.left_trigger && gamepad1.left_trigger < .5) {
                     manip.setPower(-.25);
                 }
                 else if (gamepad1.left_trigger >= .5) {
@@ -225,13 +232,36 @@ public class Plz extends LinearOpMode {
                 }
             }
 
-            if ((Math.abs(gamepad2.left_stick_y) > .05 )) {
-                liftLeft.setPower(gamepad2.left_stick_y);
-                liftRight.setPower(gamepad2.left_stick_y);
-
-            } else {
-                liftLeft.setPower(0);
-                liftRight.setPower(0);
+            //Lift Control + Modification
+            if (gamepad2.y && bothStix == true) {
+                bothStix = false;
+                telemetry.addData("bothStix", bothStix);
+                telemetry.update();
+            } if (gamepad2.y && bothStix == false) {
+                bothStix = true;
+                telemetry.addData("bothStix", bothStix);
+                telemetry.update();
+            }
+            if (bothStix == false) {
+                if ((Math.abs(gamepad2.left_stick_y) > .05 )) {
+                    liftLeft.setPower(-gamepad2.left_stick_y*.5);
+                    liftRight.setPower(gamepad2.left_stick_y*.5);
+                } else {
+                    liftLeft.setPower(0);
+                    liftRight.setPower(0);
+                }
+            }
+            if (bothStix == true) {
+                if ((Math.abs(gamepad2.left_stick_y) > .05 )) {
+                    liftLeft.setPower(-gamepad2.left_stick_y * .5);
+                } else {
+                    liftLeft.setPower(0);
+                }
+                if ((Math.abs(gamepad2.right_stick_y) > .05 )) {
+                    liftRight.setPower(gamepad2.right_stick_y*.5);
+                } else {
+                    liftRight.setPower(0);
+                }
             }
 
 
