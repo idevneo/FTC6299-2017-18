@@ -650,7 +650,7 @@ public abstract class MyOpMode extends LinearOpMode {
 //        time.reset();
 //
 //        If user wants robot to move forward (1st if), (else): the user wants to move backwards
-//        While the opMode is running, and the robot still has to move,
+//        While the opMode is running, and the robot still has to move, 
 //        and it has not passed the timeout seconds
 //        If the gyro is not correct, then turn the robot until gyro value is within the amount of degrees it is allowed off perfect
 
