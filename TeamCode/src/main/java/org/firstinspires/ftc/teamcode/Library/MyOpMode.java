@@ -46,6 +46,12 @@ public abstract class MyOpMode extends LinearOpMode {
     public static DcMotor motorFL;
     public static DcMotor motorFR;
 
+    public static Servo jewelHand;
+    public static Servo jewelArm;
+
+    ColorSensor jewelColor;
+
+
 //    public static DcMotor liftLeft;
 //    public static DcMotor liftRight;
 
@@ -118,6 +124,11 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
+
+        jewelArm = hardwareMap.servo.get("jewelArm");
+        jewelHand = hardwareMap.servo.get("jewelHand");
+
+        jewelColor = (ColorSensor) hardwareMap.get(ColorSensor.class, "jewelColor");
 
 
 
@@ -342,44 +353,46 @@ public abstract class MyOpMode extends LinearOpMode {
 //
 //
 //
-//    public void jewelKnockerRed(double servoArmD, double servoArmS, double servoHandL, double servoHandR, double servoHandS)
-//    {
-//        if(!opModeIsActive())
-//            return;
-//
-//        jewelArm.setPosition(servoArmD);
-//        if (jewelColor.blue() < jewelColor.red())
-//        {
-//            jewelHand.setPosition((servoHandR));
-//        }
-//        else if (jewelColor.blue() > jewelColor.red())
-//        {
-//            jewelHand.setPosition((servoHandL));
-//        }
-//
-//        jewelHand.setPosition(servoHandS);
-//        jewelArm.setPosition(servoArmS);
-//    }
-//
-//    public void jewelKnockerBlue(double servoArmD, double servoArmS, double servoHandL, double servoHandR, double servoHandS)
-//    {
-//        if(!opModeIsActive())
-//            return;
-//
-//        jewelArm.setPosition(servoArmD);
-//        if (jewelColor.blue() > jewelColor.red())
-//        {
-//            jewelHand.setPosition((servoHandR));
-//        }
-//        else if (jewelColor.blue() < jewelColor.red())
-//        {
-//            jewelHand.setPosition((servoHandL));
-//        }
-//
-//
-//        jewelHand.setPosition(servoHandS);
-//        jewelArm.setPosition(servoArmS);
-//    }
+    public void jewelKnockerRed(double servoArmD, double servoArmS, double servoHandL, double servoHandR, double servoHandS)
+    {
+        if(!opModeIsActive())
+            return;
+
+       // int colorDif = jewelColor.red() - jewelColor.blue();
+
+        jewelArm.setPosition(servoArmD);
+        if (jewelColor.red() > jewelColor.blue())
+        {
+            jewelHand.setPosition((servoHandR));
+        }
+        else if (jewelColor.red() < jewelColor.blue() )
+        {
+            jewelHand.setPosition((servoHandL));
+        }
+
+        jewelHand.setPosition(servoHandS);
+        jewelArm.setPosition(servoArmS);
+    }
+
+    public void jewelKnockerBlue(double servoArmD, double servoArmS, double servoHandL, double servoHandR, double servoHandS)
+    {
+        if(!opModeIsActive())
+            return;
+
+        jewelArm.setPosition(servoArmD);
+        if (jewelColor.blue() > jewelColor.red())
+        {
+            jewelHand.setPosition((servoHandR));
+        }
+        else if (jewelColor.blue() < jewelColor.red())
+        {
+            jewelHand.setPosition((servoHandL));
+        }
+
+
+        jewelHand.setPosition(servoHandS);
+        jewelArm.setPosition(servoArmS);
+    }
 
 
 
