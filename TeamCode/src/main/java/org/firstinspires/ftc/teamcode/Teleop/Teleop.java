@@ -243,7 +243,7 @@ public class Teleop extends MyOpMode {
 //
 //            //Pull in blocks
 //            if (gamepad1.left_trigger > .05) {
-//                if (gamepad1.left_trigger < .5) {
+//                if (gamepad1.left_trigger > .5) {
 //                    manip.setPower(-.25);
 //                }
 //                else if (gamepad1.left_trigger >= .5) {
@@ -269,14 +269,14 @@ public class Teleop extends MyOpMode {
 //        }
 
         // Code for the lift up and down
-        if ((Math.abs(gamepad2.left_stick_y) > .05 )) {
-            liftLeft.setPower(-gamepad2.left_stick_y);
-            liftRight.setPower(gamepad2.left_stick_y);
-
-        } else {
-            liftLeft.setPower(0);
-            liftRight.setPower(0);
-        }
+//        if ((Math.abs(gamepad2.left_stick_y) > .05 )) {
+//            liftLeft.setPower(-gamepad2.left_stick_y);
+//            liftRight.setPower(gamepad2.left_stick_y);
+//
+//        } else {
+//            liftLeft.setPower(0);
+//            liftRight.setPower(0);
+//        }
 
 //        //Code for the jewel knocker start position
         if (gamepad2.y){
@@ -293,10 +293,6 @@ public class Teleop extends MyOpMode {
 //        if (gamepad2.x) {
 //            relicGrabber.setPosition(relicGrab);
 //        }
-//
-//        //gamepad2 end
-//
-//    }
 
         }
     }

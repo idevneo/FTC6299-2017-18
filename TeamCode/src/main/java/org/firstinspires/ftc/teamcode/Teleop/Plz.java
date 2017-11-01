@@ -77,22 +77,18 @@ public class Plz extends LinearOpMode {
     float gamepad1_left;
     float gamepad1_right;
 
-    double left = .5;
-    double right = .5;
+    double left = 1;
+    double right = 1;
     double strafeMod = .25;
     double jewelHandStart = 0.1;
     double jewelHandDeploy = 0.9;
 
     int lessenPow = 0;
 
-    boolean bothStix = false;
-
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
-        telemetry.addData("bothStix", bothStix);
-
         telemetry.update();
 
 
@@ -118,7 +114,6 @@ public class Plz extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-
             telemetry.addData("Red  ", jewelColor.red());
             telemetry.addData("Green", jewelColor.green());
             telemetry.addData("Blue ", jewelColor.blue());
@@ -133,50 +128,49 @@ public class Plz extends LinearOpMode {
                 motorBL.setPower(gamepad1_left);
                 motorFR.setPower(-gamepad1_right);
                 motorBR.setPower(-gamepad1_right);
+            }   else if (gamepad1.dpad_left) {
+                motorFL.setPower(left);
+                motorBL.setPower(-left);
+                motorFR.setPower(right);
+                motorBR.setPower(-right);
+            } else if (gamepad1.dpad_right) {
+                motorFL.setPower(-left);
+                motorBL.setPower(left);
+                motorFR.setPower(-right);
+                motorBR.setPower(right);
             } else {
                 motorFL.setPower(0);
                 motorBL.setPower(0);
                 motorFR.setPower(0);
                 motorBR.setPower(0);
-
             }
-                // Increasing/decreasing strafing power
-                if (gamepad1.dpad_up && left <= .75 && right <= .75) {
-                    left += strafeMod;
-                    right += strafeMod;
-                    sleep(250);
-                    telemetry.addData("Left:", left);
-                    telemetry.addData("Right:", right);
-                    telemetry.update();
-                } else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25) {
-                    left -= strafeMod;
-                    right -= strafeMod;
-                    sleep(250);
-                    telemetry.addData("Left:", left);
-                    telemetry.addData("Right:", right);
-                    telemetry.update();
-                }
 
-                //Strafe left
-                if (gamepad1.dpad_left) {
-                    motorFL.setPower(left);
-                    motorBL.setPower(-left);
-                    motorFR.setPower(right);
-                    motorBR.setPower(-right);
-                }
+            //Increasing/decreasing strafing power
+            if (gamepad1.dpad_up && left <= .75 && right <= .75) {
+                left += strafeMod;
+                right += strafeMod;
+                sleep(250);
+                telemetry.addData("Left:", left);
+                telemetry.addData("Right:", right);
+                telemetry.update();
+            } else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25) {
+                left -= strafeMod;
+                right -= strafeMod;
+                sleep(250);
+                telemetry.addData("Left:", left);
+                telemetry.addData("Right:", right);
+                telemetry.update();
+            }
 
-                //Strafe right
-                else if (gamepad1.dpad_right) {
-                    motorFL.setPower(-left);
-                    motorBL.setPower(left);
-                    motorFR.setPower(-right);
-                    motorBR.setPower(right);
+                if (gamepad1.left_trigger > .15){
+                    manip.setPower(-1);
+
+                } else if (gamepad1.right_trigger > .15 ) {
+                    manip.setPower(1);
                 } else {
-                    motorFL.setPower(0);
-                    motorBL.setPower(0);
-                    motorFR.setPower(0);
-                    motorBR.setPower(0);
+                    manip.setPower(0);
                 }
+
                 //End of Movement
                 //Movement Modifiers (Gamepad 1: ga,b,x,y)
                 if (gamepad1.y) {
@@ -220,87 +214,18 @@ public class Plz extends LinearOpMode {
                     telemetry.update();
                 }
 
-                //Block Manipulation (Gamepad 1: Right trigger, Left trigger) (Gamepad 2: y, Left stick, Right Stick)
-                //Block Manipulation Inwards
-                if (.05 < gamepad1.right_trigger && gamepad1.right_trigger < .5) {
-                    manip.setPower(.5);
-                } else if (gamepad1.right_trigger >= .5) {
-                    manip.setPower(1);
-                } else {
-                    manip.setPower(0);
-                }
-
-
-                //Block Manipulation Outwards
-                if (gamepad1.left_trigger > .05) {
-                    if (.05 < gamepad1.left_trigger && gamepad1.left_trigger < .5) {
-                        manip.setPower(-.5);
-                    } else if (gamepad1.left_trigger >= .5) {
-                        manip.setPower(-1);
-                    } else {
-                        manip.setPower(0);
-                    }
-                }
-
-
-//                if (gamepad1.right_trigger > .05) {
-//                    manip.setPower(-1);
-//                    telemetry.addData("rightTrigger", gamepad1.right_trigger);
-//                    telemetry.update();
-//                } else {
-//                    manip.setPower(0);
-//                }
-//
-//
-//                //Block Manipulation Outwards
-//                if (gamepad1.left_trigger > .05) {
-//                    manip.setPower(1);
-//                    telemetry.addData("leftTrigger", gamepad1.left_trigger);
-//                    telemetry.update();
-//                } else {
-//                    manip.setPower(0);
-//                }
-
-
-                //Lift Control + Modification
-//                if (gamepad2.y && bothStix == true) {
-//                    bothStix = false;
-//                    telemetry.addData("bothStix", bothStix);
-//                    telemetry.update();
-//                    sleep(250);
-//                }
-//                if (gamepad2.y && bothStix == false) {
-//                    bothStix = true;
-//                    telemetry.addData("bothStix", bothStix);
-//                    telemetry.update();
-//                    sleep(250);
-//                }
-
-                if ((Math.abs(gamepad2.left_stick_y) > .05)) {
-                    liftLeft.setPower(-gamepad2.left_stick_y * .5);
-                    liftRight.setPower(gamepad2.left_stick_y * .5);
-                } else {
-                    liftLeft.setPower(0);
-                    liftRight.setPower(0);
-                }
-
-//                if (bothStix == true) {
-//                    if ((Math.abs(gamepad2.left_stick_y) > .05)) {
-//                        liftLeft.setPower(-gamepad2.left_stick_y * .5);
-//                    } else {
-//                        liftLeft.setPower(0);
-//                    }
-//                    if ((Math.abs(gamepad2.right_stick_y) > .05)) {
-//                        liftRight.setPower(gamepad2.right_stick_y * .5);
-//                    } else {
-//                        liftRight.setPower(0);
-//                    }
-//                }
-
+            if ((Math.abs(gamepad2.left_stick_y) > .05)) {
+                liftLeft.setPower(-gamepad2.left_stick_y * .5);
+                liftRight.setPower(gamepad2.left_stick_y * .5);
+            } else {
+                liftLeft.setPower(0);
+                liftRight.setPower(0);
+            }
 
             }
         }
     }
+
 
 
 
