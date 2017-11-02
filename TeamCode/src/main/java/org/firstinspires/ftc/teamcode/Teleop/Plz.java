@@ -118,8 +118,7 @@ public class Plz extends LinearOpMode {
             telemetry.addData("Green", jewelColor.green());
             telemetry.addData("Blue ", jewelColor.blue());
             telemetry.update();
-            gamepad1_left = gamepad1.left_stick_y;
-            gamepad1_right = gamepad1.right_stick_y;
+
 
             //Movement (Gamepad 1: Left Stick, Right Stick, DPAD)
             //Driving forward/backwards
