@@ -57,7 +57,6 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 
 @TeleOp(name="TELEOP", group="Linear Opmode")
-
 public class Plz extends LinearOpMode {
 
     // Declare OpMode members.
@@ -82,9 +81,9 @@ public class Plz extends LinearOpMode {
     double strafeMod = .25;
     double jewelHandStart = 0.1;
     double jewelHandDeploy = 0.9;
+    double jewelArmDeploy = .2;
 
     int lessenPow = 0;
-
 
     @Override
     public void runOpMode() {
@@ -103,13 +102,10 @@ public class Plz extends LinearOpMode {
 
         jewelColor = (ColorSensor) hardwareMap.get(ColorSensor.class, "jewelColor");
 
-
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
 
-
         waitForStart();
-
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -119,6 +115,8 @@ public class Plz extends LinearOpMode {
             telemetry.addData("Blue ", jewelColor.blue());
             telemetry.update();
 
+            gamepad1_left = gamepad1.left_stick_y;
+            gamepad1_right = gamepad1.right_stick_y;
 
             //Movement (Gamepad 1: Left Stick, Right Stick, DPAD)
             //Driving forward/backwards
@@ -143,6 +141,37 @@ public class Plz extends LinearOpMode {
                 motorFR.setPower(0);
                 motorBR.setPower(0);
             }
+// Alternate Drive Train
+//            if (Math.abs(gamepad1.left_stick_y) > .05 ) {
+//                motorFL.setPower(gamepad1.left_stick_y);
+//                motorBL.setPower(gamepad1.left_stick_y);
+//                motorFR.setPower(-gamepad1.left_stick_y);
+//                motorBR.setPower(-gamepad1.left_stick_y);
+//            } else if (gamepad1.left_stick_x < -.05) {
+//                motorFL.setPower(.8 + gamepad1.left_stick_x * -.2);
+//                motorBL.setPower(-.8 + gamepad1.left_stick_x * .2);
+//                motorFR.setPower(.8 + gamepad1.left_stick_x * -.2);
+//                motorBR.setPower(-.8 + gamepad1.left_stick_x * .2);
+//            } else if (gamepad1.left_stick_x > .05) {
+//                motorFL.setPower(-.8 + gamepad1.left_stick_x * -.2);
+//                motorBL.setPower(.8 + gamepad1.left_stick_x * .2);
+//                motorFR.setPower(-.8 + gamepad1.left_stick_x * -.2);
+//                motorBR.setPower(.8 + gamepad1.left_stick_x * .2);
+//            } else if (gamepad1.right_stick_x < -.05) {
+//                motorFL.setPower(-gamepad1.right_stick_x);
+//                motorBL.setPower(-gamepad1.right_stick_x);
+//                motorFR.setPower(-gamepad1.right_stick_x);
+//                motorBR.setPower(-gamepad1.right_stick_x);
+//            } else if (gamepad1.right_stick_x > .05) {
+//                motorFL.setPower(-gamepad1.right_stick_x);
+//                motorBL.setPower(-gamepad1.right_stick_x);
+//                motorFR.setPower(-gamepad1.right_stick_x);
+//                motorBR.setPower(-gamepad1.right_stick_x);
+//            } else {
+//                motorFL.setPower(0);
+//                motorBL.setPower(0);
+//                motorFR.setPower(0);
+//                motorBR.setPower(0);
 
             //Increasing/decreasing strafing power
             if (gamepad1.dpad_up && left <= .75 && right <= .75) {
@@ -162,8 +191,7 @@ public class Plz extends LinearOpMode {
             }
 
                 if (gamepad1.left_trigger > .15){
-                    manip.setPower(-1);
-
+                manip.setPower(-1);
                 } else if (gamepad1.right_trigger > .15 ) {
                     manip.setPower(1);
                 } else {
@@ -202,15 +230,27 @@ public class Plz extends LinearOpMode {
 
                 //Jewel Testing (Gamepad 2: x,a)
                 if (gamepad2.x) {
-                    jewelHand.setPosition(.4);
-                    telemetry.addData("position", jewelHand.getPosition());
+                    jewelArm.setPosition(.1); //.2 = deploy
+                    telemetry.addData("position", jewelArm.getPosition());
                     telemetry.update();
                 }
 
                 if (gamepad2.a) {
-                    jewelHand.setPosition(.6);
-                    telemetry.addData("position", jewelHand.getPosition());
+                    jewelArm.setPosition(.9);
+                    telemetry.addData("position", jewelArm.getPosition());
                     telemetry.update();
+                }
+
+                if (gamepad2.y) {
+                jewelHand.setPosition(.1);
+                telemetry.addData("position", jewelHand.getPosition());
+                telemetry.update();
+                }
+
+                if (gamepad2.b) {
+                jewelHand.setPosition(.9);
+                telemetry.addData("position", jewelHand.getPosition());
+                telemetry.update();
                 }
 
             if ((Math.abs(gamepad2.left_stick_y) > .05)) {

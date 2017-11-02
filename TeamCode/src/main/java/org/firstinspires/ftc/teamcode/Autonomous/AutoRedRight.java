@@ -87,8 +87,6 @@ public class AutoRedRight extends MyOpMode {
     boolean center = false;
     boolean unknown = false;
 
-
-
     OpenGLMatrix lastLocation = null;
 
     VuforiaLocalizer vuforia;
@@ -111,7 +109,6 @@ public class AutoRedRight extends MyOpMode {
 
     ColorSensor jewelColor;
 
-
     Servo jewelArm;
     Servo jewelHand;
 
@@ -132,11 +129,8 @@ public class AutoRedRight extends MyOpMode {
 
         jewelColor = (ColorSensor) hardwareMap.get(ColorSensor.class, "jewelColor");
 
-
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
-
-
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -152,11 +146,15 @@ public class AutoRedRight extends MyOpMode {
 
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
+
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         waitForStart();
 
         relicTrackables.activate();
-
-
 
         waitForStart();
         runtime.reset();
@@ -164,8 +162,7 @@ public class AutoRedRight extends MyOpMode {
         while (opModeIsActive()) {
 
             jewelKnockerRed(servoArmD, servoArmS, servoHandL, servoHandR, servoHandS);
-
-
+            // jewelKnockerRed(---,---,0.9,0.1,0.5);
             if (vuMark == RelicRecoveryVuMark.CENTER) {
                 center = true;
             }
@@ -179,11 +176,10 @@ public class AutoRedRight extends MyOpMode {
                 unknown = true;
             }
 
+            encoderDrive(DRIVE_SPEED,  30,  30, 7.0);
+            encoderDriveMec(-0.65, 24, 24, 8.0);
             //For if the jewel knocker is on the right side
 //            moveTo(.25, 1000, .6, 2.2); //move 24-28 in foward = move 690 encoder ticks
-
-
-
 
 //            mecAutoRight(.25, .25, 62, 5000); //15+in right = move 440 encoder ticks
 //            mecAutoLeft(.25, .25, 93, 7000); //~39 in = move 1120 encoder ticks
@@ -194,8 +190,6 @@ public class AutoRedRight extends MyOpMode {
 //            turnCorr(.25, -90, 2500);
 //            moveTo(.25, 400, .6, 2.2);
 //            turnCorr(.25, 90, 2500);
-
-
 
 //            if (center = true) {
 //                moveTo(.25,100, .6, 2.2);
@@ -216,43 +210,36 @@ public class AutoRedRight extends MyOpMode {
 //                depositBlockAuto(0.75);
 //            }
 //end of auto
-
         }
-        while (opModeIsActive()) {
-
-
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-
-                telemetry.addData("VuMark", "%s visible", vuMark);
-
-                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
-                telemetry.addData("Pose", format(pose));
-
-                if (pose != null) {
-                    VectorF trans = pose.getTranslation();
-                    Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
-
-                    double tX = trans.get(0);
-                    double tY = trans.get(1);
-                    double tZ = trans.get(2);
-
-                    double rX = rot.firstAngle;
-                    double rY = rot.secondAngle;
-                    double rZ = rot.thirdAngle;
-                }
-            }
-            else {
-                telemetry.addData("VuMark", "not visible");
-            }
+//            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+//            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+//
+//                telemetry.addData("VuMark", "%s visible", vuMark);
+//
+//                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
+//                telemetry.addData("Pose", format(pose));
+//
+//                if (pose != null) {
+//                    VectorF trans = pose.getTranslation();
+//                    Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+//
+//                    double tX = trans.get(0);
+//                    double tY = trans.get(1);
+//                    double tZ = trans.get(2);
+//
+//                    double rX = rot.firstAngle;
+//                    double rY = rot.secondAngle;
+//                    double rZ = rot.thirdAngle;
+//                }
+//            }
+//            else {
+//                telemetry.addData("VuMark", "not visible");
+//            }
 
             telemetry.update();
         }
-    }
 
     String format(OpenGLMatrix transformationMatrix) {
         return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
     }
-
 }
-

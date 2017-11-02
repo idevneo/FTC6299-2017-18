@@ -28,7 +28,6 @@
  */
 
 package org.firstinspires.ftc.teamcode.Teleop;
-
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -37,7 +36,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
-
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -57,7 +55,6 @@ public class ExampleTeleop extends MyOpMode {
 
     float gamepad1_left;
     float gamepad1_right;
-
     double left = 1.0;
     double right = 1.0;
 
@@ -70,7 +67,6 @@ public class ExampleTeleop extends MyOpMode {
     DcMotor manip;
     DcMotor liftLeft;
     DcMotor liftRight;
-
 
     @Override
     public void runOpMode() {
@@ -104,8 +100,6 @@ public class ExampleTeleop extends MyOpMode {
                 } else {
                     manip.setPower(0);
                 }
-
-
 
                 if ((Math.abs(gamepad2.left_stick_y) > .05)) {
                     liftLeft.setPower(-gamepad2.left_stick_y * .5);
@@ -148,14 +142,5 @@ public class ExampleTeleop extends MyOpMode {
 //                        liftRight.setPower(0);
 //                    }
 //                }
-
-
-
-
-
                 }
             }
-
-
-
-

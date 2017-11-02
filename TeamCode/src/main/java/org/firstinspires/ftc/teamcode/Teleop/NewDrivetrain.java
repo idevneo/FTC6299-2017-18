@@ -79,7 +79,6 @@ public class NewDrivetrain extends LinearOpMode {
         gamepad1_right = gamepad1.right_stick_y;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
             if (Math.abs(gamepad1.left_stick_y) > .05 ) {
                 motorFL.setPower(gamepad1.left_stick_y);
                 motorBL.setPower(gamepad1.left_stick_y);

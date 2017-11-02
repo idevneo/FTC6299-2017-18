@@ -38,8 +38,14 @@ public abstract class MyOpMode extends LinearOpMode {
 //    public static final double BUTTONP_LEFT = 1;
 //    public static final double BUTTONP_RIGHT = .31;
 
-
-
+    private ElapsedTime     runtime = new ElapsedTime();
+    static final double     COUNTS_PER_MOTOR_REV    = 2240 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    public static final double     DRIVE_SPEED             = .65;
+    public static final double     TURN_SPEED              = .5;
 
     public static DcMotor motorBL;
     public static DcMotor motorBR;
@@ -335,7 +341,6 @@ public abstract class MyOpMode extends LinearOpMode {
 //        return rangeDistance;
 //    }
 
-
 //    public void depositBlockAuto(double dep) {
 //        if (dep > 0.1) {
 //            manip.setPower(dep);
@@ -347,11 +352,6 @@ public abstract class MyOpMode extends LinearOpMode {
 //        manip.setPower(0);
 //
 //    }
-//
-//
-//
-//
-//
 //
     public void jewelKnockerRed(double servoArmD, double servoArmS, double servoHandL, double servoHandR, double servoHandS)
     {
@@ -418,6 +418,132 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void encoderDrive(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = motorFL.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightTarget = motorFR.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+
+            motorBL.setTargetPosition(newLeftTarget);
+            motorFL.setTargetPosition(newLeftTarget);
+            motorBR.setTargetPosition(newRightTarget);
+            motorFR.setTargetPosition(newRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            motorFL.setPower(speed);
+            motorBL.setPower(speed);
+            motorBR.setPower(-speed);
+            motorFR.setPower(-speed);
+
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy())) {
+            }
+
+            // Stop all motion;
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+              sleep(250);   // optional pause after each move
+        }
+    }
+    public void encoderDriveMec(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = motorFL.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightTarget = motorFR.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+
+            motorBL.setTargetPosition(newLeftTarget);
+            motorFL.setTargetPosition(newLeftTarget);
+            motorBR.setTargetPosition(newRightTarget);
+            motorFR.setTargetPosition(newRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+
+            if (speed < 0){
+                motorFL.setPower(speed);
+                motorBL.setPower(-speed);
+                motorBR.setPower(-speed);
+                motorFR.setPower(speed);
+            } else if (speed > 0){
+                motorFL.setPower(-speed);
+                motorBL.setPower(speed);
+                motorBR.setPower(speed);
+                motorFR.setPower(-speed);
+            }
+
+
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy())) {
+            }
+
+            // Stop all motion;
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            sleep(250);   // optional pause after each move
+        }
     }
 
     public int getEncoderAverage() {
