@@ -105,6 +105,9 @@ public class Plz extends LinearOpMode {
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
 
+        jewelArm.setPosition(.5);
+        jewelHand.setPosition(.3);
+
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
@@ -135,6 +138,16 @@ public class Plz extends LinearOpMode {
                 motorBL.setPower(left);
                 motorFR.setPower(-right);
                 motorBR.setPower(right);
+            } else if (gamepad1.left_bumper) {
+                motorFL.setPower(-.25);
+                motorBL.setPower(-.25);
+                motorFR.setPower(.25);
+                motorBR.setPower(.25);
+            } else if (gamepad1.right_bumper) {
+                motorFL.setPower(.25);
+                motorBL.setPower(.25);
+                motorFR.setPower(-.25);
+                motorBR.setPower(-.25);
             } else {
                 motorFL.setPower(0);
                 motorBL.setPower(0);
@@ -230,25 +243,25 @@ public class Plz extends LinearOpMode {
 
                 //Jewel Testing (Gamepad 2: x,a)
                 if (gamepad2.x) {
-                    jewelArm.setPosition(.1); //.2 = deploy
+                    jewelArm.setPosition(.2); //.2 = deploy
                     telemetry.addData("position", jewelArm.getPosition());
                     telemetry.update();
                 }
 
                 if (gamepad2.a) {
-                    jewelArm.setPosition(.9);
+                    jewelArm.setPosition(.65);
                     telemetry.addData("position", jewelArm.getPosition());
                     telemetry.update();
                 }
 
                 if (gamepad2.y) {
-                jewelHand.setPosition(.1);
+                jewelHand.setPosition(.3);
                 telemetry.addData("position", jewelHand.getPosition());
                 telemetry.update();
                 }
 
                 if (gamepad2.b) {
-                jewelHand.setPosition(.9);
+                jewelHand.setPosition(.6);
                 telemetry.addData("position", jewelHand.getPosition());
                 telemetry.update();
                 }

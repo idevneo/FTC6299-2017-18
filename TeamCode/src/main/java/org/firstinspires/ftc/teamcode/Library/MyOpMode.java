@@ -361,6 +361,7 @@ public abstract class MyOpMode extends LinearOpMode {
        // int colorDif = jewelColor.red() - jewelColor.blue();
 
         jewelArm.setPosition(servoArmD);
+        sleep(1000);
         if (jewelColor.red() > jewelColor.blue())
         {
             jewelHand.setPosition((servoHandR));
@@ -414,6 +415,7 @@ public abstract class MyOpMode extends LinearOpMode {
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -433,23 +435,20 @@ public abstract class MyOpMode extends LinearOpMode {
             newLeftTarget = motorFL.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
             newRightTarget = motorFR.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
 
-            motorBL.setTargetPosition(newLeftTarget);
+
             motorFL.setTargetPosition(newLeftTarget);
-            motorBR.setTargetPosition(newRightTarget);
             motorFR.setTargetPosition(newRightTarget);
 
             // Turn On RUN_TO_POSITION
             motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
             runtime.reset();
             motorFL.setPower(speed);
             motorBL.setPower(speed);
-            motorBR.setPower(-speed);
-            motorFR.setPower(-speed);
+            motorBR.setPower(speed);
+            motorFR.setPower(speed);
 
 
             // keep looping while we are still active, and there is time left, and both motors are running.
@@ -460,7 +459,12 @@ public abstract class MyOpMode extends LinearOpMode {
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy())) {
+                    (motorFL.isBusy()  && motorFR.isBusy())) {
+                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                        motorFL.getCurrentPosition(),
+                        motorFR.getCurrentPosition());
+                telemetry.update();
             }
 
             // Stop all motion;
@@ -472,8 +476,8 @@ public abstract class MyOpMode extends LinearOpMode {
             // Turn off RUN_TO_POSITION
             motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
               sleep(250);   // optional pause after each move
         }
@@ -499,8 +503,6 @@ public abstract class MyOpMode extends LinearOpMode {
             // Turn On RUN_TO_POSITION
             motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
             runtime.reset();
@@ -539,8 +541,6 @@ public abstract class MyOpMode extends LinearOpMode {
             // Turn off RUN_TO_POSITION
             motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             sleep(250);   // optional pause after each move
         }
