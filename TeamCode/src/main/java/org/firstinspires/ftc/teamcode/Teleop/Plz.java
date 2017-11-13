@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -40,6 +41,7 @@ import com.qualcomm.robotcore.util.Range;
 
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 
@@ -73,6 +75,9 @@ public class Plz extends LinearOpMode {
     Servo jewelHand;
     Servo jewelArm;
 
+    ModernRoboticsI2cRangeSensor rangeR;
+    ModernRoboticsI2cRangeSensor rangeL;
+
     float gamepad1_left;
     float gamepad1_right;
 
@@ -105,7 +110,10 @@ public class Plz extends LinearOpMode {
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
 
-        jewelArm.setPosition(.5);
+        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
+        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
+
+        jewelArm.setPosition(.65);
         jewelHand.setPosition(.3);
 
         waitForStart();
@@ -113,9 +121,11 @@ public class Plz extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            telemetry.addData("Red  ", jewelColor.red());
-            telemetry.addData("Green", jewelColor.green());
-            telemetry.addData("Blue ", jewelColor.blue());
+//            telemetry.addData("Red  ", jewelColor.red());
+//            telemetry.addData("Green", jewelColor.green());
+//            telemetry.addData("Blue ", jewelColor.blue());
+            telemetry.addData("leftRange", rangeL.getDistance(DistanceUnit.CM));
+            telemetry.addData("rightRange", rangeR.getDistance(DistanceUnit.CM));
             telemetry.update();
 
             gamepad1_left = gamepad1.left_stick_y;
@@ -267,11 +277,17 @@ public class Plz extends LinearOpMode {
                 }
 
             if ((Math.abs(gamepad2.left_stick_y) > .05)) {
-                liftLeft.setPower(-gamepad2.left_stick_y * .5);
-                liftRight.setPower(gamepad2.left_stick_y * .5);
-            } else {
-                liftLeft.setPower(0);
-                liftRight.setPower(0);
+                    liftLeft.setPower(-gamepad2.left_stick_y * .5);
+                    liftRight.setPower(gamepad2.left_stick_y * .5);
+            }   else if (gamepad2.left_bumper) {
+                    liftLeft.setPower(-.3);
+                    liftRight.setPower(.3);
+            }   else if (gamepad2.right_bumper) {
+                    liftLeft.setPower(.3);
+                    liftRight.setPower(-.3);
+            }   else {
+                    liftLeft.setPower(0);
+                    liftRight.setPower(0);
             }
 
             }

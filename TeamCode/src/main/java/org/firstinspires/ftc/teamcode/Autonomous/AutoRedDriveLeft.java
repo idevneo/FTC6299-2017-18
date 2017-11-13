@@ -111,9 +111,8 @@ public class AutoRedDriveLeft extends MyOpMode {
             jewelHand.setPosition(.3);
             sleep(1000);
 
-
-        manip.setPower(1);
-        Thread.sleep(1000);
+            manip.setPower(1);
+            Thread.sleep(1000);
 
             motorFL.setPower(-0.5);
             motorBL.setPower(-0.5);
@@ -125,9 +124,6 @@ public class AutoRedDriveLeft extends MyOpMode {
             motorBL.setPower(0);
             motorFR.setPower(0);
             motorBR.setPower(0);
-
-        
-//            jewelKnockerRed(.2,.6,0.3,0.6,0.45);
 //
 
         }

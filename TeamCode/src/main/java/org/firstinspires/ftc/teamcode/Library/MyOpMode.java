@@ -19,8 +19,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMU;
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMUCalibration;
+
+import java.util.Locale;
 
 /**
  * Created by jspspike on 1/15/2016.
@@ -79,11 +84,17 @@ public abstract class MyOpMode extends LinearOpMode {
 //    public static BNO055IMU.Parameters gyroParam;
 //    public static SensorREVColorDistance jewelColor;
 
-//    private static ModernRoboticsI2cRangeSensor range;
+   private static ModernRoboticsI2cRangeSensor rangeR;
+    private static ModernRoboticsI2cRangeSensor rangeL;
 //    private static ModernRoboticsI2cRangeSensor ultra;
 
-
-
+    Orientation angles;
+    String formatAngle(AngleUnit angleUnit, double angle) {
+        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
+    }
+    String formatDegrees(double degrees){
+        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+    }
 
 //    public double grayL;
 //    public double grayR;
@@ -91,7 +102,7 @@ public abstract class MyOpMode extends LinearOpMode {
 //    public double gyroError = 0;
 //
 //    public double ultraDistance;
-//    public double rangeDistance;
+    public double rangeDistance;
 
 //    public void hardwareMap() {
 //        motorBL = hardwareMap.dcMotor.get("motorBL");
@@ -139,7 +150,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
 
 //        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
-        //range = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
+        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
+        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
 
         telemetry.addData("Status", "Hardware Mapped");
         telemetry.update();
@@ -288,58 +300,58 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
 
-//    public void mecAutoLeft(double left, double right, double distance ,int tim ) {
-//        if (!opModeIsActive())
-//            return;
-//        ElapsedTime time = new ElapsedTime();
-//
-//        time.reset();
-//        resetStartTime();
-//
-//
-//        if (distance < 0 && getRangeDistance() < distance && time.milliseconds() < tim) {
-//            motorFL.setPower(-left);
-//            motorBL.setPower(left);
-//            motorFR.setPower(right);
-//            motorBR.setPower(-right);
-//        }
-//        else {
-//            motorFL.setPower(0);
-//            motorBL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBR.setPower(0);
-//        }
-//    }
+    public void mecAutoLeft(double left, double right, double distance ,int tim ) {
+        if (!opModeIsActive())
+            return;
+        ElapsedTime time = new ElapsedTime();
 
-//    public void mecAutoRight(double left, double right, double distance ,int tim) {
-//        if (!opModeIsActive())
-//            return;
-//
-//        ElapsedTime time = new ElapsedTime();
-//
-//        time.reset();
-//        resetStartTime();
-//
-//        if (distance < 0 && getRangeDistance() < distance && time.milliseconds() < tim) {
-//            motorFL.setPower(left);
-//            motorBL.setPower(-left);
-//            motorFR.setPower(-right);
-//            motorBR.setPower(right);
-//        }
-//        else {
-//            motorFL.setPower(0);
-//            motorBL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBR.setPower(0);
-//        }
-//    }
+        time.reset();
+        resetStartTime();
 
-//    public double getRangeDistance() {
-//        double value = range.getDistance(DistanceUnit.CM);
-//        if (value != 255)
-//            rangeDistance = value;
-//        return rangeDistance;
-//    }
+
+        if (distance > 0 && getRangeDistanceRight() < distance && time.milliseconds() < tim) {
+            motorFL.setPower(-left);
+            motorBL.setPower(left);
+            motorFR.setPower(right);
+            motorBR.setPower(-right);
+        }
+        else {
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+        }
+    }
+
+    public void mecAutoRight(double left, double right, double distance ,int tim) {
+        if (!opModeIsActive())
+            return;
+
+        ElapsedTime time = new ElapsedTime();
+
+        time.reset();
+        resetStartTime();
+
+        if (distance > 0 && getRangeDistanceRight() < distance && time.milliseconds() < tim) {
+            motorFL.setPower(left);
+            motorBL.setPower(-left);
+            motorFR.setPower(-right);
+            motorBR.setPower(right);
+        }
+        else {
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+        }
+    }
+
+    public double getRangeDistanceRight() {
+        double value = rangeR.getDistance(DistanceUnit.CM);
+        if (value != 255)
+            rangeDistance = value;
+        return rangeDistance;
+    }
 
 //    public void depositBlockAuto(double dep) {
 //        if (dep > 0.1) {
@@ -353,51 +365,56 @@ public abstract class MyOpMode extends LinearOpMode {
 //
 //    }
 //
-    public void jewelKnockerRed(double servoArmD, double servoArmS, double servoHandL, double servoHandR, double servoHandS)
-    {
-        if(!opModeIsActive())
-            return;
+   public void jewelKnockerRed() {
+       jewelArm.setPosition(.6);
+       jewelHand.setPosition(.45);
+       sleep(2000);
+       jewelArm.setPosition(.15);
+       sleep(2000);
 
-       // int colorDif = jewelColor.red() - jewelColor.blue();
+       if (jewelColor.red() > jewelColor.blue()) {
+           jewelHand.setPosition((.3));
 
-        jewelArm.setPosition(servoArmD);
+       } else if (jewelColor.red() < jewelColor.blue()) {
+           jewelHand.setPosition((.6));
+       }
+
+       sleep(1000);
+       jewelArm.setPosition(.6);
+       jewelHand.setPosition(.45);
+       sleep(3000);
+
+       jewelHand.setPosition(.3);
+       sleep(1000);
+   }
+        // int colorDif = jewelColor.red() - jewelColor.blue();
+
+    public void jewelKnockerBlue() {
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(2000);
+        jewelArm.setPosition(.15);
+        sleep(2000);
+
+        if (jewelColor.red() < jewelColor.blue()) {
+            jewelHand.setPosition((.3));
+
+        } else if (jewelColor.red() > jewelColor.blue()) {
+            jewelHand.setPosition((.6));
+        }
+
         sleep(1000);
-        if (jewelColor.red() > jewelColor.blue())
-        {
-            jewelHand.setPosition((servoHandR));
-        }
-        else if (jewelColor.red() < jewelColor.blue() )
-        {
-            jewelHand.setPosition((servoHandL));
-        }
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(1000);
 
-        jewelHand.setPosition(servoHandS);
-        jewelArm.setPosition(servoArmS);
+        jewelHand.setPosition(.3);
+        sleep(1000);
     }
-
-    public void jewelKnockerBlue(double servoArmD, double servoArmS, double servoHandL, double servoHandR, double servoHandS)
-    {
-        if(!opModeIsActive())
-            return;
-
-        jewelArm.setPosition(servoArmD);
-        if (jewelColor.blue() > jewelColor.red())
-        {
-            jewelHand.setPosition((servoHandR));
-        }
-        else if (jewelColor.blue() < jewelColor.red())
-        {
-            jewelHand.setPosition((servoHandL));
-        }
-
-
-        jewelHand.setPosition(servoHandS);
-        jewelArm.setPosition(servoArmS);
-    }
-
-
-
-
+//    public void gyrostab() {
+//         String midpoint = formatAngle(angles.angleUnit, angles.secondAngle); //roll - -numerical value or it = null
+//
+//    }
 
     public void stopMotors() {
         if (!opModeIsActive())

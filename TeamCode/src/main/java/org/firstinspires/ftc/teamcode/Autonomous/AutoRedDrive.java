@@ -29,12 +29,14 @@
 
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 
@@ -57,6 +59,10 @@ public class AutoRedDrive extends MyOpMode {
     Servo jewelArm;
     Servo jewelHand;
 
+    ModernRoboticsI2cRangeSensor rangeR;
+    ModernRoboticsI2cRangeSensor rangeL;
+
+
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -78,6 +84,9 @@ public class AutoRedDrive extends MyOpMode {
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
 
+        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
+        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
+
 
         waitForStart();
         runtime.reset();
@@ -90,64 +99,88 @@ public class AutoRedDrive extends MyOpMode {
 //        }
 
         // run until the end of the match (driver presses STOP)
-            jewelArm.setPosition(.6);
-            jewelHand.setPosition(.45);
-            sleep(2000);
-            jewelArm.setPosition(.15);
-            sleep(2000);
+//            jewelArm.setPosition(.6);
+//            jewelHand.setPosition(.45);
+//            sleep(2000);
+//            jewelArm.setPosition(.15);
+//            sleep(2000);
+//
+//            if (jewelColor.red() > jewelColor.blue()) {
+//                jewelHand.setPosition((.3));
+//
+//            } else if (jewelColor.red() < jewelColor.blue()) {
+//                jewelHand.setPosition((.6));
+//            }
+//
+//            sleep(1000);
+//            jewelArm.setPosition(.6);
+//            jewelHand.setPosition(.45);
+//            sleep(3000);
+//
+//            jewelHand.setPosition(.3);
+//            sleep(1000);
+//
+//
+//             manip.setPower(1);
+//             Thread.sleep(300);
+//             manip.setPower(0);
+//
+//            motorFL.setPower(-0.5);
+//            motorBL.setPower(-0.5);
+//            motorFR.setPower(0.5);
+//            motorBR.setPower(0.5);
+//            Thread.sleep(1050);
+//
+//            motorFL.setPower(0);
+//            motorBL.setPower(0);
+//            motorFR.setPower(0);
+//            motorBR.setPower(0);
+//
+//            sleep(700);
 
-            if (jewelColor.red() > jewelColor.blue()) {
-                jewelHand.setPosition((.3));
-
-            } else if (jewelColor.red() < jewelColor.blue()) {
-                jewelHand.setPosition((.6));
-            }
-
-            sleep(1000);
-            jewelArm.setPosition(.6);
-            jewelHand.setPosition(.45);
-            sleep(3000);
-
-            jewelHand.setPosition(.3);
-            sleep(1000);
-
-
-        manip.setPower(1);
-        Thread.sleep(400);
-
-            motorFL.setPower(-0.5);
-            motorBL.setPower(-0.5);
-            motorFR.setPower(0.5);
-            motorBR.setPower(0.5);
-            Thread.sleep(1050);
-
+        while (rangeR.getDistance(DistanceUnit.CM) < 91 && runtime.milliseconds() < 6000) {
+            motorFL.setPower(-.75);
+            motorBL.setPower(.75);
+            motorFR.setPower(.75);
+        }
             motorFL.setPower(0);
             motorBL.setPower(0);
             motorFR.setPower(0);
             motorBR.setPower(0);
-
-            sleep(700);
-
-        //strafing left
-        motorFL.setPower(.75);
-        motorBL.setPower(-.75);
-        motorFR.setPower(.75);
-        motorBR.setPower(-.75);
-
-        Thread.sleep(500);
-
-        motorFL.setPower(0);
-        motorBL.setPower(0);
-        motorFR.setPower(0);
-        motorBR.setPower(0);
-
-        sleep(500);
-
-        manip.setPower(-1);
-        Thread.sleep(1000);
-
-//            jewelKnockerRed(.2,.6,0.3,0.6,0.45);
+            sleep(5000);
 //
+//        //strafing left
+//        motorFL.setPower(.75);
+//        motorBL.setPower(-.75);
+//        motorFR.setPower(.75);
+//        motorBR.setPower(-.75);
+//
+//        Thread.sleep(400);
+//
+//        motorFL.setPower(0);
+//        motorBL.setPower(0);
+//        motorFR.setPower(0);
+//        motorBR.setPower(0);
+//
+//        sleep(500);
+//
+//        manip.setPower(-1);
+//        Thread.sleep(700);
+//        manip.setPower(0);
+//
+//        sleep(1000);
+//
+//        motorFL.setPower(0.5);
+//        motorBL.setPower(0.5);
+//        motorFR.setPower(-0.5);
+//        motorBR.setPower(-0.5);
+//
+//        Thread.sleep(150);
+//
+//        motorFL.setPower(0);
+//        motorBL.setPower(0);
+//        motorFR.setPower(0);
+//        motorBR.setPower(0);
 
         }
 
