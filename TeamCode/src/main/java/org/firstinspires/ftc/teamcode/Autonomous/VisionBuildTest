@@ -1,0 +1,177 @@
+package org.firstinspires.ftc.teamcode.Autonomous;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.RobotLog;
+
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.MatrixF;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+import org.firstinspires.ftc.teamcode.Library.MyOpMode;
+
+import java.util.ArrayList;
+import java.util.List;
+
+//This file is to not  be incorporated into the code, but used to help build complicated Vuforia Code without effecting the actual autonomous.
+//It is implied that the Vuforia code itself is already loaded into the program, and that we just need to input sets.
+//The main idea for the Autonomous is included here as well as dataset importation:
+
+public class VisionBuildTest extends MyOpMode {
+//Actual Jewel Strategy
+//         Phone will check which ball it sees (blue or red) Then
+//        Determine the position of each ball position in relation to each other.
+
+//        Red Auto
+//        If red X position < blue X position, if Red is on left
+//        swing right
+//        Else if Blue X position < red X position,
+//         If Blue is on left
+//        Swing left)
+//
+//        Blue Auto
+//        If blue X position < red X position, if Red is on left
+//        swing right
+//        Else if red X position < blue X position,
+//        If Blue is on left
+//        Swing left)
+
+public static final String TAG = "Vuforia Navigation Sample";
+    OpenGLMatrix lastLocation = null;
+
+    VuforiaLocalizer vuforia;
+    float mmPerInch        = 25.4f;
+    float mmBotWidth       = 18 * mmPerInch;            // ... or whatever is right for your robot
+    float mmFTCFieldWidth  = (12*12 - 2) * mmPerInch;   // the FTC field is ~11'10" center-to-center of the glass panels
+
+    VuforiaTrackables Jewels = this.vuforia.loadTrackablesFromAsset("Jewels");
+    VuforiaTrackable redTarget = Jewels.get(0);
+    VuforiaTrackable blueTarget = Jewels.get(1);
+
+
+    @Override public void runOpMode() {
+        /*
+         * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);*/
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        // OR...  Do Not Activate the Camera Monitor View, to save power
+        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = "AebyfAz/////AAAAGQSk/SMIskOBiTwNytA2g40Z5EJHh/B+wOuXdcD3Am6MKfF5dFAXVTowhe3r4WWOLOXgM06SKRsGgwb/Wscw0JUVeut2HxkDwYkp/MXJcjzTLcr8Ss5QdCAUtyLX6x1QH+mp1fZ+k8CaVpYE2AgrLmclq4D6gCG5x0CVespmrQ4yGLHSsiiY8kxZAujvYcdXTldK3Utr6J7cL0EAgLSm590bcVaHkjIi3IZg9jX1168Ejz1q4B39gfL5aM6Icr4SyMbPG3cmPNko4Y3Ebf8OmzEanypRjKXGzbWAV237TJzu/wHcmWSEf8hRt1yZTAfZTUPkSwabx6qpyRSZdpK1lTnLLnGA/LqxM1N5oX/T1VG+";
+
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        redTarget.setName("RedTarget");  // Red Ball
+
+        blueTarget.setName("BlueTarget");  // Blue Ball
+        /** For convenience, gather together all the trackable objects in one easily-iterable collection */
+        List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
+        allTrackables.addAll(Jewels);
+
+
+        OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix //Locating the phone
+                .translation(mmBotWidth/2,0,0)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.YZY,
+                        AngleUnit.DEGREES, -90, 0, 0)); //May need to change rotation.
+        RobotLog.ii(TAG, "phone=%s", format(phoneLocationOnRobot));
+
+        ((VuforiaTrackableDefaultListener)redTarget.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection); //Telling the trackable listeners to find location based on the phone.
+        ((VuforiaTrackableDefaultListener)blueTarget.getListener()).setPhoneInformation(phoneLocationOnRobot, parameters.cameraDirection);
+
+        telemetry.addData(">", "Press Play to start tracking");
+        telemetry.update();
+        waitForStart();
+
+        Jewels.activate();
+
+        while(opModeIsActive()) {
+            for (VuforiaTrackable trackable : allTrackables) {
+                /**
+                 * getUpdatedRobotLocation() will return null if no new information is available since
+                 * the last time that call was made, or if the trackable is not currently visible.
+                 * getRobotLocation() will return null if the trackable is not currently visible.
+                 */
+                telemetry.addData(trackable.getName(), ((VuforiaTrackableDefaultListener)trackable.getListener()).isVisible() ? "Visible" : "Not Visible");    //
+//Tracking 1 of the targets, but I am not sure exactly what it tracks yet.
+                OpenGLMatrix robotLocationTransform = ((VuforiaTrackableDefaultListener)trackable.getListener()).getUpdatedRobotLocation();
+                if (robotLocationTransform != null) {
+                    lastLocation = robotLocationTransform;
+                }
+
+             /*We need to change the following code from the last location of the robot to the last location to a variable which stores the x, y, z and rotation
+             value  of one of the axis, so that we can use it as a failsafe when locating the robot to the middle of the field.
+              */
+                if (lastLocation != null) {
+                    telemetry.addData("Pos", format(lastLocation));
+                } else {
+                    telemetry.addData("Pos", "Unknown");
+                }
+                telemetry.update();
+            }
+        }
+
+    }
+
+    /**
+     * A simple utility that extracts positioning information from a transformation matrix
+     * and formats it in a form palatable to a human being.
+     */
+    String format(OpenGLMatrix transformationMatrix) {
+        return transformationMatrix.formatAsTransform();
+
+    }
+    public void findPos() { /*Find pos should locate the not only the phone, but the allowed limit of 2 targets (red and blue) to figure out the positions in relation
+        eachother */
+        OpenGLMatrix redbalocation = OpenGLMatrix //how to locate the phone, needs to be changed to locating the blue ball.
+                .translation(mmBotWidth/ 2, 0, 0)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.YZY,
+                        AngleUnit.DEGREES, -90, 0, 0));
+
+        OpenGLMatrix bluebalocation = OpenGLMatrix //how to locate the phone, needs to be changed to locating the red ball.
+                .translation(mmBotWidth / 2, 0, 0)
+                .multiplied(Orientation.getRotationMatrix(
+                        AxesReference.EXTRINSIC, AxesOrder.YZY,
+                        AngleUnit.DEGREES, -90, 0, 0));
+
+    }
+
+//    public void findRelation(); {
+//        float toberenamed;
+//        /*Should find the relation of the balls to eachother and determine which side we need to swing*\
+//        left = **** (is the opposing ball on the left?)
+//        right = **** (Is the opposing b all on the right?)
+//        teamside = **** (red side (1) or blue side(0)?)
+//        red = (Determined red position of trackable)
+//        blue = (determined blue position of trackable.
+//
+//        if (red == (left numbers) {
+//        left = true
+//        }
+//        else if (red == (right numbers) {
+//        left = false
+//        }
+//          if (red == (left numbers) {
+//        right = true
+//        }
+//        else if (red == (right numbers) {
+//        right = false
+//        }
+//
+//        if (left == true) && teamside = 1 (we are on the red side and the red ball is located on the left side {
+//        knockRight
+//        } */
+//
+//    }
+
+}
