@@ -84,12 +84,12 @@ public abstract class MyOpMode extends LinearOpMode {
 //    public static BNO055IMU.Parameters gyroParam;
 //    public static SensorREVColorDistance jewelColor;
 
-   private static ModernRoboticsI2cRangeSensor rangeR;
-    private static ModernRoboticsI2cRangeSensor rangeL;
+//   private static ModernRoboticsI2cRangeSensor rangeR;
+//    private static ModernRoboticsI2cRangeSensor rangeL;
 //    private static ModernRoboticsI2cRangeSensor ultra;
 
     Orientation angles;
-    String formatAngle(AngleUnit angleUnit, double angle) {
+    protected String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }
     String formatDegrees(double degrees){
@@ -150,8 +150,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
 
 //        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
-        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
-        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
+//        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
+//        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
 
         telemetry.addData("Status", "Hardware Mapped");
         telemetry.update();
@@ -300,58 +300,58 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
 
-    public void mecAutoLeft(double left, double right, double distance ,int tim ) {
-        if (!opModeIsActive())
-            return;
-        ElapsedTime time = new ElapsedTime();
+//    public void mecAutoLeft(double left, double right, double distance ,int tim ) {
+//        if (!opModeIsActive())
+//            return;
+//        ElapsedTime time = new ElapsedTime();
+//
+//        time.reset();
+//        resetStartTime();
+//
+//
+//        if (distance > 0 && getRangeDistanceRight() < distance && time.milliseconds() < tim) {
+//            motorFL.setPower(-left);
+//            motorBL.setPower(left);
+//            motorFR.setPower(right);
+//            motorBR.setPower(-right);
+//        }
+//        else {
+//            motorFL.setPower(0);
+//            motorBL.setPower(0);
+//            motorFR.setPower(0);
+//            motorBR.setPower(0);
+//        }
+//    }
 
-        time.reset();
-        resetStartTime();
+//    public void mecAutoRight(double left, double right, double distance ,int tim) {
+//        if (!opModeIsActive())
+//            return;
+//
+//        ElapsedTime time = new ElapsedTime();
+//
+//        time.reset();
+//        resetStartTime();
+//
+//        if (distance > 0 && getRangeDistanceRight() < distance && time.milliseconds() < tim) {
+//            motorFL.setPower(left);
+//            motorBL.setPower(-left);
+//            motorFR.setPower(-right);
+//            motorBR.setPower(right);
+//        }
+//        else {
+//            motorFL.setPower(0);
+//            motorBL.setPower(0);
+//            motorFR.setPower(0);
+//            motorBR.setPower(0);
+//        }
+//    }
 
-
-        if (distance > 0 && getRangeDistanceRight() < distance && time.milliseconds() < tim) {
-            motorFL.setPower(-left);
-            motorBL.setPower(left);
-            motorFR.setPower(right);
-            motorBR.setPower(-right);
-        }
-        else {
-            motorFL.setPower(0);
-            motorBL.setPower(0);
-            motorFR.setPower(0);
-            motorBR.setPower(0);
-        }
-    }
-
-    public void mecAutoRight(double left, double right, double distance ,int tim) {
-        if (!opModeIsActive())
-            return;
-
-        ElapsedTime time = new ElapsedTime();
-
-        time.reset();
-        resetStartTime();
-
-        if (distance > 0 && getRangeDistanceRight() < distance && time.milliseconds() < tim) {
-            motorFL.setPower(left);
-            motorBL.setPower(-left);
-            motorFR.setPower(-right);
-            motorBR.setPower(right);
-        }
-        else {
-            motorFL.setPower(0);
-            motorBL.setPower(0);
-            motorFR.setPower(0);
-            motorBR.setPower(0);
-        }
-    }
-
-    public double getRangeDistanceRight() {
-        double value = rangeR.getDistance(DistanceUnit.CM);
-        if (value != 255)
-            rangeDistance = value;
-        return rangeDistance;
-    }
+//    public double getRangeDistanceRight() {
+//        double value = rangeR.getDistance(DistanceUnit.CM);
+//        if (value != 255)
+//            rangeDistance = value;
+//        return rangeDistance;
+//    }
 
 //    public void depositBlockAuto(double dep) {
 //        if (dep > 0.1) {
@@ -412,9 +412,11 @@ public abstract class MyOpMode extends LinearOpMode {
         sleep(1000);
     }
 //    public void gyrostab() {
-//         String midpoint = formatAngle(angles.angleUnit, angles.secondAngle); //roll - -numerical value or it = null
-//
+//        String startPos = formatAngle(angles.angleUnit, angles.firstAngle); //heading - -numerical value or it = null
+//        while (formatAngle(angles.angleUnit, angles.firstAngle) > startPos)
 //    }
+
+
 
     public void stopMotors() {
         if (!opModeIsActive())
@@ -586,30 +588,6 @@ public abstract class MyOpMode extends LinearOpMode {
 
         return 4730;
 
-    }
-
-    public double flyPow() {
-        double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
-
-        telemetry.addData("Voltage", startingVoltage);
-
-        if (startingVoltage >= 13.8) {
-            return .39;
-        } else if (startingVoltage >= 13.5) {
-            return .40;
-        } else if (startingVoltage >= 13.3) {
-            return .41;
-        } else if (startingVoltage >= 13) {
-            return .42;
-        } else if (startingVoltage >= 12.7) {
-            return .43;
-        } else if (startingVoltage >= 12.5) {
-            return .44;
-        } else if (startingVoltage >= 12.3) {
-            return .46;
-        }
-
-        return .47;
     }
 
 //    public double getGyroYaw() {
@@ -852,67 +830,66 @@ public abstract class MyOpMode extends LinearOpMode {
 //    }
 //
 //
-//    public void turnCorr(double pow, double deg) throws InterruptedException {
-//        turnCorr(pow, deg, 8000);
-//    }
-//
-//    public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
-//        if (!opModeIsActive())
-//            return;
-//
-//        double newPow;
-//
-//        ElapsedTime time = new ElapsedTime();
-//
-//        resetGyro();
-//        delay(MOVEMENT_DELAY);
-//        time.reset();
-//
-//        if (deg > 0) {
-//            while (deg > getGyroYaw() && time.milliseconds() < tim) {
-//                newPow = pow * (Math.abs(deg - getGyroYaw()) / 80);
-//
-//                if (newPow < .15)
-//                    newPow = .15;
-//
-//                setMotors(newPow, -newPow);
-//                telemetry.addData("Gyro", getGyroYaw());
-//                telemetry.update();
-//                idle();
-//            }
-//        } else {
-//            while (deg < getGyroYaw() && time.milliseconds() < tim) {
-//                newPow = pow * (Math.abs(deg - getGyroYaw()) / 80);
-//
-//                if (newPow < .15)
-//                    newPow = .15;
-//                setMotors(-newPow, newPow);
-//                telemetry.addData("Gyro", getGyroYaw());
-//                telemetry.update();
-//                idle();
-//            }
-//        }
-//
-//        stopMotors();
-//
-//        if (getGyroYaw() > deg) {
-//            while (opModeIsActive() && deg < getGyroYaw()) {
-//                setMotors(-.15, .15);
-//                telemetry.addData("Gyro", getGyroYaw());
-//                telemetry.update();
-//                idle();
-//            }
-//        } else {
-//            while (opModeIsActive() && deg > getGyroYaw()) {
-//                setMotors(.15, -.15);
-//                telemetry.addData("Gyro", getGyroYaw());
-//                telemetry.update();
-//                idle();
-//            }
-//        }
-//        stopMotors();
-//    }
-//
+    public void turnCorr(double pow, double deg) throws InterruptedException {
+        turnCorr(pow, deg, 8000);
+    }
+
+    public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
+        if (!opModeIsActive())
+            return;
+
+        double newPow;
+
+        ElapsedTime time = new ElapsedTime();
+        String startPos = formatAngle(angles.angleUnit, angles.firstAngle);
+        delay(100);
+        time.reset();
+
+        if (deg > 0) {
+            while ((deg > Double.parseDouble(startPos) && time.milliseconds() < tim)) {
+                newPow = pow * (Math.abs(deg - Double.parseDouble(startPos)) / 80);
+
+                if (newPow < .15)
+                    newPow = .15;
+
+                setMotors(-newPow, newPow);
+                telemetry.addData("Gyro", Double.parseDouble(startPos));
+                telemetry.update();
+                idle();
+            }
+        } else {
+            while (deg < Double.parseDouble(startPos) && time.milliseconds() < tim) {
+                newPow = pow * (Math.abs(deg - Double.parseDouble(startPos)) / 80);
+
+                if (newPow < .15)
+                    newPow = .15;
+                setMotors(newPow, -newPow);
+                telemetry.addData("Gyro", Double.parseDouble(startPos));
+                telemetry.update();
+                idle();
+            }
+        }
+
+        stopMotors();
+
+        if (Double.parseDouble(startPos) > deg) {
+            while (opModeIsActive() && deg < Double.parseDouble(startPos)) {
+                setMotors(.15, -.15);
+                telemetry.addData("Gyro", Double.parseDouble(startPos));
+                telemetry.update();
+                idle();
+            }
+        } else {
+            while (opModeIsActive() && deg > Double.parseDouble(startPos)) {
+                setMotors(-.15, .15);
+                telemetry.addData("Gyro", Double.parseDouble(startPos));
+                telemetry.update();
+                idle();
+            }
+        }
+        stopMotors();
+    }
+
 //    public void arcTurnCorr(double pow, double deg) throws InterruptedException {
 //        arcTurnCorr(pow, deg, 6000);
 //    }

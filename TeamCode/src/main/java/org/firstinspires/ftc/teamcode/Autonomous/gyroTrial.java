@@ -140,7 +140,7 @@ public class gyroTrial extends LinearOpMode
         telemetry.addLine()
             .addData("heading", new Func<String>() {
                 @Override public String value() {
-                    return formatAngle(angles.angleUnit, angles.firstAngle);
+                    return formatAngle(angles.angleUnit, angles.firstAngle); //Control Robot Pivot
                     }
                 })
             .addData("roll", new Func<String>() {

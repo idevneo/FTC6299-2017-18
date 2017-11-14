@@ -36,8 +36,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+
+import java.util.Locale;
 
 
 @Autonomous(name="RedRightDrive", group="Linear Opmode")
@@ -59,9 +67,16 @@ public class AutoRedDrive extends MyOpMode {
     Servo jewelArm;
     Servo jewelHand;
 
-    ModernRoboticsI2cRangeSensor rangeR;
-    ModernRoboticsI2cRangeSensor rangeL;
+//    ModernRoboticsI2cRangeSensor rangeR;
+//    ModernRoboticsI2cRangeSensor rangeL;
 
+    Orientation angles;
+    protected String formatAngle(AngleUnit angleUnit, double angle) {
+        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
+    }
+    String formatDegrees(double degrees){
+        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+    }
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -84,13 +99,17 @@ public class AutoRedDrive extends MyOpMode {
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
 
-        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
-        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
+//        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
+//        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
+
+         //heading - -numerical value or it = null
 
 
         waitForStart();
         runtime.reset();
 
+
+        turnCorr(.2, 90);
 //        while(opModeIsActive()) {
 //            telemetry.addData("Red  ", jewelColor.red());
 //            telemetry.addData("Green", jewelColor.green());
@@ -138,16 +157,16 @@ public class AutoRedDrive extends MyOpMode {
 //
 //            sleep(700);
 
-        while (rangeR.getDistance(DistanceUnit.CM) < 91 && runtime.milliseconds() < 6000) {
-            motorFL.setPower(-.75);
-            motorBL.setPower(.75);
-            motorFR.setPower(.75);
-        }
-            motorFL.setPower(0);
-            motorBL.setPower(0);
-            motorFR.setPower(0);
-            motorBR.setPower(0);
-            sleep(5000);
+//        while (rangeR.getDistance(DistanceUnit.CM) < 91 && runtime.milliseconds() < 6000) {
+//            motorFL.setPower(-.75);
+//            motorBL.setPower(.75);
+//            motorFR.setPower(.75);
+//        }
+//            motorFL.setPower(0);
+//            motorBL.setPower(0);
+//            motorFR.setPower(0);
+//            motorBR.setPower(0);
+//            sleep(5000);
 //
 //        //strafing left
 //        motorFL.setPower(.75);

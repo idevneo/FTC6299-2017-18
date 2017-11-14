@@ -75,8 +75,8 @@ public class Plz extends LinearOpMode {
     Servo jewelHand;
     Servo jewelArm;
 
-    ModernRoboticsI2cRangeSensor rangeR;
-    ModernRoboticsI2cRangeSensor rangeL;
+//    ModernRoboticsI2cRangeSensor rangeR;
+//    ModernRoboticsI2cRangeSensor rangeL;
 
     float gamepad1_left;
     float gamepad1_right;
@@ -95,7 +95,6 @@ public class Plz extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
@@ -110,8 +109,8 @@ public class Plz extends LinearOpMode {
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
 
-        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
-        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
+//        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
+//        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
 
         jewelArm.setPosition(.65);
         jewelHand.setPosition(.3);
@@ -124,8 +123,8 @@ public class Plz extends LinearOpMode {
 //            telemetry.addData("Red  ", jewelColor.red());
 //            telemetry.addData("Green", jewelColor.green());
 //            telemetry.addData("Blue ", jewelColor.blue());
-            telemetry.addData("leftRange", rangeL.getDistance(DistanceUnit.CM));
-            telemetry.addData("rightRange", rangeR.getDistance(DistanceUnit.CM));
+//            telemetry.addData("leftRange", rangeL.getDistance(DistanceUnit.CM));
+//            telemetry.addData("rightRange", rangeR.getDistance(DistanceUnit.CM));
             telemetry.update();
 
             gamepad1_left = gamepad1.left_stick_y;
