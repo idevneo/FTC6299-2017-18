@@ -19,8 +19,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMU;
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMUCalibration;
+
+import java.util.Locale;
 
 /**
  * Created by jspspike on 1/15/2016.
@@ -38,13 +43,25 @@ public abstract class MyOpMode extends LinearOpMode {
 //    public static final double BUTTONP_LEFT = 1;
 //    public static final double BUTTONP_RIGHT = .31;
 
-
-
+    private ElapsedTime     runtime = new ElapsedTime();
+    static final double     COUNTS_PER_MOTOR_REV    = 2240 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    public static final double     DRIVE_SPEED             = .65;
+    public static final double     TURN_SPEED              = .5;
 
     public static DcMotor motorBL;
     public static DcMotor motorBR;
     public static DcMotor motorFL;
     public static DcMotor motorFR;
+
+    public static Servo jewelHand;
+    public static Servo jewelArm;
+
+    ColorSensor jewelColor;
+
 
 //    public static DcMotor liftLeft;
 //    public static DcMotor liftRight;
@@ -67,11 +84,17 @@ public abstract class MyOpMode extends LinearOpMode {
 //    public static BNO055IMU.Parameters gyroParam;
 //    public static SensorREVColorDistance jewelColor;
 
-//    private static ModernRoboticsI2cRangeSensor range;
+   private static ModernRoboticsI2cRangeSensor rangeR;
+    private static ModernRoboticsI2cRangeSensor rangeL;
 //    private static ModernRoboticsI2cRangeSensor ultra;
 
-
-
+    Orientation angles;
+    String formatAngle(AngleUnit angleUnit, double angle) {
+        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
+    }
+    String formatDegrees(double degrees){
+        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+    }
 
 //    public double grayL;
 //    public double grayR;
@@ -79,7 +102,7 @@ public abstract class MyOpMode extends LinearOpMode {
 //    public double gyroError = 0;
 //
 //    public double ultraDistance;
-//    public double rangeDistance;
+    public double rangeDistance;
 
 //    public void hardwareMap() {
 //        motorBL = hardwareMap.dcMotor.get("motorBL");
@@ -119,10 +142,16 @@ public abstract class MyOpMode extends LinearOpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
 
+        jewelArm = hardwareMap.servo.get("jewelArm");
+        jewelHand = hardwareMap.servo.get("jewelHand");
+
+        jewelColor = (ColorSensor) hardwareMap.get(ColorSensor.class, "jewelColor");
+
 
 
 //        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
-        //range = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "range");
+        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
+        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
 
         telemetry.addData("Status", "Hardware Mapped");
         telemetry.update();
@@ -271,59 +300,58 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
 
-//    public void mecAutoLeft(double left, double right, double distance ,int tim ) {
-//        if (!opModeIsActive())
-//            return;
-//        ElapsedTime time = new ElapsedTime();
-//
-//        time.reset();
-//        resetStartTime();
-//
-//
-//        if (distance < 0 && getRangeDistance() < distance && time.milliseconds() < tim) {
-//            motorFL.setPower(-left);
-//            motorBL.setPower(left);
-//            motorFR.setPower(right);
-//            motorBR.setPower(-right);
-//        }
-//        else {
-//            motorFL.setPower(0);
-//            motorBL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBR.setPower(0);
-//        }
-//    }
+    public void mecAutoLeft(double left, double right, double distance ,int tim ) {
+        if (!opModeIsActive())
+            return;
+        ElapsedTime time = new ElapsedTime();
 
-//    public void mecAutoRight(double left, double right, double distance ,int tim) {
-//        if (!opModeIsActive())
-//            return;
-//
-//        ElapsedTime time = new ElapsedTime();
-//
-//        time.reset();
-//        resetStartTime();
-//
-//        if (distance < 0 && getRangeDistance() < distance && time.milliseconds() < tim) {
-//            motorFL.setPower(left);
-//            motorBL.setPower(-left);
-//            motorFR.setPower(-right);
-//            motorBR.setPower(right);
-//        }
-//        else {
-//            motorFL.setPower(0);
-//            motorBL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBR.setPower(0);
-//        }
-//    }
+        time.reset();
+        resetStartTime();
 
-//    public double getRangeDistance() {
-//        double value = range.getDistance(DistanceUnit.CM);
-//        if (value != 255)
-//            rangeDistance = value;
-//        return rangeDistance;
-//    }
 
+        if (distance > 0 && getRangeDistanceRight() < distance && time.milliseconds() < tim) {
+            motorFL.setPower(-left);
+            motorBL.setPower(left);
+            motorFR.setPower(right);
+            motorBR.setPower(-right);
+        }
+        else {
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+        }
+    }
+
+    public void mecAutoRight(double left, double right, double distance ,int tim) {
+        if (!opModeIsActive())
+            return;
+
+        ElapsedTime time = new ElapsedTime();
+
+        time.reset();
+        resetStartTime();
+
+        if (distance > 0 && getRangeDistanceRight() < distance && time.milliseconds() < tim) {
+            motorFL.setPower(left);
+            motorBL.setPower(-left);
+            motorFR.setPower(-right);
+            motorBR.setPower(right);
+        }
+        else {
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+        }
+    }
+
+    public double getRangeDistanceRight() {
+        double value = rangeR.getDistance(DistanceUnit.CM);
+        if (value != 255)
+            rangeDistance = value;
+        return rangeDistance;
+    }
 
 //    public void depositBlockAuto(double dep) {
 //        if (dep > 0.1) {
@@ -337,53 +365,56 @@ public abstract class MyOpMode extends LinearOpMode {
 //
 //    }
 //
+   public void jewelKnockerRed() {
+       jewelArm.setPosition(.6);
+       jewelHand.setPosition(.45);
+       sleep(2000);
+       jewelArm.setPosition(.15);
+       sleep(2000);
+
+       if (jewelColor.red() > jewelColor.blue()) {
+           jewelHand.setPosition((.3));
+
+       } else if (jewelColor.red() < jewelColor.blue()) {
+           jewelHand.setPosition((.6));
+       }
+
+       sleep(1000);
+       jewelArm.setPosition(.6);
+       jewelHand.setPosition(.45);
+       sleep(3000);
+
+       jewelHand.setPosition(.3);
+       sleep(1000);
+   }
+        // int colorDif = jewelColor.red() - jewelColor.blue();
+
+    public void jewelKnockerBlue() {
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(2000);
+        jewelArm.setPosition(.15);
+        sleep(2000);
+
+        if (jewelColor.red() < jewelColor.blue()) {
+            jewelHand.setPosition((.3));
+
+        } else if (jewelColor.red() > jewelColor.blue()) {
+            jewelHand.setPosition((.6));
+        }
+
+        sleep(1000);
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(1000);
+
+        jewelHand.setPosition(.3);
+        sleep(1000);
+    }
+//    public void gyrostab() {
+//         String midpoint = formatAngle(angles.angleUnit, angles.secondAngle); //roll - -numerical value or it = null
 //
-//
-//
-//
-//
-//    public void jewelKnockerRed(double servoArmD, double servoArmS, double servoHandL, double servoHandR, double servoHandS)
-//    {
-//        if(!opModeIsActive())
-//            return;
-//
-//        jewelArm.setPosition(servoArmD);
-//        if (jewelColor.blue() < jewelColor.red())
-//        {
-//            jewelHand.setPosition((servoHandR));
-//        }
-//        else if (jewelColor.blue() > jewelColor.red())
-//        {
-//            jewelHand.setPosition((servoHandL));
-//        }
-//
-//        jewelHand.setPosition(servoHandS);
-//        jewelArm.setPosition(servoArmS);
 //    }
-//
-//    public void jewelKnockerBlue(double servoArmD, double servoArmS, double servoHandL, double servoHandR, double servoHandS)
-//    {
-//        if(!opModeIsActive())
-//            return;
-//
-//        jewelArm.setPosition(servoArmD);
-//        if (jewelColor.blue() > jewelColor.red())
-//        {
-//            jewelHand.setPosition((servoHandR));
-//        }
-//        else if (jewelColor.blue() < jewelColor.red())
-//        {
-//            jewelHand.setPosition((servoHandL));
-//        }
-//
-//
-//        jewelHand.setPosition(servoHandS);
-//        jewelArm.setPosition(servoArmS);
-//    }
-
-
-
-
 
     public void stopMotors() {
         if (!opModeIsActive())
@@ -401,10 +432,135 @@ public abstract class MyOpMode extends LinearOpMode {
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public void encoderDrive(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = motorFL.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightTarget = motorFR.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+
+
+            motorFL.setTargetPosition(newLeftTarget);
+            motorFR.setTargetPosition(newRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+            motorFL.setPower(speed);
+            motorBL.setPower(speed);
+            motorBR.setPower(speed);
+            motorFR.setPower(speed);
+
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (motorFL.isBusy()  && motorFR.isBusy())) {
+                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                        motorFL.getCurrentPosition(),
+                        motorFR.getCurrentPosition());
+                telemetry.update();
+            }
+
+            // Stop all motion;
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+              sleep(250);   // optional pause after each move
+        }
+    }
+    public void encoderDriveMec(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newLeftTarget;
+        int newRightTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftTarget = motorFL.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newRightTarget = motorFR.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+
+            motorBL.setTargetPosition(newLeftTarget);
+            motorFL.setTargetPosition(newLeftTarget);
+            motorBR.setTargetPosition(newRightTarget);
+            motorFR.setTargetPosition(newRightTarget);
+
+            // Turn On RUN_TO_POSITION
+            motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+
+            if (speed < 0){
+                motorFL.setPower(speed);
+                motorBL.setPower(-speed);
+                motorBR.setPower(-speed);
+                motorFR.setPower(speed);
+            } else if (speed > 0){
+                motorFL.setPower(-speed);
+                motorBL.setPower(speed);
+                motorBR.setPower(speed);
+                motorFR.setPower(-speed);
+            }
+
+
+
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy())) {
+            }
+
+            // Stop all motion;
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            sleep(250);   // optional pause after each move
+        }
     }
 
     public int getEncoderAverage() {

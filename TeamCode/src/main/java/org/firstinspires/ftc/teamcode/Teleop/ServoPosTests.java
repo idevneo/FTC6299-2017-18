@@ -28,14 +28,15 @@
  */
 
 package org.firstinspires.ftc.teamcode.Teleop;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -50,97 +51,42 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @Disabled
-@TeleOp(name="manip and lift", group="Linear Opmode")
-public class ExampleTeleop extends MyOpMode {
+@TeleOp(name="ServoPosTests", group="Linear Opmode")
 
-    float gamepad1_left;
-    float gamepad1_right;
-    double left = 1.0;
-    double right = 1.0;
+public class ServoPosTests extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    DcMotor motorBL;
-    DcMotor motorBR;
-    DcMotor motorFL;
-    DcMotor motorFR;
-    DcMotor manip;
-    DcMotor liftLeft;
-    DcMotor liftRight;
 
+    Servo jewelHand;
+    Servo jewelArm;
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorFR = hardwareMap.dcMotor.get("motorFR");
+        // Initialize the hardware variables. Note that the strings used here as parameters
+        // to 'get' must correspond to the names assigned during the robot configuration
+        // step (using the FTC Robot Controller app on the phone).
+        jewelArm = hardwareMap.servo.get("jewelArm");
+        jewelHand = hardwareMap.servo.get("jewelHand");
 
-        liftLeft = hardwareMap.dcMotor.get("liftL");
-        liftRight = hardwareMap.dcMotor.get("liftR");
-        manip = hardwareMap.dcMotor.get("manip");
 
+        // Most robots need the motor on one side to be reversed to drive forward
+        // Reverse the motor that runs backwards when connected directly to the battery
+
+
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive())
+        while (opModeIsActive()) {
 
-            telemetry.addData("Left Trigger", gamepad1.left_trigger);
-            telemetry.addData("Right Trigger", gamepad1.right_trigger);
+
+            telemetry.addData("Arm Position", jewelArm.getPosition());
+            telemetry.addData("Hand Position", jewelHand.getPosition());
             telemetry.update();
-
-                if (gamepad1.left_trigger > .15){
-                    manip.setPower(-1);
-
-                } else if (gamepad1.right_trigger > .15 ) {
-                    manip.setPower(1);
-                } else {
-                    manip.setPower(0);
-                }
-
-                if ((Math.abs(gamepad2.left_stick_y) > .05)) {
-                    liftLeft.setPower(-gamepad2.left_stick_y * .5);
-                    liftRight.setPower(gamepad2.left_stick_y * .5);
-                } else {
-                    liftLeft.setPower(0);
-                    liftRight.setPower(0);
-                }
-
-                    //Lift Control + Modification
-//                if (gamepad2.y && bothStix == true) {
-//                    bothStix = false;
-//                    telemetry.addData("bothStix", bothStix);
-//                    telemetry.update();
-//                    sleep(250);
-//                }
-//                if (gamepad2.y && bothStix == false) {
-//                    bothStix = true;
-//                    telemetry.addData("bothStix", bothStix);
-//                    telemetry.update();
-//                    sleep(250);
-//                }
-//                    if ((Math.abs(gamepad2.left_stick_y) > .05)) {
-//                    liftLeft.setPower(-gamepad2.left_stick_y * .5);
-//                    liftRight.setPower(gamepad2.left_stick_y * .5);
-//                } else {
-//                    liftLeft.setPower(0);
-//                    liftRight.setPower(0);
-//                }
-
-//                if (bothStix == true) {
-//                    if ((Math.abs(gamepad2.left_stick_y) > .05)) {
-//                        liftLeft.setPower(-gamepad2.left_stick_y * .5);
-//                    } else {
-//                        liftLeft.setPower(0);
-//                    }
-//                    if ((Math.abs(gamepad2.right_stick_y) > .05)) {
-//                        liftRight.setPower(gamepad2.right_stick_y * .5);
-//                    } else {
-//                        liftRight.setPower(0);
-//                    }
-//                }
-                }
-            }
+        }
+    }
+}

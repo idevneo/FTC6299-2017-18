@@ -28,6 +28,7 @@
  */
 
 package org.firstinspires.ftc.teamcode.Teleop;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -35,7 +36,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -49,25 +49,20 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Disabled
-@TeleOp(name="manip and lift", group="Linear Opmode")
-public class ExampleTeleop extends MyOpMode {
+@TeleOp(name="NewDrivetrain", group="Linear Opmode")
 
-    float gamepad1_left;
-    float gamepad1_right;
-    double left = 1.0;
-    double right = 1.0;
+public class NewDrivetrain extends LinearOpMode {
 
-    // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    DcMotor motorBL;
-    DcMotor motorBR;
+
     DcMotor motorFL;
+    DcMotor motorBL;
     DcMotor motorFR;
-    DcMotor manip;
-    DcMotor liftLeft;
-    DcMotor liftRight;
+    DcMotor motorBR;
 
+    double gamepad1_left = 0.0;
+    double gamepad1_right = 0.0;
+    double left = 0.0;
+    double right = 0.0;
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -78,69 +73,43 @@ public class ExampleTeleop extends MyOpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
 
-        liftLeft = hardwareMap.dcMotor.get("liftL");
-        liftRight = hardwareMap.dcMotor.get("liftR");
-        manip = hardwareMap.dcMotor.get("manip");
-
         waitForStart();
-        runtime.reset();
 
+        gamepad1_left = gamepad1.left_stick_y;
+        gamepad1_right = gamepad1.right_stick_y;
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive())
-
-            telemetry.addData("Left Trigger", gamepad1.left_trigger);
-            telemetry.addData("Right Trigger", gamepad1.right_trigger);
-            telemetry.update();
-
-                if (gamepad1.left_trigger > .15){
-                    manip.setPower(-1);
-
-                } else if (gamepad1.right_trigger > .15 ) {
-                    manip.setPower(1);
-                } else {
-                    manip.setPower(0);
-                }
-
-                if ((Math.abs(gamepad2.left_stick_y) > .05)) {
-                    liftLeft.setPower(-gamepad2.left_stick_y * .5);
-                    liftRight.setPower(gamepad2.left_stick_y * .5);
-                } else {
-                    liftLeft.setPower(0);
-                    liftRight.setPower(0);
-                }
-
-                    //Lift Control + Modification
-//                if (gamepad2.y && bothStix == true) {
-//                    bothStix = false;
-//                    telemetry.addData("bothStix", bothStix);
-//                    telemetry.update();
-//                    sleep(250);
-//                }
-//                if (gamepad2.y && bothStix == false) {
-//                    bothStix = true;
-//                    telemetry.addData("bothStix", bothStix);
-//                    telemetry.update();
-//                    sleep(250);
-//                }
-//                    if ((Math.abs(gamepad2.left_stick_y) > .05)) {
-//                    liftLeft.setPower(-gamepad2.left_stick_y * .5);
-//                    liftRight.setPower(gamepad2.left_stick_y * .5);
-//                } else {
-//                    liftLeft.setPower(0);
-//                    liftRight.setPower(0);
-//                }
-
-//                if (bothStix == true) {
-//                    if ((Math.abs(gamepad2.left_stick_y) > .05)) {
-//                        liftLeft.setPower(-gamepad2.left_stick_y * .5);
-//                    } else {
-//                        liftLeft.setPower(0);
-//                    }
-//                    if ((Math.abs(gamepad2.right_stick_y) > .05)) {
-//                        liftRight.setPower(gamepad2.right_stick_y * .5);
-//                    } else {
-//                        liftRight.setPower(0);
-//                    }
-//                }
-                }
+        while (opModeIsActive()) {
+            if (Math.abs(gamepad1.left_stick_y) > .05 ) {
+                motorFL.setPower(gamepad1.left_stick_y);
+                motorBL.setPower(gamepad1.left_stick_y);
+                motorFR.setPower(-gamepad1.left_stick_y);
+                motorBR.setPower(-gamepad1.left_stick_y);
+            } else if (gamepad1.left_stick_x < -.05) {
+                motorFL.setPower(.8 + gamepad1.left_stick_x * -.2);
+                motorBL.setPower(-.8 + gamepad1.left_stick_x * .2);
+                motorFR.setPower(.8 + gamepad1.left_stick_x * -.2);
+                motorBR.setPower(-.8 + gamepad1.left_stick_x * .2);
+            } else if (gamepad1.left_stick_x > .05) {
+                motorFL.setPower(-.8 + gamepad1.left_stick_x * -.2);
+                motorBL.setPower(.8 + gamepad1.left_stick_x * .2);
+                motorFR.setPower(-.8 + gamepad1.left_stick_x * -.2);
+                motorBR.setPower(.8 + gamepad1.left_stick_x * .2);
+            } else if (gamepad1.right_stick_x < -.05) {
+                motorFL.setPower(-gamepad1.right_stick_x);
+                motorBL.setPower(-gamepad1.right_stick_x);
+                motorFR.setPower(-gamepad1.right_stick_x);
+                motorBR.setPower(-gamepad1.right_stick_x);
+            } else if (gamepad1.right_stick_x > .05) {
+                motorFL.setPower(-gamepad1.right_stick_x);
+                motorBL.setPower(-gamepad1.right_stick_x);
+                motorFR.setPower(-gamepad1.right_stick_x);
+                motorBR.setPower(-gamepad1.right_stick_x);
+            } else {
+                motorFL.setPower(0);
+                motorBL.setPower(0);
+                motorFR.setPower(0);
+                motorBR.setPower(0);
             }
+        }
+    }
+}
