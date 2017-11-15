@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode.Autonomous;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -66,6 +68,7 @@ public class AutoRedDrive extends MyOpMode {
 
     Servo jewelArm;
     Servo jewelHand;
+    BNO055IMU imu;
 
 //    ModernRoboticsI2cRangeSensor rangeR;
 //    ModernRoboticsI2cRangeSensor rangeL;
@@ -98,6 +101,17 @@ public class AutoRedDrive extends MyOpMode {
 
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
 
 //        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
 //        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
