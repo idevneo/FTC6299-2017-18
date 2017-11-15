@@ -20,6 +20,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMU;
@@ -61,7 +63,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static Servo jewelArm;
 
     ColorSensor jewelColor;
-
+    BNO055IMU imu;
 
 //    public static DcMotor liftLeft;
 //    public static DcMotor liftRight;
@@ -78,8 +80,6 @@ public abstract class MyOpMode extends LinearOpMode {
 //    public static OpticalDistanceSensor floorL;
 //    public static OpticalDistanceSensor floorR;
 
-
-
 //    public static BNO055IMU gyro;
 //    public static BNO055IMU.Parameters gyroParam;
 //    public static SensorREVColorDistance jewelColor;
@@ -87,6 +87,7 @@ public abstract class MyOpMode extends LinearOpMode {
 //   private static ModernRoboticsI2cRangeSensor rangeR;
 //    private static ModernRoboticsI2cRangeSensor rangeL;
 //    private static ModernRoboticsI2cRangeSensor ultra;
+
 
     Orientation angles;
     protected String formatAngle(AngleUnit angleUnit, double angle) {
@@ -187,6 +188,19 @@ public abstract class MyOpMode extends LinearOpMode {
         telemetry.update();
     }
     // Add all servos in later
+
+    public void initIMU() {
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        angles  = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
+    }
     public void initServos() {
 
     }
@@ -842,29 +856,30 @@ public abstract class MyOpMode extends LinearOpMode {
 
         ElapsedTime time = new ElapsedTime();
         String startPos = formatAngle(angles.angleUnit, angles.firstAngle);
+        double startP = Double.parseDouble(startPos);
         delay(100);
         time.reset();
 
         if (deg > 0) {
-            while ((deg > Double.parseDouble(startPos) && time.milliseconds() < tim)) {
-                newPow = pow * (Math.abs(deg - Double.parseDouble(startPos)) / 80);
+            while ((deg > startP && time.milliseconds() < tim)) {
+                newPow = pow * (Math.abs(deg - startP) / 80);
 
                 if (newPow < .15)
                     newPow = .15;
 
                 setMotors(-newPow, newPow);
-                telemetry.addData("Gyro", Double.parseDouble(startPos));
+                telemetry.addData("Gyro", startP);
                 telemetry.update();
                 idle();
             }
         } else {
-            while (deg < Double.parseDouble(startPos) && time.milliseconds() < tim) {
-                newPow = pow * (Math.abs(deg - Double.parseDouble(startPos)) / 80);
+            while (deg < startP && time.milliseconds() < tim) {
+                newPow = pow * (Math.abs(deg - startP) / 80);
 
                 if (newPow < .15)
                     newPow = .15;
                 setMotors(newPow, -newPow);
-                telemetry.addData("Gyro", Double.parseDouble(startPos));
+                telemetry.addData("Gyro", startP);
                 telemetry.update();
                 idle();
             }
@@ -872,17 +887,17 @@ public abstract class MyOpMode extends LinearOpMode {
 
         stopMotors();
 
-        if (Double.parseDouble(startPos) > deg) {
-            while (opModeIsActive() && deg < Double.parseDouble(startPos)) {
+        if (startP > deg) {
+            while (opModeIsActive() && deg < startP ) {
                 setMotors(.15, -.15);
-                telemetry.addData("Gyro", Double.parseDouble(startPos));
+                telemetry.addData("Gyro", startP);
                 telemetry.update();
                 idle();
             }
         } else {
-            while (opModeIsActive() && deg > Double.parseDouble(startPos)) {
+            while (opModeIsActive() && deg > startP) {
                 setMotors(-.15, .15);
-                telemetry.addData("Gyro", Double.parseDouble(startPos));
+                telemetry.addData("Gyro", startP);
                 telemetry.update();
                 idle();
             }

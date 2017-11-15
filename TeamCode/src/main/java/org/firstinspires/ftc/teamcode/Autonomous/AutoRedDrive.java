@@ -80,7 +80,6 @@ public class AutoRedDrive extends MyOpMode {
     String formatDegrees(double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
-
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -102,26 +101,13 @@ public class AutoRedDrive extends MyOpMode {
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
 
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
+        initIMU();
 
 //        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
 //        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
 
-         //heading - -numerical value or it = null
-
-
         waitForStart();
         runtime.reset();
-
 
         turnCorr(.2, 90);
 //        while(opModeIsActive()) {
