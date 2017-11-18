@@ -67,7 +67,6 @@ public class AutoRightGyro extends MyOpMode
     //----------------------------------------------------------------------------------------------
 
     // The IMU sensor object
-    BNO055IMU imu;
 
     // State used for updating telemetry
     Orientation angles;
@@ -117,6 +116,8 @@ public class AutoRightGyro extends MyOpMode
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+
+        angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
         // Set up our telemetry dashboard
         composeTelemetry();
         // Wait until we're told to go

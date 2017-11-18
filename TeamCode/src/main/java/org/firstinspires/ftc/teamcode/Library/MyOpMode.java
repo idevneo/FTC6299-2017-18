@@ -66,7 +66,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static Servo jewelArm;
 
     ColorSensor jewelColor;
-    BNO055IMU imu;
+    public BNO055IMU imu;
 
 //    public static DcMotor liftLeft;
 //    public static DcMotor liftRight;
@@ -121,18 +121,18 @@ public abstract class MyOpMode extends LinearOpMode {
 //            gravity  = imu.getGravity();
         }
         });
-
-        telemetry.addLine()
-                .addData("status", new Func<String>() {
-                    @Override public String value() {
-                        return imu.getSystemStatus().toShortString();
-                    }
-                })
-                .addData("calib", new Func<String>() {
-                    @Override public String value() {
-                        return imu.getCalibrationStatus().toString();
-                    }
-                });
+//
+//        telemetry.addLine()
+//                .addData("status", new Func<String>() {
+//                    @Override public String value() {
+//                        return imu.getSystemStatus().toShortString();
+//                    }
+//                })
+//                .addData("calib", new Func<String>() {
+//                    @Override public String value() {
+//                        return imu.getCalibrationStatus().toString();
+//                    }
+//                });
 
         telemetry.addLine()
                 .addData("heading", new Func<String>() {
@@ -198,28 +198,6 @@ public abstract class MyOpMode extends LinearOpMode {
 //        telemetry.addData("Status", "Hardware Mapped");
 //        telemetry.update();
 //    }
-
-    public void hardwareMapTroll() {
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorFR = hardwareMap.dcMotor.get("motorFR");
-
-        jewelArm = hardwareMap.servo.get("jewelArm");
-        jewelHand = hardwareMap.servo.get("jewelHand");
-
-        jewelColor = (ColorSensor) hardwareMap.get(ColorSensor.class, "jewelColor");
-
-
-
-//        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
-//        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
-//        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
-
-        telemetry.addData("Status", "Hardware Mapped");
-        telemetry.update();
-
-    }
 
     public void initSensors() {
         telemetry.addData("Sensors", "Initializing...");
