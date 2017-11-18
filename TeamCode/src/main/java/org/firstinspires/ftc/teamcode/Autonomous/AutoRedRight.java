@@ -32,26 +32,18 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 
-import org.firstinspires.ftc.robotcore.external.Func;
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-import java.util.Locale;
-
 /**
- * {@link AutoRightGyro} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
+ * {@link AutoRedRight} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
@@ -60,33 +52,8 @@ import java.util.Locale;
  */
 @Autonomous(name = "Red Right Gyro", group = "Sensor")
                             // Comment this out to add to the opmode list
-public class AutoRightGyro extends MyOpMode
+public class AutoRedRight extends MyOpMode
     {
-    //----------------------------------------------------------------------------------------------
-    // State
-    //----------------------------------------------------------------------------------------------
-
-    // The IMU sensor object
-
-    // State used for updating telemetry
-    Orientation angles;
-    Acceleration gravity;
-
-        DcMotor motorBL;
-        DcMotor motorBR;
-        DcMotor motorFL;
-        DcMotor motorFR;
-
-        DcMotor liftLeft;
-        DcMotor liftRight;
-
-        DcMotor manip;
-
-        ColorSensor jewelColor;
-
-        Servo jewelArm;
-        Servo jewelHand;
-
     @Override public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -104,9 +71,10 @@ public class AutoRightGyro extends MyOpMode
 
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
-        // Set up the parameters with which we will use our IMU. Note that integration
-        // algorithm here just reports accelerations to the logcat log; it doesn't actually
-        // provide positional information.
+
+        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
+        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
+
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -129,6 +97,9 @@ public class AutoRightGyro extends MyOpMode
 
         // Loop and update the dashboard
         while (opModeIsActive()) {
+
+            telemetry.addData("leftRange", rangeL.getDistance(DistanceUnit.CM));
+            telemetry.addData("rightRange", rangeR.getDistance(DistanceUnit.CM));
             telemetry.update();
         }
     }

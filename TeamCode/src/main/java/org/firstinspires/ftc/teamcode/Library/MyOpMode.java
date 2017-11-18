@@ -42,8 +42,6 @@ public abstract class MyOpMode extends LinearOpMode {
 //
 //    public static final int MOVEMENT_DELAY = 300;
 //
-//
-//
 //    public static final double BUTTONP_CENTER = .47;
 //    public static final double BUTTONP_LEFT = 1;
 //    public static final double BUTTONP_RIGHT = .31;
@@ -57,43 +55,27 @@ public abstract class MyOpMode extends LinearOpMode {
     public static final double     DRIVE_SPEED             = .65;
     public static final double     TURN_SPEED              = .5;
 
+    public static BNO055IMU imu;
     public static DcMotor motorBL;
     public static DcMotor motorBR;
     public static DcMotor motorFL;
     public static DcMotor motorFR;
-
-    public static Servo jewelHand;
+    public static DcMotor liftLeft;
+    public static DcMotor liftRight;
+    public static DcMotor manip;
     public static Servo jewelArm;
-
-    ColorSensor jewelColor;
-    public BNO055IMU imu;
-
-//    public static DcMotor liftLeft;
-//    public static DcMotor liftRight;
-
+    public static Servo jewelHand;
+    public static ColorSensor jewelColor;
     //public static DcMotor relic;
-
-    //public static DcMotor manip;
-
-
-//    public static Servo jewelArm;
-//    public static Servo jewelHand;
 //    public static Servo relicGrabber;
 
-//    public static OpticalDistanceSensor floorL;
-//    public static OpticalDistanceSensor floorR;
+    public static Orientation angles;
+    public static Acceleration gravity;
 
-//    public static BNO055IMU gyro;
-//    public static BNO055IMU.Parameters gyroParam;
-//    public static SensorREVColorDistance jewelColor;
-
-//   private static ModernRoboticsI2cRangeSensor rangeR;
-//    private static ModernRoboticsI2cRangeSensor rangeL;
+    public static ModernRoboticsI2cRangeSensor rangeR;
+    public static ModernRoboticsI2cRangeSensor rangeL;
 //    private static ModernRoboticsI2cRangeSensor ultra;
 
-
-    public Orientation angles;
-//    public Acceleration gravity;
     public String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }
@@ -109,7 +91,6 @@ public abstract class MyOpMode extends LinearOpMode {
     public double rangeDistance;
 
       public void composeTelemetry() {
-
         // At the beginning of each telemetry update, grab a bunch of data
         // from the IMU that we will then display in separate lines.
         telemetry.addAction(new Runnable() { @Override public void run()

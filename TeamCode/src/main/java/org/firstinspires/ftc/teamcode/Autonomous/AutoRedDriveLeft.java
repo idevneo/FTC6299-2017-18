@@ -41,22 +41,6 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 @Autonomous(name="RedRightDriveLeft", group="Linear Opmode")
 
 public class AutoRedDriveLeft extends MyOpMode {
-
-    DcMotor motorBL;
-    DcMotor motorBR;
-    DcMotor motorFL;
-    DcMotor motorFR;
-
-    DcMotor liftLeft;
-    DcMotor liftRight;
-
-    DcMotor manip;
-
-    ColorSensor jewelColor;
-
-    Servo jewelArm;
-    Servo jewelHand;
-
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -78,6 +62,8 @@ public class AutoRedDriveLeft extends MyOpMode {
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
 
+        //rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
+//        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
 
         waitForStart();
         runtime.reset();
