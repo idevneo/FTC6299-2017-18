@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
@@ -73,13 +74,6 @@ public class AutoRedDrive extends MyOpMode {
 //    ModernRoboticsI2cRangeSensor rangeR;
 //    ModernRoboticsI2cRangeSensor rangeL;
 
-    Orientation angles;
-    protected String formatAngle(AngleUnit angleUnit, double angle) {
-        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
-    }
-    String formatDegrees(double degrees){
-        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
-    }
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -101,23 +95,35 @@ public class AutoRedDrive extends MyOpMode {
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
 
-        initIMU();
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
 
+        composeTelemetry();
 //        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
 //        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
 
         waitForStart();
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         runtime.reset();
 
-        turnCorr(.2, 90);
-//        while(opModeIsActive()) {
+//        turnCorr(.2, 90, 8000);
+        while (opModeIsActive()) {
+            telemetry.update();
 //            telemetry.addData("Red  ", jewelColor.red());
 //            telemetry.addData("Green", jewelColor.green());
 //            telemetry.addData("Blue ", jewelColor.blue());
 //            telemetry.update();
 //        }
 
-        // run until the end of the match (driver presses STOP)
+            // run until the end of the match (driver presses STOP)
 //            jewelArm.setPosition(.6);
 //            jewelHand.setPosition(.45);
 //            sleep(2000);
@@ -203,5 +209,6 @@ public class AutoRedDrive extends MyOpMode {
 
         }
 
+    }
 }
 

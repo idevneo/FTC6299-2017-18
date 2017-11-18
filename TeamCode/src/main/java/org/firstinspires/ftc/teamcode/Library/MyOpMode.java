@@ -19,6 +19,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
+import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -89,11 +92,12 @@ public abstract class MyOpMode extends LinearOpMode {
 //    private static ModernRoboticsI2cRangeSensor ultra;
 
 
-    Orientation angles;
-    protected String formatAngle(AngleUnit angleUnit, double angle) {
+    public Orientation angles;
+//    public Acceleration gravity;
+    public String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }
-    String formatDegrees(double degrees){
+    public String formatDegrees(double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 
@@ -101,9 +105,67 @@ public abstract class MyOpMode extends LinearOpMode {
 //    public double grayR;
 //    public double turn;
 //    public double gyroError = 0;
-//
 //    public double ultraDistance;
     public double rangeDistance;
+
+      public void composeTelemetry() {
+
+        // At the beginning of each telemetry update, grab a bunch of data
+        // from the IMU that we will then display in separate lines.
+        telemetry.addAction(new Runnable() { @Override public void run()
+        {
+            // Acquiring the angles is relatively expensive; we don't want
+            // to do that in each of the three items that need that info, as that's
+            // three times the necessary expense.
+            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//            gravity  = imu.getGravity();
+        }
+        });
+
+        telemetry.addLine()
+                .addData("status", new Func<String>() {
+                    @Override public String value() {
+                        return imu.getSystemStatus().toShortString();
+                    }
+                })
+                .addData("calib", new Func<String>() {
+                    @Override public String value() {
+                        return imu.getCalibrationStatus().toString();
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("heading", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.firstAngle); //Control Robot Pivot
+                    }
+                });
+//                .addData("roll", new Func<String>() {
+//                    @Override public String value() {
+//                        return formatAngle(angles.angleUnit, angles.secondAngle);
+//                    }
+//                })
+//                .addData("pitch", new Func<String>() {
+//                    @Override public String value() {
+//                        return formatAngle(angles.angleUnit, angles.thirdAngle);
+//                    }
+//                });
+//
+//        telemetry.addLine()
+//                .addData("gravtiy", new Func<String>() {
+//                    @Override public String value() {
+//                        return gravity.toString();
+//                    }
+//                })
+//                .addData("mag", new Func<String>() {
+//                    @Override public String value() {
+//                        return String.format(Locale.getDefault(), "%.3f",
+//                                Math.sqrt(gravity.xAccel*gravity.xAccel
+//                                        + gravity.yAccel*gravity.yAccel
+//                                        + gravity.zAccel*gravity.zAccel));
+//                    }
+//                });
+    }
 
 //    public void hardwareMap() {
 //        motorBL = hardwareMap.dcMotor.get("motorBL");
@@ -844,9 +906,9 @@ public abstract class MyOpMode extends LinearOpMode {
 //    }
 //
 //
-    public void turnCorr(double pow, double deg) throws InterruptedException {
-        turnCorr(pow, deg, 8000);
-    }
+//    public void turnCorr(double pow, double deg) throws InterruptedException {
+//        turnCorr(pow, deg, 8000);
+//    }
 
     public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
         if (!opModeIsActive())
@@ -855,9 +917,10 @@ public abstract class MyOpMode extends LinearOpMode {
         double newPow;
 
         ElapsedTime time = new ElapsedTime();
-        String startPos = formatAngle(angles.angleUnit, angles.firstAngle);
-        double startP = Double.parseDouble(startPos);
-        delay(100);
+
+        float startP = angles.firstAngle; // startP is the current position
+
+//        delay(100);
         time.reset();
 
         if (deg > 0) {
@@ -867,8 +930,9 @@ public abstract class MyOpMode extends LinearOpMode {
                 if (newPow < .15)
                     newPow = .15;
 
-                setMotors(-newPow, newPow);
+//                setMotors(-newPow, newPow);
                 telemetry.addData("Gyro", startP);
+                telemetry.addData("newpower", newPow);
                 telemetry.update();
                 idle();
             }
@@ -878,26 +942,38 @@ public abstract class MyOpMode extends LinearOpMode {
 
                 if (newPow < .15)
                     newPow = .15;
-                setMotors(newPow, -newPow);
+//                setMotors(newPow, -newPow);
                 telemetry.addData("Gyro", startP);
+                telemetry.addData("newpower", newPow);
                 telemetry.update();
                 idle();
             }
         }
 
-        stopMotors();
+//        stopMotors();
 
         if (startP > deg) {
             while (opModeIsActive() && deg < startP ) {
-                setMotors(.15, -.15);
+                newPow = pow * (Math.abs(deg - startP) / 80);
+
+                if (newPow < .15)
+                    newPow = .15;
+//                setMotors(.15, -.15);
                 telemetry.addData("Gyro", startP);
+                telemetry.addData("newpower", newPow);
                 telemetry.update();
                 idle();
             }
         } else {
             while (opModeIsActive() && deg > startP) {
-                setMotors(-.15, .15);
+                newPow = pow * (Math.abs(deg - startP) / 80);
+
+                if (newPow < .15)
+                    newPow = .15;
+
+//                setMotors(-.15, .15);
                 telemetry.addData("Gyro", startP);
+                telemetry.addData("newpower", newPow);
                 telemetry.update();
                 idle();
             }
