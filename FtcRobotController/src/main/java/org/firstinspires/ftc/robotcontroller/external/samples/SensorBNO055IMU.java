@@ -111,6 +111,10 @@ public class SensorBNO055IMU extends LinearOpMode
     // Telemetry Configuration
     //----------------------------------------------------------------------------------------------
 
+        public double getYaw() {
+            angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            return Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+        }
     void composeTelemetry() {
 
         // At the beginning of each telemetry update, grab a bunch of data
@@ -124,7 +128,6 @@ public class SensorBNO055IMU extends LinearOpMode
                 gravity  = imu.getGravity();
                 }
             });
-
         telemetry.addLine()
             .addData("status", new Func<String>() {
                 @Override public String value() {

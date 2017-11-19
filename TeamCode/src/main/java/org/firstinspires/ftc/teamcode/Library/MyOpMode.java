@@ -47,14 +47,6 @@ public abstract class MyOpMode extends LinearOpMode {
 //    public static final double BUTTONP_RIGHT = .31;
 
     private ElapsedTime     runtime = new ElapsedTime();
-    static final double     COUNTS_PER_MOTOR_REV    = 2240 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
-    public static final double     DRIVE_SPEED             = .65;
-    public static final double     TURN_SPEED              = .5;
-
     public static BNO055IMU imu;
     public static DcMotor motorBL;
     public static DcMotor motorBR;
@@ -76,6 +68,9 @@ public abstract class MyOpMode extends LinearOpMode {
     public static ModernRoboticsI2cRangeSensor rangeL;
 //    private static ModernRoboticsI2cRangeSensor ultra;
 
+    public double rangeLDis;
+    public double rangeRDis;
+
     public String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }
@@ -89,6 +84,23 @@ public abstract class MyOpMode extends LinearOpMode {
 //    public double gyroError = 0;
 //    public double ultraDistance;
     public double rangeDistance;
+
+
+    public double getRangeDistanceL() {
+        rangeLDis = rangeL.getDistance(DistanceUnit.CM);
+        while (rangeLDis > 1000 || Double.isNaN(rangeLDis) && opModeIsActive()) {
+            rangeLDis = rangeL.getDistance(DistanceUnit.CM);
+        }
+        return rangeLDis;
+    }
+
+    public double getRangeDistanceR() {
+        rangeRDis = rangeR.getDistance(DistanceUnit.CM);
+        while (rangeRDis > 1000 || Double.isNaN(rangeRDis) && opModeIsActive()) {
+            rangeRDis = rangeR.getDistance(DistanceUnit.CM);
+        }
+        return rangeRDis;
+    }
 
       public void composeTelemetry() {
         // At the beginning of each telemetry update, grab a bunch of data
@@ -121,6 +133,21 @@ public abstract class MyOpMode extends LinearOpMode {
                         return formatAngle(angles.angleUnit, angles.firstAngle); //Control Robot Pivot
                     }
                 });
+
+          telemetry.addLine()
+                  .addData("LeftD", new Func<String>() {
+                      @Override public String  value() {
+                          return Double.toString(getRangeDistanceL()); //Control Robot Pivot
+                      }
+                  });
+
+          telemetry.addLine()
+                  .addData("RightD", new Func<String>() {
+                      @Override public String value() {
+                          return Double.toString(getRangeDistanceR()); //Control Robot Pivot
+                      }
+                  });
+
 //                .addData("roll", new Func<String>() {
 //                    @Override public String value() {
 //                        return formatAngle(angles.angleUnit, angles.secondAngle);
@@ -476,129 +503,7 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
 
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-            newLeftTarget = motorFL.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = motorFR.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-
-
-            motorFL.setTargetPosition(newLeftTarget);
-            motorFR.setTargetPosition(newRightTarget);
-
-            // Turn On RUN_TO_POSITION
-            motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-            motorFL.setPower(speed);
-            motorBL.setPower(speed);
-            motorBR.setPower(speed);
-            motorFR.setPower(speed);
-
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (motorFL.isBusy()  && motorFR.isBusy())) {
-                telemetry.addData("Path1",  "Running to %7d :%7d", newLeftTarget,  newRightTarget);
-                telemetry.addData("Path2",  "Running at %7d :%7d",
-                        motorFL.getCurrentPosition(),
-                        motorFR.getCurrentPosition());
-                telemetry.update();
-            }
-
-            // Stop all motion;
-            motorFL.setPower(0);
-            motorBL.setPower(0);
-            motorFR.setPower(0);
-            motorBR.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-              sleep(250);   // optional pause after each move
-        }
-    }
-    public void encoderDriveMec(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
-
-        // Ensure that the opmode is still active
-        if (opModeIsActive()) {
-
-            // Determine new target position, and pass to motor controller
-            newLeftTarget = motorFL.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
-            newRightTarget = motorFR.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
-
-            motorBL.setTargetPosition(newLeftTarget);
-            motorFL.setTargetPosition(newLeftTarget);
-            motorBR.setTargetPosition(newRightTarget);
-            motorFR.setTargetPosition(newRightTarget);
-
-            // Turn On RUN_TO_POSITION
-            motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            // reset the timeout time and start motion.
-            runtime.reset();
-
-            if (speed < 0){
-                motorFL.setPower(speed);
-                motorBL.setPower(-speed);
-                motorBR.setPower(-speed);
-                motorFR.setPower(speed);
-            } else if (speed > 0){
-                motorFL.setPower(-speed);
-                motorBL.setPower(speed);
-                motorBR.setPower(speed);
-                motorFR.setPower(-speed);
-            }
-
-
-
-            // keep looping while we are still active, and there is time left, and both motors are running.
-            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
-            // its target position, the motion will stop.  This is "safer" in the event that the robot will
-            // always end the motion as soon as possible.
-            // However, if you require that BOTH motors have finished their moves before the robot continues
-            // onto the next step, use (isBusy() || isBusy()) in the loop test.
-            while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (motorFL.isBusy() && motorBL.isBusy() && motorBR.isBusy() && motorFR.isBusy())) {
-            }
-
-            // Stop all motion;
-            motorFL.setPower(0);
-            motorBL.setPower(0);
-            motorFR.setPower(0);
-            motorBR.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(250);   // optional pause after each move
-        }
-    }
 
     public int getEncoderAverage() {
         return Math.abs(motorBL.getCurrentPosition());
@@ -869,6 +774,11 @@ public abstract class MyOpMode extends LinearOpMode {
 //        turnCorr(pow, deg, 8000);
 //    }
 
+    public double getYaw() {
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+    }
+
     public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
         if (!opModeIsActive())
             return;
@@ -876,62 +786,67 @@ public abstract class MyOpMode extends LinearOpMode {
         double newPow;
 
         ElapsedTime time = new ElapsedTime();
+        getYaw();
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // startP is the current position
 
-        float startP = angles.firstAngle; // startP is the current position
-
-//        delay(100);
+        delay(100);
         time.reset();
 
         if (deg > 0) {
-            while ((deg > startP && time.milliseconds() < tim)) {
-                newPow = pow * (Math.abs(deg - startP) / 80);
+            while ((deg > currPos && time.milliseconds() < tim)) {
+                newPow = pow * (Math.abs(deg - currPos) / 80);
 
                 if (newPow < .15)
                     newPow = .15;
 
-//                setMotors(-newPow, newPow);
-                telemetry.addData("Gyro", startP);
+                setMotors(-newPow, newPow);
+                currPos = getYaw();
+                telemetry.addData("Gyro", currPos);
                 telemetry.addData("newpower", newPow);
                 telemetry.update();
                 idle();
             }
         } else {
-            while (deg < startP && time.milliseconds() < tim) {
-                newPow = pow * (Math.abs(deg - startP) / 80);
+            while (deg < currPos && time.milliseconds() < tim) {
+                newPow = pow * (Math.abs(deg - currPos) / 80);
 
                 if (newPow < .15)
                     newPow = .15;
-//                setMotors(newPow, -newPow);
-                telemetry.addData("Gyro", startP);
+                setMotors(newPow, -newPow);
+                currPos = getYaw();
+                telemetry.addData("Gyro", currPos);
                 telemetry.addData("newpower", newPow);
                 telemetry.update();
                 idle();
             }
         }
 
-//        stopMotors();
+        stopMotors();
 
-        if (startP > deg) {
-            while (opModeIsActive() && deg < startP ) {
-                newPow = pow * (Math.abs(deg - startP) / 80);
+        if (currPos > deg) {
+            while (opModeIsActive() && deg < currPos ) {
+                newPow = pow * (Math.abs(deg - currPos) / 80);
 
                 if (newPow < .15)
                     newPow = .15;
-//                setMotors(.15, -.15);
-                telemetry.addData("Gyro", startP);
+                setMotors(.15, -.15);
+                currPos = getYaw();
+                telemetry.addData("Gyro", currPos);
                 telemetry.addData("newpower", newPow);
                 telemetry.update();
                 idle();
             }
         } else {
-            while (opModeIsActive() && deg > startP) {
-                newPow = pow * (Math.abs(deg - startP) / 80);
+            while (opModeIsActive() && deg > currPos) {
+                newPow = pow * (Math.abs(deg - currPos) / 80);
 
                 if (newPow < .15)
                     newPow = .15;
 
-//                setMotors(-.15, .15);
-                telemetry.addData("Gyro", startP);
+                setMotors(-.15, .15);
+                currPos = getYaw();
+                telemetry.addData("Gyro", currPos);
                 telemetry.addData("newpower", newPow);
                 telemetry.update();
                 idle();

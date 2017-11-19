@@ -278,15 +278,11 @@ public class Plz extends LinearOpMode {
             if ((Math.abs(gamepad2.left_stick_y) > .05)) {
                     liftLeft.setPower(-gamepad2.left_stick_y * .5);
                     liftRight.setPower(gamepad2.left_stick_y * .5);
-            }   else if (gamepad2.left_bumper) {
-                    liftLeft.setPower(-.3);
-                    liftRight.setPower(.3);
-            }   else if (gamepad2.right_bumper) {
-                    liftLeft.setPower(.3);
-                    liftRight.setPower(-.3);
             }   else {
                     liftLeft.setPower(0);
                     liftRight.setPower(0);
+                    liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
 
             }

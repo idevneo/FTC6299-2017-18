@@ -34,6 +34,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -54,6 +55,8 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
                             // Comment this out to add to the opmode list
 public class AutoRedRight extends MyOpMode
     {
+        private ElapsedTime runtime = new ElapsedTime();
+
     @Override public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -90,18 +93,24 @@ public class AutoRedRight extends MyOpMode
         composeTelemetry();
         // Wait until we're told to go
         waitForStart();
-/**-----------------------------------------------------------------------------------------------------------------------*/
+        runtime.reset();
+/**---------------------------------------------------------------------------------------------------------------*/
 
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        // Loop and update the dashboard
-        while (opModeIsActive()) {
-
-            telemetry.addData("leftRange", rangeL.getDistance(DistanceUnit.CM));
-            telemetry.addData("rightRange", rangeR.getDistance(DistanceUnit.CM));
-            telemetry.update();
+        try {
+            turnCorr(.5,90,8000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        // Loop and update the dashboard
+//        while (opModeIsActive()) {
+////            telemetry.addData("leftRange", getRangeDistanceL());
+////            telemetry.addData("rightRange", getRangeDistanceR());
+//            telemetry.update();
+//
+//        }
     }
 
 }
