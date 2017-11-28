@@ -53,11 +53,11 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 @Autonomous(name = "Red Right Gyro", group = "Sensor")
                             // Comment this out to add to the opmode list
-public class AutoRedRight extends MyOpMode
-    {
-        private ElapsedTime runtime = new ElapsedTime();
+public class AutoRedRight extends MyOpMode {
+    private ElapsedTime runtime = new ElapsedTime();
 
-    @Override public void runOpMode() {
+    @Override
+    public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -79,11 +79,11 @@ public class AutoRedRight extends MyOpMode
         rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
@@ -95,22 +95,22 @@ public class AutoRedRight extends MyOpMode
         waitForStart();
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
-
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        try {
-            turnCorr(.5,90,8000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            turnCorr(.5, 90, 8000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
         // Loop and update the dashboard
-//        while (opModeIsActive()) {
-////            telemetry.addData("leftRange", getRangeDistanceL());
-////            telemetry.addData("rightRange", getRangeDistanceR());
-//            telemetry.update();
+        while (opModeIsActive()) {
+            telemetry.addData("leftRange", getRangeDistanceL());
+            telemetry.addData("rightRange", getRangeDistanceR());
+            telemetry.update();
 //
 //        }
-    }
+        }
 
+    }
 }

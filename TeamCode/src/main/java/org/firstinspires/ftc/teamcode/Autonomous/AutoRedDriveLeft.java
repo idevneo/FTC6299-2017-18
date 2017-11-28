@@ -48,22 +48,7 @@ public class AutoRedDriveLeft extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorFR = hardwareMap.dcMotor.get("motorFR");
-
-        liftLeft = hardwareMap.dcMotor.get("liftL");
-        liftRight = hardwareMap.dcMotor.get("liftR");
-        manip = hardwareMap.dcMotor.get("manip");
-
-        jewelColor = hardwareMap.get(ColorSensor.class, "jewelColor");
-
-        jewelArm = hardwareMap.servo.get("jewelArm");
-        jewelHand = hardwareMap.servo.get("jewelHand");
-
-        //rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
-//        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
+        hMap(hardwareMap);
 
         waitForStart();
         runtime.reset();
