@@ -56,11 +56,11 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public static ModernRoboticsI2cRangeSensor rangeR;
     public static ModernRoboticsI2cRangeSensor rangeL;
-//    private static ModernRoboticsI2cRangeSensor ultra;
+//    public static ModernRoboticsI2cRangeSensor rangeF;
 
     public double rangeLDis;
     public double rangeRDis;
-    public double rangeDistance;
+    public double rangeFDis;
 
     public String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
@@ -69,23 +69,6 @@ public abstract class MyOpMode extends LinearOpMode {
     public String formatDegrees(double degrees) {
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
-
-    public double getRangeDistanceL() {
-        rangeLDis = rangeL.getDistance(DistanceUnit.INCH);
-        if (Double.isNaN(rangeLDis)) {
-            rangeLDis = 255;
-        }
-        return rangeLDis;
-    }
-
-    public double getRangeDistanceR() {
-        rangeRDis = rangeR.getDistance(DistanceUnit.INCH);
-//        while ((rangeRDis > 1000 || Double.isNaN(rangeRDis)) && opModeIsActive()) {
-//            rangeRDis = rangeR.getDistance(DistanceUnit.CM);
-//        }
-        return rangeRDis;
-    }
-
 
     public void composeTelemetry() {
         // At the beginning of each telemetry update, grab a bunch of data
@@ -162,7 +145,7 @@ public abstract class MyOpMode extends LinearOpMode {
 //                });
     }
 
-    public void hMap(HardwareMap map) {
+    public void hMap(HardwareMap type) {
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
@@ -178,6 +161,10 @@ public abstract class MyOpMode extends LinearOpMode {
 
         rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
         rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
+//        rangeF = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeF");
+        rangeLDis = rangeL.getDistance(DistanceUnit.INCH);
+        rangeRDis = rangeR.getDistance(DistanceUnit.INCH);
+//        rangeFDis = rangeF.getDistance(DistanceUnit.INCH);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -193,17 +180,18 @@ public abstract class MyOpMode extends LinearOpMode {
 //        relicGrabber = hardwareMap.servo.get("relicGrabber");
     }
 
-    public void initIMU() {
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
+    public double getRangeDistanceL() {
+        if (Double.isNaN(rangeLDis)) {
+            rangeLDis = 255;
+        }
+        return rangeLDis;
+    }
+
+    public double getRangeDistanceR() {
+//        while ((rangeRDis > 1000 || Double.isNaN(rangeRDis)) && opModeIsActive()) {
+//            rangeRDis = rangeR.getDistance(DistanceUnit.CM);
+//        }
+        return rangeRDis;
     }
 
     public void delay(long milliseconds) throws InterruptedException {
@@ -222,12 +210,47 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setPower(right);
     }
 
-//    public void rangeMove(double pow, double inAway /*,"Sensor that we use"*/) { //moves fowards
-//        double currentpos = /*,"Sensor that we use"*/.getDistance(DistanceUnit.INCH);
-//        while ((currentpos > inAway) && opModeIsActive()) {
-//        setMotors(pow, pow);
-//        }
-//    }
+    public void setMotorStrafe(double pow) { //Strafes right when positive.
+        motorFL.setPower(-pow);
+        motorBL.setPower(pow);
+        motorFR.setPower(-pow);
+        motorBR.setPower(pow);
+
+    }
+
+    public void stopMotors() {
+        if (!opModeIsActive())
+            return;
+
+        motorFL.setPower(0);
+        motorBL.setPower(0);
+        motorFR.setPower(0);
+        motorBR.setPower(0);
+    }
+
+    public void rangeMove(double pow, double inAway , double sensor)    { //Set pow negative to move backward.
+        while (!(inAway - .25 < sensor) && !(sensor < inAway + .25)) { //While sensor doesn't = tolerance, run.
+            if (sensor > inAway) {
+                setMotors(pow, pow);
+            }
+            if (sensor < inAway) {
+                setMotors(-pow, -pow);
+            }
+        }
+        stopMotors();
+    }
+
+    public void rangeMoveStrafe(double pow, double inAway , double sensor) { //Set pow to negative if we want to move left.
+        while (!(inAway - .25 < sensor) && !(sensor < inAway + .25)) {
+            if (sensor > inAway) {
+                setMotorStrafe(pow);
+            }
+            if (sensor < inAway) {
+                setMotorStrafe(-pow);
+            }
+        }
+        stopMotors();
+    }
 
 //    public void setMotorsMec() {
 //        if (!opModeIsActive())
@@ -428,16 +451,6 @@ public abstract class MyOpMode extends LinearOpMode {
 
         jewelHand.setPosition(.3);
         sleep(1000);
-    }
-
-    public void stopMotors() {
-        if (!opModeIsActive())
-            return;
-
-        motorFL.setPower(0);
-        motorBL.setPower(0);
-        motorFR.setPower(0);
-        motorBR.setPower(0);
     }
 
 //    public double getUltraDistance() {

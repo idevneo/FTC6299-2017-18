@@ -47,7 +47,6 @@ public class AutoRedDriveLeft extends MyOpMode {
     public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
         hMap(hardwareMap);
 
         waitForStart();

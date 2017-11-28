@@ -60,35 +60,7 @@ public class AutoRedRight extends MyOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorFR = hardwareMap.dcMotor.get("motorFR");
-
-        liftLeft = hardwareMap.dcMotor.get("liftL");
-        liftRight = hardwareMap.dcMotor.get("liftR");
-        manip = hardwareMap.dcMotor.get("manip");
-
-        jewelColor = hardwareMap.get(ColorSensor.class, "jewelColor");
-
-        jewelArm = hardwareMap.servo.get("jewelArm");
-        jewelHand = hardwareMap.servo.get("jewelHand");
-
-        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
-        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-
-        angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        hMap(hardwareMap);
         // Set up our telemetry dashboard
         composeTelemetry();
         // Wait until we're told to go
@@ -103,6 +75,9 @@ public class AutoRedRight extends MyOpMode {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
+
+        rangeMove(1, 10, rangeLDis);
+
         // Loop and update the dashboard
         while (opModeIsActive()) {
             telemetry.addData("leftRange", getRangeDistanceL());
