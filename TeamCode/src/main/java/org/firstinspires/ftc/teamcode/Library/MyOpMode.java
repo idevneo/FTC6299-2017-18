@@ -107,7 +107,7 @@ public abstract class MyOpMode extends LinearOpMode {
           telemetry.addLine()
                   .addData("tha Left 1 doe", new Func<String>() {
                       @Override public String  value() {
-                          while (!Double.isNaN(rangeL.getDistance(DistanceUnit.INCH)) || rangeL.getDistance(DistanceUnit.INCH) < 1000) {
+                          if (!Double.isNaN(rangeL.getDistance(DistanceUnit.INCH)) || rangeL.getDistance(DistanceUnit.INCH) < 1000) {
                               rangeLDis = rangeL.getDistance(DistanceUnit.INCH);
                               return Double.toString(rangeLDis);
                           }
@@ -117,7 +117,7 @@ public abstract class MyOpMode extends LinearOpMode {
         telemetry.addLine()
                 .addData("tha rite 1 doe", new Func<String>() {
                     @Override public String  value() {
-                        while (!Double.isNaN(rangeR.getDistance(DistanceUnit.INCH)) || rangeR.getDistance(DistanceUnit.INCH) < 1000) {
+                        if (!Double.isNaN(rangeR.getDistance(DistanceUnit.INCH)) || rangeR.getDistance(DistanceUnit.INCH) < 1000) {
                             rangeRDis = rangeR.getDistance(DistanceUnit.INCH);
                             return Double.toString(rangeRDis);
                         }
@@ -128,7 +128,7 @@ public abstract class MyOpMode extends LinearOpMode {
         telemetry.addLine()
                 .addData("fdis", new Func<String>() {
                     @Override public String  value() {
-                        while (!Double.isNaN(rangeF.getDistance(DistanceUnit.INCH)) || rangeF.getDistance(DistanceUnit.INCH) < 1000) {
+                        if (!Double.isNaN(rangeF.getDistance(DistanceUnit.INCH)) || rangeF.getDistance(DistanceUnit.INCH) < 1000) {
                             rangeFDis = rangeF.getDistance(DistanceUnit.INCH);
                             return Double.toString(rangeFDis);
                         }
@@ -187,9 +187,6 @@ public abstract class MyOpMode extends LinearOpMode {
         rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
         rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
         rangeF = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeC");
-        rangeLDis = rangeL.getDistance(DistanceUnit.INCH);
-        rangeRDis = rangeR.getDistance(DistanceUnit.INCH);
-        rangeFDis = rangeF.getDistance(DistanceUnit.INCH);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -253,7 +250,7 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void rangeMove(double pow, double inAway , double sensor)    { //Set pow negative to move backward.
-        while (!(inAway - .25 < sensor) && !(sensor < inAway + .25)) { //While sensor doesn't = tolerance, run.
+        while ((sensor < inAway - .25) || (sensor > inAway + .25)) { //While sensor doesn't = tolerance, run.
             if (sensor > inAway) {
                 setMotors(pow, pow);
             }
@@ -265,7 +262,7 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void rangeMoveStrafe(double pow, double inAway , double sensor) { //Set pow to negative if we want to move left.
-        while (!(inAway - .25 < sensor) && !(sensor < inAway + .25)) {
+          while ((sensor < inAway - .25) || (sensor > inAway + .25)) {
             if (sensor > inAway) {
                 setMotorStrafe(pow);
             }

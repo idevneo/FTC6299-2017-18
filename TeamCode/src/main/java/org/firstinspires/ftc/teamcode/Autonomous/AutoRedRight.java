@@ -75,17 +75,13 @@ public class AutoRedRight extends MyOpMode {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-
-//        rangeMove(1, 10, rangeLDis);
-        rangeLDis = rangeL.getDistance(DistanceUnit.INCH);
-        rangeRDis = rangeR.getDistance(DistanceUnit.INCH);
+        telemetry.update();
+        rangeMove(.5, 10, rangeLDis);
 
         // Loop and update the dashboard
         while (opModeIsActive()) {
-//            telemetry.addData("leftRange", getRangeDistanceL());
-//            telemetry.addData("rightRange", getRangeDistanceR());
 
-            telemetry.update();//
+            telemetry.update();
 //        }
         }
 
