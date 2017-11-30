@@ -56,7 +56,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public static ModernRoboticsI2cRangeSensor rangeR;
     public static ModernRoboticsI2cRangeSensor rangeL;
-//    public static ModernRoboticsI2cRangeSensor rangeF;
+    public static ModernRoboticsI2cRangeSensor rangeF;
 
     public double rangeLDis;
     public double rangeRDis;
@@ -104,13 +104,38 @@ public abstract class MyOpMode extends LinearOpMode {
                     }
                 });
 
-//          telemetry.addLine()
-//                  .addData("LeftD", new Func<String>() {
-//                      @Override public String  value() {
-//                          return Double.toString(getRangeDistanceL()); //Control Robot Pivot
-//                      }
-//                  });
-//
+          telemetry.addLine()
+                  .addData("tha Left 1 doe", new Func<String>() {
+                      @Override public String  value() {
+                          while (!Double.isNaN(rangeL.getDistance(DistanceUnit.INCH)) || rangeL.getDistance(DistanceUnit.INCH) < 1000) {
+                              rangeLDis = rangeL.getDistance(DistanceUnit.INCH);
+                              return Double.toString(rangeLDis);
+                          }
+                          return Double.toString(rangeLDis);
+                      }
+                  });
+        telemetry.addLine()
+                .addData("tha rite 1 doe", new Func<String>() {
+                    @Override public String  value() {
+                        while (!Double.isNaN(rangeR.getDistance(DistanceUnit.INCH)) || rangeR.getDistance(DistanceUnit.INCH) < 1000) {
+                            rangeRDis = rangeR.getDistance(DistanceUnit.INCH);
+                            return Double.toString(rangeRDis);
+                        }
+                        return Double.toString(rangeRDis);
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("fdis", new Func<String>() {
+                    @Override public String  value() {
+                        while (!Double.isNaN(rangeF.getDistance(DistanceUnit.INCH)) || rangeF.getDistance(DistanceUnit.INCH) < 1000) {
+                            rangeFDis = rangeF.getDistance(DistanceUnit.INCH);
+                            return Double.toString(rangeFDis);
+                        }
+                        return Double.toString(rangeFDis);
+                    }
+                });
+
 //          telemetry.addLine()
 //                  .addData("RightD", new Func<String>() {
 //                      @Override public String value() {
@@ -161,10 +186,10 @@ public abstract class MyOpMode extends LinearOpMode {
 
         rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
         rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
-//        rangeF = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeF");
+        rangeF = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeC");
         rangeLDis = rangeL.getDistance(DistanceUnit.INCH);
         rangeRDis = rangeR.getDistance(DistanceUnit.INCH);
-//        rangeFDis = rangeF.getDistance(DistanceUnit.INCH);
+        rangeFDis = rangeF.getDistance(DistanceUnit.INCH);
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -181,10 +206,9 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public double getRangeDistanceL() {
-        if (Double.isNaN(rangeLDis)) {
-            rangeLDis = 255;
+        while (Double.isNaN(rangeL.getDistance(DistanceUnit.INCH)) || rangeL.getDistance(DistanceUnit.INCH) > 1000 || rangeL.getDistance(DistanceUnit.INCH) == 1.79769313486231570e+308) {
         }
-        return rangeLDis;
+        return rangeL.getDistance(DistanceUnit.INCH);
     }
 
     public double getRangeDistanceR() {
