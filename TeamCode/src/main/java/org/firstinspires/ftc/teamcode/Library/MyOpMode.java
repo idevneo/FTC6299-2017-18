@@ -250,27 +250,39 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setPower(0);
     }
 
-    public void rangeMove(double pow, double inAway , double sensor)    { //Set pow negative to move backward.
-        while ((sensor < inAway - .25) || (sensor > inAway + .25)) { //While sensor doesn't = tolerance, run.
+    public void rangeMove(double pow, double inAway, ModernRoboticsI2cRangeSensor sensorVar)    { //Set pow negative to move backward.
+        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
 
+        while ((sensor < inAway - .25) || (sensor > inAway + .25)) { //While sensor doesn't = tolerance, run.
             double localRange;
-            localRange = rangeF.getDistance(DistanceUnit.INCH);
+            localRange = sensorVar.getDistance(DistanceUnit.INCH);
             if (!Double.isNaN(localRange) && (localRange < 1000)) {
                 sensor = localRange;
             }
+
+            telemetry.addData("SensorValue", sensor); //optional telemetry
+            telemetry.update();
 
             if (sensor > inAway) {
                 setMotors(pow, pow);
             }
             if (sensor < inAway) {
-                setMotors(pow, pow);
+                setMotors(-pow, -pow);
             }
         }
         stopMotors();
     }
 
-    public void rangeMoveStrafe(double pow, double inAway , double sensor) { //Set pow to negative if we want to move left.
+    public void rangeMoveStrafe(double pow, double inAway , ModernRoboticsI2cRangeSensor sensorVar) { //Set pow to negative if we want to move left.
+        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
+
           while ((sensor < inAway - .25) || (sensor > inAway + .25)) {
+              double localRange;
+              localRange = sensorVar.getDistance(DistanceUnit.INCH);
+              if (!Double.isNaN(localRange) && (localRange < 1000)) {
+                  sensor = localRange;
+              }
+
             if (sensor > inAway) {
                 setMotorStrafe(pow);
             }

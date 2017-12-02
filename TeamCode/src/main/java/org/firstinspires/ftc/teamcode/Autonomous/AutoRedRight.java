@@ -75,8 +75,10 @@ public class AutoRedRight extends MyOpMode {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        telemetry.update();
-        rangeMove(.5, 10, rangeFDis);
+
+//        rangeMove(.3, 15, rangeF);
+
+        //Need to put the Auto together - Message Caleb for the details on how.
 
         // Loop and update the dashboard
         while (opModeIsActive()) {
