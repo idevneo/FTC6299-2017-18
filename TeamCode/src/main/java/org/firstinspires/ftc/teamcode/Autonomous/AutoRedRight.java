@@ -76,7 +76,7 @@ public class AutoRedRight extends MyOpMode {
 //            e.printStackTrace();
 //        }
         telemetry.update();
-        rangeMove(.5, 10, rangeLDis);
+        rangeMove(.5, 10, rangeFDis);
 
         // Loop and update the dashboard
         while (opModeIsActive()) {

@@ -107,9 +107,10 @@ public abstract class MyOpMode extends LinearOpMode {
           telemetry.addLine()
                   .addData("tha Left 1 doe", new Func<String>() {
                       @Override public String  value() {
-                          if (!Double.isNaN(rangeL.getDistance(DistanceUnit.INCH)) || rangeL.getDistance(DistanceUnit.INCH) < 1000) {
-                              rangeLDis = rangeL.getDistance(DistanceUnit.INCH);
-                              return Double.toString(rangeLDis);
+                          double localRangeL;
+                          localRangeL = rangeL.getDistance(DistanceUnit.INCH);
+                          if (!Double.isNaN(localRangeL) && (localRangeL < 1000)) {
+                              rangeLDis = localRangeL;
                           }
                           return Double.toString(rangeLDis);
                       }
@@ -251,11 +252,18 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public void rangeMove(double pow, double inAway , double sensor)    { //Set pow negative to move backward.
         while ((sensor < inAway - .25) || (sensor > inAway + .25)) { //While sensor doesn't = tolerance, run.
+
+            double localRange;
+            localRange = rangeF.getDistance(DistanceUnit.INCH);
+            if (!Double.isNaN(localRange) && (localRange < 1000)) {
+                sensor = localRange;
+            }
+
             if (sensor > inAway) {
-                setMotors(-pow, pow);
+                setMotors(pow, pow);
             }
             if (sensor < inAway) {
-                setMotors(pow, -pow);
+                setMotors(pow, pow);
             }
         }
         stopMotors();
