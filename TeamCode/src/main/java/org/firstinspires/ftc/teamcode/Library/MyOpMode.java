@@ -252,10 +252,10 @@ public abstract class MyOpMode extends LinearOpMode {
     public void rangeMove(double pow, double inAway , double sensor)    { //Set pow negative to move backward.
         while ((sensor < inAway - .25) || (sensor > inAway + .25)) { //While sensor doesn't = tolerance, run.
             if (sensor > inAway) {
-                setMotors(pow, pow);
+                setMotors(-pow, pow);
             }
             if (sensor < inAway) {
-                setMotors(-pow, -pow);
+                setMotors(pow, -pow);
             }
         }
         stopMotors();
