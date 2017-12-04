@@ -70,14 +70,21 @@ public class AutoRedRight extends MyOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        rangeMovePID(.75, 5, rangeF);
+        getVuMark();
+
+        rangeMovePID( 5.5, rangeF);
+        try {
+            turnCorr(.25,0,1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        rangeMoveStrafe(22.5,rangeR);
 //        try {
 //            turnCorr(.5, 90, 8000);
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
 
-//        rangeMove(.3, 15, rangeF);
 
         //Need to put the Auto together - Message Caleb for the details on how.
 
