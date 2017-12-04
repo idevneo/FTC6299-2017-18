@@ -32,6 +32,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMU;
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMUCalibration;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
+
+
 import java.util.Locale;
 
 public abstract class MyOpMode extends LinearOpMode {
@@ -61,6 +70,9 @@ public abstract class MyOpMode extends LinearOpMode {
     public double rangeLDis;
     public double rangeRDis;
     public double rangeFDis;
+
+    public VuforiaLocalizer vuforia;
+    public char column;
 
     public String formatAngle(AngleUnit angleUnit, double angle) {
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
@@ -250,6 +262,57 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setPower(0);
     }
 
+    public void retrieveBlock(double pow) {
+        if (pow > 0) {
+            manip.setPower(pow);
+            try {
+                Thread.sleep(750);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            manip.setPower(0);
+        } else if (pow < 0) {
+            manip.setPower(pow);
+            try {
+                Thread.sleep(750);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            manip.setPower(0);
+        } else {
+            manip.setPower(0);
+        }
+
+    }
+    public void getVuMark() {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+
+        //telemetry.addData(">", "Press Play to start");
+
+        relicTrackables.activate();
+
+
+        // copy pasta from the ftc ppl
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+
+        telemetry.addData("VuMark ", vuMark);
+        if (vuMark == RelicRecoveryVuMark.CENTER)
+            column = 'C';
+        else if (vuMark == RelicRecoveryVuMark.LEFT)
+            column = 'L';
+        else if (vuMark == RelicRecoveryVuMark.RIGHT)
+            column = 'R';
+    }
+
     public void rangeMove(double pow, double inAway, ModernRoboticsI2cRangeSensor sensorVar)    { //Set pow negative to move backward.
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
 
@@ -271,6 +334,46 @@ public abstract class MyOpMode extends LinearOpMode {
             }
         }
         stopMotors();
+    }
+
+    public void rangeMovePID(double pow, double inAway, ModernRoboticsI2cRangeSensor sensorVar) { //Set pow negative to move backward.
+        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
+        double differenceDis;
+        double kP = .35; //to be determined
+        double changeFactor;
+        //backwards
+        if (sensor > inAway) {
+            while (sensor > inAway + .25) { //While sensor doesn't = tolerance, run.
+                double localRange;
+                differenceDis = Math.abs(sensor - inAway);
+                changeFactor = kP *differenceDis;
+                localRange = sensorVar.getDistance(DistanceUnit.INCH);
+                if (!Double.isNaN(localRange) && (localRange < 1000)) {
+                    sensor = localRange;
+                }
+
+                telemetry.addData("SensorValue", sensor); //optional telemetry
+                telemetry.update();
+                setMotors(-pow - changeFactor, -pow + changeFactor);
+            }
+            //forwards
+            if (sensor < inAway) {
+                while (sensor < inAway - .25) { //While sensor doesn't = tolerance, run.
+                    double localRange;
+                    differenceDis = Math.abs(sensor - inAway);
+                    changeFactor = kP *differenceDis;
+                    localRange = sensorVar.getDistance(DistanceUnit.INCH);
+                    if (!Double.isNaN(localRange) && (localRange < 1000)) {
+                        sensor = localRange;
+                    }
+
+                    telemetry.addData("SensorValue", sensor); //optional telemetry
+                    telemetry.update();
+                    setMotors(pow + changeFactor, pow - changeFactor);
+                }
+            }
+            stopMotors();
+        }
     }
 
     public void rangeMoveStrafe(double pow, double inAway , ModernRoboticsI2cRangeSensor sensorVar) { //Set pow to negative if we want to move left.
@@ -435,18 +538,6 @@ public abstract class MyOpMode extends LinearOpMode {
 //        return rangeDistance;
 //    }
 
-    //    public void depositBlockAuto(double dep) {
-//        if (dep > 0.1) {
-//            manip.setPower(dep);
-//        } else if (dep < -0.1) {
-//            manip.setPower(-dep);
-//        } else {
-//            manip.setPower(0);
-//        }
-//        manip.setPower(0);
-//
-//    }
-//
     public void jewelKnockerRed() {
         jewelArm.setPosition(.6);
         jewelHand.setPosition(.45);
