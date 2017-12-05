@@ -111,7 +111,12 @@ public abstract class MyOpMode extends LinearOpMode {
                         return formatAngle(angles.angleUnit, angles.firstAngle); //Control Robot Pivot
                     }
                 });
-
+//        telemetry.addLine()
+//                .addData("VumarkGoal", new Func<String>() {
+//                    @Override public String  value() {
+//                        return Character.toString(getVuMark());
+//                    }
+//                });
           telemetry.addLine()
                   .addData("Left", new Func<String>() {
                       @Override public String  value() {
@@ -195,6 +200,10 @@ public abstract class MyOpMode extends LinearOpMode {
         rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
         rangeF = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeC");
 
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -243,28 +252,28 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setPower(0);
     }
 
-//    public void retrieveBlock(double pow) {
-//        if (pow > 0) {
-//            manip.setPower(pow);
-//            try {
-//                Thread.sleep(750);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            manip.setPower(0);
-//        } else if (pow < 0) {
-//            manip.setPower(pow);
-//            try {
-//                Thread.sleep(750);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            manip.setPower(0);
-//        } else {
-//            manip.setPower(0);
-//        }
-//
-//    }
+    public void manipAuto(double pow) {
+        if (pow > 0) {
+            manip.setPower(pow);
+            try {
+                Thread.sleep(750);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            manip.setPower(0);
+        } else if (pow < 0) {
+            manip.setPower(pow);
+            try {
+                Thread.sleep(750);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            manip.setPower(0);
+        } else {
+            manip.setPower(0);
+        }
+
+    }
     public char getVuMark() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
@@ -286,6 +295,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
 
         telemetry.addData("VuMark ", vuMark);
+        telemetry.update();
         if (vuMark == RelicRecoveryVuMark.CENTER)
             column = 'C';
         else if (vuMark == RelicRecoveryVuMark.LEFT)
@@ -296,18 +306,24 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
 
-    public void vfMoveRed(double pow) {
+    public void vfMovePerp(char rb) {
         double centerDis = 30;
-        double kC = 7.5;
+        double kC = 0;
+        if (rb == 'r')
+            kC = 7.5;
+        if (rb == 'b')
+            kC = -7.5;
         if (column == 'L') {
-            rangeMoveStrafe(centerDis + kC , rangeR);
+            rangeMoveStrafe( 0.1,(centerDis + kC) , rangeR);
         } else if (column == 'R') {
-            rangeMoveStrafe(centerDis - kC, rangeR);
+            rangeMoveStrafe(0.1,(centerDis - kC), rangeR);
         } else if (column == 'C') {
-            rangeMoveStrafe(centerDis, rangeR);
+            rangeMoveStrafe(0.1,centerDis, rangeR);
         }
 
     }
+
+
 
     public void rangeMove(double pow, double inAway, ModernRoboticsI2cRangeSensor sensorVar)    { //Set pow negative to move backward.
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
@@ -345,6 +361,11 @@ public abstract class MyOpMode extends LinearOpMode {
             }
             differenceDis = Math.abs(sensor - inAway);
             pow = differenceDis*kP;
+
+            if (pow > .3)
+                pow = .3;
+            if (pow < .1)
+                pow = .2;
             telemetry.addData("SensorValue", sensor); //optional telemetry
             telemetry.update();
 
@@ -400,25 +421,34 @@ public abstract class MyOpMode extends LinearOpMode {
 //        }
 //    }
 
-    public void rangeMoveStrafe(double inAway , ModernRoboticsI2cRangeSensor sensorVar) { //Set pow to negative if we want to move left.
+    public void rangeMoveStrafe(double pow, double inAway , ModernRoboticsI2cRangeSensor sensorVar) { //Set pow to negative if we want to move left.
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-        double differenceDis;
-        double kP = .035; //to be determined
-        double pow;
-          while ((sensor < inAway - .25) || (sensor > inAway + .25)) {
+//        double differenceDis;
+//        double kP = .035; //to be determined
+//        double pow;
+          while ((sensor < inAway - .5) || (sensor > inAway + .5)) {
               double localRange;
               localRange = sensorVar.getDistance(DistanceUnit.INCH);
               if (!Double.isNaN(localRange) && (localRange < 1000)) {
                   sensor = localRange;
               }
-              differenceDis = Math.abs(sensor - inAway);
-              pow = differenceDis*kP;
+//              differenceDis = Math.abs(sensor - inAway);
+//              pow = differenceDis*kP;
+
+//              if (pow > 1)
+//                  pow = 1;
+//              if (pow < .3)
+//                  pow = .3;
+
             if (sensor > inAway) {
                 setMotorStrafe(pow);
             }
             if (sensor < inAway) {
                 setMotorStrafe(-pow);
+
             }
+              telemetry.addData("rightwhile", sensor);
+              telemetry.update();
         }
         stopMotors();
     }

@@ -36,11 +36,16 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 /**
@@ -64,26 +69,74 @@ public class AutoRedRight extends MyOpMode {
         // Set up our telemetry dashboard
         composeTelemetry();
         // Wait until we're told to go
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+
+        //telemetry.addData(">", "Press Play to start");
+
+        relicTrackables.activate();
+
+
+        // copy pasta from the ftc ppl
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
+
+
+
+
+
         waitForStart();
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        getVuMark();
+        column = getVuMark();
 
-        rangeMovePID( 5.5, rangeF);
+        rangeMovePID( 6.5, rangeF);
+
+
+        sleep(1000);
         try {
-            turnCorr(.25,0,1000);
+            turnCorr(.5, 0, 3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        rangeMoveStrafe(22.5,rangeR);
-//        try {
-//            turnCorr(.5, 90, 8000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        sleep(1000);
+
+
+        rangeMoveStrafe(.1,26.5,rangeR);
+        sleep(1000);
+//
+//
+        try {
+            turnCorr(.5, 0, 3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        sleep(1000);
+
+        vfMovePerp( 'r');
+        sleep(1000);
+
+        stopMotors();
+        sleep(1000);
+
+        manipAuto(-.75);
+        sleep(1000);
+
+
+        
+
 
 
         //Need to put the Auto together - Message Caleb for the details on how.
