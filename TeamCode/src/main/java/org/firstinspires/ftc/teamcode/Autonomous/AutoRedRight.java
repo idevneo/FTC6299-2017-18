@@ -70,29 +70,6 @@ public class AutoRedRight extends MyOpMode {
         composeTelemetry();
         // Wait until we're told to go
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        parameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.FRONT;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
-
-        //telemetry.addData(">", "Press Play to start");
-
-        relicTrackables.activate();
-
-
-        // copy pasta from the ftc ppl
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-
-
-
-
-
-
         waitForStart();
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
@@ -101,8 +78,28 @@ public class AutoRedRight extends MyOpMode {
 
         column = getVuMark();
 
-        rangeMovePID( 6.5, rangeF);
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(2000);
+        jewelArm.setPosition(.15);
+        sleep(2000);
 
+        if (jewelColor.red() > jewelColor.blue()) {
+            jewelHand.setPosition((.3));
+
+        } else if (jewelColor.red() < jewelColor.blue()) {
+            jewelHand.setPosition((.6));
+        }
+
+        sleep(1000);
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(1000);
+
+        jewelHand.setPosition(.3);
+        sleep(1000);
+
+        rangeMovePID( 6.5, rangeF);
 
         sleep(1000);
         try {
@@ -111,7 +108,6 @@ public class AutoRedRight extends MyOpMode {
             e.printStackTrace();
         }
         sleep(1000);
-
 
         rangeMoveStrafe(.1,26.5,rangeR);
         sleep(1000);
@@ -128,14 +124,13 @@ public class AutoRedRight extends MyOpMode {
         vfMovePerp( 'r');
         sleep(1000);
 
-        stopMotors();
-        sleep(1000);
-
         manipAuto(-.75);
         sleep(1000);
 
+        rangeMovePID(7, rangeF);
 
-        
+
+
 
 
 
