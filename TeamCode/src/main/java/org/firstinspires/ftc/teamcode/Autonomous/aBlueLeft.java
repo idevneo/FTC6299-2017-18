@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 @Disabled
-@Autonomous(name="aBlueLeft", group="Linear Opmode")
+@Autonomous(name="Jewel Blue", group="Linear Opmode")
 
 public class aBlueLeft extends MyOpMode {
 

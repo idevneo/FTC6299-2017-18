@@ -312,47 +312,47 @@ public abstract class MyOpMode extends LinearOpMode {
         double centerDis = 30;
         double kC = 0;
         if (rb == 'r')
-            kC = 8;
+            kC = 8.5;
         if (rb == 'b')
-            kC = -8;
+            kC = -8.5;
         if (column == 'L') {
-            rangeMoveStrafe( 0.1,(centerDis + kC) , rangeR);
+            rangeMoveStrafe((centerDis + kC) , rangeR);
         } else if (column == 'R') {
-            rangeMoveStrafe(0.1,(centerDis - kC), rangeR);
+            rangeMoveStrafe((centerDis - kC), rangeR);
         } else if (column == 'C') {
-            rangeMoveStrafe(0.1,centerDis, rangeR);
+            rangeMoveStrafe(centerDis, rangeR);
         } else if (column == 'U'){
-            rangeMoveStrafe(0.1,centerDis, rangeR);
+            rangeMoveStrafe(centerDis, rangeR);
         }
 
     }
 
 
 
-    public void rangeMove(double pow, double inAway, ModernRoboticsI2cRangeSensor sensorVar)    { //Set pow negative to move backward.
-        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
+//    public void rangeMove(double pow, double inAway, ModernRoboticsI2cRangeSensor sensorVar)    { //Set pow negative to move backward.
+//        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
+//
+//        while ((sensor < inAway - .25) || (sensor > inAway + .25)) { //While sensor doesn't = tolerance, run.
+//            double localRange;
+//            localRange = sensorVar.getDistance(DistanceUnit.INCH);
+//            if (!Double.isNaN(localRange) && (localRange < 1000)) {
+//                sensor = localRange;
+//            }
+//
+//            telemetry.addData("SensorValue", sensor); //optional telemetry
+//            telemetry.update();
+//
+//            if (sensor > inAway) {
+//                setMotors(pow, pow);
+//            }
+//            if (sensor < inAway) {
+//                setMotors(-pow, -pow);
+//            }
+//        }
+//        stopMotors();
+//    }
 
-        while ((sensor < inAway - .25) || (sensor > inAway + .25)) { //While sensor doesn't = tolerance, run.
-            double localRange;
-            localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            if (!Double.isNaN(localRange) && (localRange < 1000)) {
-                sensor = localRange;
-            }
-
-            telemetry.addData("SensorValue", sensor); //optional telemetry
-            telemetry.update();
-
-            if (sensor > inAway) {
-                setMotors(pow, pow);
-            }
-            if (sensor < inAway) {
-                setMotors(-pow, -pow);
-            }
-        }
-        stopMotors();
-    }
-
-    public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar)    { //Set pow negative to move backward.
+    public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar)    {
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
         double differenceDis;
         double kP = .035; //to be determined
@@ -369,7 +369,7 @@ public abstract class MyOpMode extends LinearOpMode {
             if (pow > .3)
                 pow = .3;
             if (pow < .1)
-                pow = .2;
+                pow = .1;
             telemetry.addData("SensorValue", sensor); //optional telemetry
             telemetry.update();
 
@@ -383,66 +383,24 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-
-//    public void rangeMovePID(double pow, double inAway, ModernRoboticsI2cRangeSensor sensorVar) { //Set pow negative to move backward.
-//        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-//        double differenceDis;
-//        double kP = .035; //to be determined
-//        double changeFactor;
-//        //backwards
-//        if (sensor > inAway) {
-//            while (sensor > inAway + .25) { //While sensor doesn't = tolerance, run.
-//                double localRange;
-//                differenceDis = Math.abs(sensor - inAway);
-//                localRange = sensorVar.getDistance(DistanceUnit.INCH);
-//                changeFactor = 0;
-//                if (!Double.isNaN(localRange) && (localRange < 1000)) {
-//                    sensor = localRange;
-//                }
-//
-//
-//                telemetry.addData("SensorValue", sensor); //optional telemetry
-//                telemetry.update();
-//                setMotors(-pow - changeFactor, -pow + changeFactor);
-//            }
-//            //forwards
-//            if (sensor < inAway) {
-//                while (sensor < inAway - .25) { //While sensor doesn't = tolerance, run.
-//                    double localRange;
-//                    differenceDis = Math.abs(sensor - inAway);
-//                    changeFactor = kP *differenceDis;
-//                    localRange = sensorVar.getDistance(DistanceUnit.INCH);
-//                    if (!Double.isNaN(localRange) && (localRange < 1000)) {
-//                        sensor = localRange;
-//                    }
-//
-//                    telemetry.addData("SensorValue", sensor); //optional telemetry
-//                    telemetry.update();
-//                    setMotors(pow + changeFactor, pow - changeFactor);
-//                }
-//            }
-//            stopMotors();
-//        }
-//    }
-
-    public void rangeMoveStrafe(double pow, double inAway , ModernRoboticsI2cRangeSensor sensorVar) { //Set pow to negative if we want to move left.
+    public void rangeMoveStrafe(double inAway , ModernRoboticsI2cRangeSensor sensorVar) { //Set pow to negative if we want to move left.
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-//        double differenceDis;
-//        double kP = .035; //to be determined
-//        double pow;
+        double differenceDis;
+        double kP = .035; //to be determined
+        double pow;
           while ((sensor < inAway - .5) || (sensor > inAway + .5)) {
               double localRange;
               localRange = sensorVar.getDistance(DistanceUnit.INCH);
               if (!Double.isNaN(localRange) && (localRange < 1000)) {
                   sensor = localRange;
               }
-//              differenceDis = Math.abs(sensor - inAway);
-//              pow = differenceDis*kP;
+              differenceDis = Math.abs(sensor - inAway);
+              pow = differenceDis*kP;
 
-//              if (pow > 1)
-//                  pow = 1;
-//              if (pow < .3)
-//                  pow = .3;
+              if (pow > .3)
+                  pow = .3;
+              if (pow < .1)
+                  pow = .1;
 
             if (sensor > inAway) {
                 setMotorStrafe(pow);

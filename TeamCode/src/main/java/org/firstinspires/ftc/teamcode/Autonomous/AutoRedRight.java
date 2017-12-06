@@ -80,27 +80,23 @@ public class AutoRedRight extends MyOpMode {
 
         jewelArm.setPosition(.6);
         jewelHand.setPosition(.45);
-        sleep(2000);
+        sleep(750);
         jewelArm.setPosition(.15);
-        sleep(2000);
-
+        sleep(1000);
         if (jewelColor.red() > jewelColor.blue()) {
             jewelHand.setPosition((.3));
-
         } else if (jewelColor.red() < jewelColor.blue()) {
             jewelHand.setPosition((.6));
         }
+        sleep(500);
 
-        sleep(1000);
         jewelArm.setPosition(.6);
         jewelHand.setPosition(.45);
         sleep(1000);
-
         jewelHand.setPosition(.3);
-        sleep(1000);
+        sleep(500);
 
         rangeMovePID( 6.5, rangeF);
-
         sleep(1000);
         try {
             turnCorr(.5, 0, 3000);
@@ -109,16 +105,14 @@ public class AutoRedRight extends MyOpMode {
         }
         sleep(1000);
 
-        rangeMoveStrafe(.1,26.5,rangeR);
+        rangeMoveStrafe(26.5,rangeR);
         sleep(1000);
-//
 //
         try {
             turnCorr(.5, 0, 3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         sleep(1000);
 
         vfMovePerp( 'r');
@@ -127,21 +121,15 @@ public class AutoRedRight extends MyOpMode {
         manipAuto(-.75);
         sleep(1000);
 
-        rangeMovePID(7, rangeF);
-
-
-
-
-
-
-        //Need to put the Auto together - Message Caleb for the details on how.
-
+        setMotors(-.2,-.2);
+        sleep(250);
+        stopMotors();
+        //Finish optimizing this Auto, then invert for the blue side.
         // Loop and update the dashboard
-        while (opModeIsActive()) {
-
-            telemetry.update();
+//        while (opModeIsActive()) {
+//
+//            telemetry.update();
 //        }
-        }
 
     }
 }
