@@ -38,47 +38,21 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@Disabled
+
 @Autonomous(name="Jewel Blue", group="Linear Opmode")
 
 public class aBlueLeft extends MyOpMode {
 
-    DcMotor motorBL;
-    DcMotor motorBR;
-    DcMotor motorFL;
-    DcMotor motorFR;
 
-    DcMotor liftLeft;
-    DcMotor liftRight;
-
-    DcMotor manip;
-
-    ColorSensor jewelColor;
-
-    Servo jewelArm;
-    Servo jewelHand;
 
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorFR = hardwareMap.dcMotor.get("motorFR");
-
-        liftLeft = hardwareMap.dcMotor.get("liftL");
-        liftRight = hardwareMap.dcMotor.get("liftR");
-        manip = hardwareMap.dcMotor.get("manip");
-
-        jewelColor = hardwareMap.get(ColorSensor.class, "jewelColor");
-
-        jewelArm = hardwareMap.servo.get("jewelArm");
-        jewelHand = hardwareMap.servo.get("jewelHand");
-
+        hMap(hardwareMap);
         waitForStart();
         runtime.reset();
 
@@ -110,6 +84,11 @@ public class aBlueLeft extends MyOpMode {
 
             jewelHand.setPosition(.3);
             sleep(1000);
+
+        setMotors(-0.2,-0.2);
+        Thread.sleep(750);
+
+        stopMotors();
 
 
 

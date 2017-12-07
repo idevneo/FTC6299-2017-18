@@ -29,37 +29,24 @@
 
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 /**
- * {@link AutoRedRight} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
+ * {@link AutoBlueLeft} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@Autonomous(name = "Red Right Gyro", group = "Sensor")
+@Autonomous(name = "Blue Left Gyro", group = "Sensor")
                             // Comment this out to add to the opmode list
-public class AutoRedRight extends MyOpMode {
+public class AutoBlueLeft extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -79,55 +66,54 @@ public class AutoRedRight extends MyOpMode {
 
         column = getVuMark();
 
-        jewelArm.setPosition(.6);
+        jewelArm.setPosition(.55);
         jewelHand.setPosition(.45);
         sleep(750);
         jewelArm.setPosition(.15);
         sleep(1000);
-        if (jewelColor.red() > jewelColor.blue()) {
+        if (jewelColor.red() < jewelColor.blue()) {
             jewelHand.setPosition((.3));
-        } else if (jewelColor.red() < jewelColor.blue()) {
+        } else if (jewelColor.red() > jewelColor.blue()) {
             jewelHand.setPosition((.6));
         }
         sleep(500);
 
-        jewelArm.setPosition(.6);
+        jewelArm.setPosition(.55);
         jewelHand.setPosition(.45);
         sleep(1000);
         jewelHand.setPosition(.3);
         sleep(500);
 
-        rangeMovePID( 7, rangeF);
+        try {
+            turnCorr(.25, 176, 3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         sleep(1000);
-//        try {
-//            turnCorr(.25, 0, 3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        sleep(1000);
 
-        rangeMoveStrafe(26.5,rangeR);
+        rangeMovePID(6.75, rangeF);
+        sleep(1000);
 
+        rangeMoveStrafe(26.5,rangeL);
+        sleep(1000);
 //
-//        try {
-//            turnCorr(.25, 0, 3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        sleep(1000);
+        try {
+            turnCorr(.25, 176, 3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        sleep(1000);
 
-        vfMovePerp( 'r', rangeR);
-
+        vfMovePerp( 'b', rangeL);
+        sleep(1000);
 
         rangeMovePID( 7, rangeF);
 
+        manipAuto(-.75);
+        sleep(1000);
 
-
-
-        manip.setPower(-.75);
         setMotors(-.2,-.2);
         sleep(250);
-        manip.setPower(0);
         stopMotors();
         //Finish optimizing this Auto, then invert for the blue side.
         // Loop and update the dashboard

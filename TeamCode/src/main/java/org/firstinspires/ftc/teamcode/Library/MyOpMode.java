@@ -308,7 +308,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
 
-    public void vfMovePerp(char rb) {
+    public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar) {
         double centerDis = 30;
         double kC = 0;
         if (rb == 'r')
@@ -316,13 +316,13 @@ public abstract class MyOpMode extends LinearOpMode {
         if (rb == 'b')
             kC = -8.5;
         if (column == 'L') {
-            rangeMoveStrafe((centerDis + kC) , rangeR);
+            rangeMoveStrafe((centerDis + kC) , sensorVar);
         } else if (column == 'R') {
-            rangeMoveStrafe((centerDis - kC), rangeR);
+            rangeMoveStrafe((centerDis - kC), sensorVar);
         } else if (column == 'C') {
-            rangeMoveStrafe(centerDis, rangeR);
+            rangeMoveStrafe(centerDis, sensorVar);
         } else if (column == 'U'){
-            rangeMoveStrafe(centerDis, rangeR);
+            rangeMoveStrafe(centerDis, sensorVar);
         }
 
     }
@@ -355,7 +355,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar)    {
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
         double differenceDis;
-        double kP = .035; //to be determined
+        double kP = .025; //to be determined
         double pow;
         while ((sensor < inAway - .25) || (sensor > inAway + .25)) { //While sensor doesn't = tolerance, run.
             double localRange;
@@ -366,8 +366,8 @@ public abstract class MyOpMode extends LinearOpMode {
             differenceDis = Math.abs(sensor - inAway);
             pow = differenceDis*kP;
 
-            if (pow > .3)
-                pow = .3;
+            if (pow > .2)
+                pow = .2;
             if (pow < .1)
                 pow = .1;
             telemetry.addData("SensorValue", sensor); //optional telemetry
@@ -386,7 +386,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public void rangeMoveStrafe(double inAway , ModernRoboticsI2cRangeSensor sensorVar) { //Set pow to negative if we want to move left.
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
         double differenceDis;
-        double kP = .035; //to be determined
+        double kP = .025; //to be determined
         double pow;
           while ((sensor < inAway - .5) || (sensor > inAway + .5)) {
               double localRange;
@@ -394,13 +394,15 @@ public abstract class MyOpMode extends LinearOpMode {
               if (!Double.isNaN(localRange) && (localRange < 1000)) {
                   sensor = localRange;
               }
-              differenceDis = Math.abs(sensor - inAway);
-              pow = differenceDis*kP;
+              //differenceDis = Math.abs(sensor - inAway);
+              //pow = differenceDis*kP;
+              pow = 0.1;
 
-              if (pow > .3)
-                  pow = .3;
-              if (pow < .1)
-                  pow = .1;
+
+//              if (pow > .2)
+//                  pow = .2;
+//              if (pow < .19)
+//                  pow = .19;
 
             if (sensor > inAway) {
                 setMotorStrafe(pow);
@@ -638,11 +640,6 @@ public abstract class MyOpMode extends LinearOpMode {
 //        turnCorr(pow, deg, 8000);
 //    }
 
-    public double getHead() {
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        return Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-    }
-
     public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
         if (!opModeIsActive())
             return;
@@ -650,7 +647,6 @@ public abstract class MyOpMode extends LinearOpMode {
         double newPow;
 
         ElapsedTime time = new ElapsedTime();
-        getHead();
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // startP is the current position
 
@@ -662,10 +658,10 @@ public abstract class MyOpMode extends LinearOpMode {
                 newPow = pow * (Math.abs(deg - currPos) / 80);
 
                 if (newPow < .15)
-                    newPow = .15;
+                    newPow = .1;
 
                 setMotors(-newPow, newPow);
-                currPos = getHead();
+                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
                 telemetry.addData("Gyro", currPos);
                 telemetry.addData("newpower", newPow);
                 telemetry.update();
@@ -676,9 +672,9 @@ public abstract class MyOpMode extends LinearOpMode {
                 newPow = pow * (Math.abs(deg - currPos) / 80);
 
                 if (newPow < .15)
-                    newPow = .15;
+                    newPow = .1;
                 setMotors(newPow, -newPow);
-                currPos = getHead();
+                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
                 telemetry.addData("Gyro", currPos);
                 telemetry.addData("newpower", newPow);
                 telemetry.update();
@@ -693,9 +689,9 @@ public abstract class MyOpMode extends LinearOpMode {
                 newPow = pow * (Math.abs(deg - currPos) / 80);
 
                 if (newPow < .15)
-                    newPow = .15;
-                setMotors(.15, -.15);
-                currPos = getHead();
+                    newPow = .1;
+                setMotors(newPow, -newPow);
+                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
                 telemetry.addData("Gyro", currPos);
                 telemetry.addData("newpower", newPow);
                 telemetry.update();
@@ -706,10 +702,10 @@ public abstract class MyOpMode extends LinearOpMode {
                 newPow = pow * (Math.abs(deg - currPos) / 80);
 
                 if (newPow < .15)
-                    newPow = .15;
+                    newPow = .1;
 
-                setMotors(-.15, .15);
-                currPos = getHead();
+                setMotors(-newPow, newPow);
+                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
                 telemetry.addData("Gyro", currPos);
                 telemetry.addData("newpower", newPow);
                 telemetry.update();
