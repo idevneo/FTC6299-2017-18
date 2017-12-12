@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -47,7 +47,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import java.util.Locale;
 
 /**
- * {@link SensorBNO055IMU} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
+ * {@link gyroTrial} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
@@ -55,8 +55,8 @@ import java.util.Locale;
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
 @Autonomous(name = "Sensor: BNO055 IMU", group = "Sensor")
-@Disabled                            // Comment this out to add to the opmode list
-public class SensorBNO055IMU extends LinearOpMode
+                            // Comment this out to add to the opmode list
+public class gyroTrial extends LinearOpMode
     {
     //----------------------------------------------------------------------------------------------
     // State
@@ -110,6 +110,7 @@ public class SensorBNO055IMU extends LinearOpMode
     //----------------------------------------------------------------------------------------------
     // Telemetry Configuration
     //----------------------------------------------------------------------------------------------
+
     void composeTelemetry() {
 
         // At the beginning of each telemetry update, grab a bunch of data
@@ -123,6 +124,7 @@ public class SensorBNO055IMU extends LinearOpMode
                 gravity  = imu.getGravity();
                 }
             });
+
         telemetry.addLine()
             .addData("status", new Func<String>() {
                 @Override public String value() {
@@ -138,7 +140,7 @@ public class SensorBNO055IMU extends LinearOpMode
         telemetry.addLine()
             .addData("heading", new Func<String>() {
                 @Override public String value() {
-                    return formatAngle(angles.angleUnit, angles.firstAngle);
+                    return formatAngle(angles.angleUnit, angles.firstAngle); //Control Robot Pivot
                     }
                 })
             .addData("roll", new Func<String>() {
@@ -153,7 +155,7 @@ public class SensorBNO055IMU extends LinearOpMode
                 });
 
         telemetry.addLine()
-            .addData("grvty", new Func<String>() {
+            .addData("gravtiy", new Func<String>() {
                 @Override public String value() {
                     return gravity.toString();
                     }

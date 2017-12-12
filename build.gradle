@@ -6,10 +6,20 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url 'https://maven.google.com' }
     }
     dependencies {
+<<<<<<< HEAD
         classpath 'com.android.tools.build:gradle:2.3.3'
+=======
+        classpath 'com.android.tools.build:gradle:3.1.0-alpha03'
+>>>>>>> refs/remotes/origin/master
     }
 }
 
-
+allprojects {
+    repositories {
+        jcenter()
+        maven { url 'https://maven.google.com' }
+    }
+}
