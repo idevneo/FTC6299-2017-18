@@ -50,7 +50,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="RangeMoveTest", group="Linear Opmode")
+@Autonomous(name="TurnTest", group="Linear Opmode")
 
 public class TurnTest extends MyOpMode {
 
@@ -70,6 +70,10 @@ public class TurnTest extends MyOpMode {
         // run until the end of the match (driver presses STOP)
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        rangeMovePID(10, rangeF);
+        try {
+            turnCorr(.25, 80, 3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
