@@ -60,43 +60,119 @@ public class AutoRedDriveLeft extends MyOpMode {
 //        }
 
         // run until the end of the match (driver presses STOP)
-            jewelArm.setPosition(.6);
-            jewelHand.setPosition(.45);
-            sleep(2000);
-            jewelArm.setPosition(.15);
-            sleep(2000);
-
-            if (jewelColor.red() > jewelColor.blue()) {
-                jewelHand.setPosition((.3));
-
-            } else if (jewelColor.red() < jewelColor.blue()) {
-                jewelHand.setPosition((.6));
-            }
-
-            sleep(1000);
-            jewelArm.setPosition(.6);
-            jewelHand.setPosition(.45);
-            sleep(3000);
-
-            jewelHand.setPosition(.3);
-            sleep(1000);
-
-            manip.setPower(1);
-            Thread.sleep(1000);
-
-            motorFL.setPower(-0.5);
-            motorBL.setPower(-0.5);
-            motorFR.setPower(0.5);
-            motorBR.setPower(0.5);
-            Thread.sleep(1500);
-
-            motorFL.setPower(0);
-            motorBL.setPower(0);
-            motorFR.setPower(0);
-            motorBR.setPower(0);
+//            jewelArm.setPosition(.6);
+//            jewelHand.setPosition(.45);
+//            sleep(2000);
+//            jewelArm.setPosition(.15);
+//            sleep(2000);
 //
+//            if (jewelColor.red() > jewelColor.blue()) {
+//                jewelHand.setPosition((.3));
+//
+//            } else if (jewelColor.red() < jewelColor.blue()) {
+//                jewelHand.setPosition((.6));
+//            }
+//
+//            sleep(1000);
+//            jewelArm.setPosition(.6);
+//            jewelHand.setPosition(.45);
+//            sleep(3000);
+//
+//            jewelHand.setPosition(.3);
+//            sleep(1000);
+//
+//            manip.setPower(1);
+//            Thread.sleep(1000);
+//
+//            motorFL.setPower(-0.5);
+//            motorBL.setPower(-0.5);
+//            motorFR.setPower(0.5);
+//            motorBR.setPower(0.5);
+//            Thread.sleep(1500);
+//
+//            motorFL.setPower(0);
+//            motorBL.setPower(0);
+//            motorFR.setPower(0);
+//            motorBR.setPower(0);
+//
+        liftLeft.setPower(.5);
+        liftRight.setPower(-.5);
+        sleep(250);
+        liftLeft.setPower(0);
+        liftRight.setPower(0);
 
+
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(750);
+        jewelArm.setPosition(.15);
+        sleep(1000);
+        if (jewelColor.red() > jewelColor.blue()) {
+            jewelHand.setPosition((.3));
+        } else if (jewelColor.red() < jewelColor.blue()) {
+            jewelHand.setPosition((.6));
         }
+        sleep(500);
+
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(1000);
+        jewelHand.setPosition(.3);
+        sleep(500);
+
+        setMotors(.25,.25);
+        sleep(500);
+        stopMotors();
+
+        rangeMovePID(9, rangeF);
+        sleep(1000);
+//        try {
+//            turn(.25, 0.1);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        sleep(1000);
+
+        rangeMoveStrafe(26.25, rangeR);
+
+//[
+//        try {
+//            turnCorr(.25, -0.5, 3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        sleep(1000);
+
+//        vfMovePerp( 'r', rangeR);
+
+        rangeMovePID(7, rangeF);
+        sleep(500);
+
+        manipAuto(-.75);
+        sleep(500);
+
+        manipAuto(-.75);
+
+//back up, push forward, back up
+        setMotors(-.2, -.2);
+        sleep(250);
+        stopMotors();
+
+        setMotors(-.4, -.4);
+        sleep(250);
+        stopMotors();
+
+        setMotors(-.2, -.2);
+        sleep(250);
+        stopMotors();
+        //Finish optimizing this Auto, then invert for the blue side.
+        // Loop and update the dashboard
+//        while (opModeIsActive()) {
+//
+//            telemetry.update();
+//        }
+    }
 
 }
+
 

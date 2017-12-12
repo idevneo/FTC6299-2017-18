@@ -2,22 +2,16 @@ package org.firstinspires.ftc.teamcode.Library;
 
 import android.util.Log;
 
-//import com.qualcomm.hardware.adafruit.BNO055IMU;
-//import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsAnalogOpticalDistanceSensor;
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cColorSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.I2cAddr;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
@@ -29,12 +23,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMU;
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorBNO055IMUCalibration;
+
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -253,10 +244,12 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void manipAuto(double pow) {
+        if (!opModeIsActive())
+            return;
         if (pow > 0) {
             manip.setPower(pow);
             try {
-                Thread.sleep(750);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -264,7 +257,7 @@ public abstract class MyOpMode extends LinearOpMode {
         } else if (pow < 0) {
             manip.setPower(pow);
             try {
-                Thread.sleep(750);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -354,22 +347,25 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar)    {
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-        double differenceDis;
-        double kP = .025; //to be determined
+//        double differenceDis;
+//        double kP = .025; //to be determined
         double pow;
-        while ((sensor < inAway - .25) || (sensor > inAway + .25)) { //While sensor doesn't = tolerance, run.
-            double localRange;
+        double localRange;
+        while (((sensor < inAway - .25) || (sensor > inAway + .25)) && opModeIsActive()) { //While sensor doesn't = tolerance, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            if (!Double.isNaN(localRange) && (localRange < 1000)) {
-                sensor = localRange;
+            while (Double.isNaN(localRange) || (localRange > 1000)) {
+                localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
-            differenceDis = Math.abs(sensor - inAway);
-            pow = differenceDis*kP;
+            sensor = localRange;
 
-            if (pow > .2)
-                pow = .2;
-            if (pow < .1)
-                pow = .1;
+//            differenceDis = Math.abs(sensor - inAway);
+//            pow = differenceDis*kP;
+            pow = .125;
+
+//            if (pow > .2)
+//                pow = .2;
+//            if (pow < .1)
+//                pow = .1;
             telemetry.addData("SensorValue", sensor); //optional telemetry
             telemetry.update();
 
@@ -383,23 +379,26 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
+
+
+
+
     public void rangeMoveStrafe(double inAway , ModernRoboticsI2cRangeSensor sensorVar) { //Set pow to negative if we want to move left.
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-        double differenceDis;
-        double kP = .025; //to be determined
+//        double differenceDis;
+//        double kP = .025; //to be determined
         double pow;
-          while ((sensor < inAway - .5) || (sensor > inAway + .5)) {
-              double localRange;
+        double localRange;
+          while (((sensor < inAway - .5) || (sensor > inAway + .5))&& opModeIsActive()) {
               localRange = sensorVar.getDistance(DistanceUnit.INCH);
-              if (!Double.isNaN(localRange) && (localRange < 1000)) {
-                  sensor = localRange;
+              while (Double.isNaN(localRange) || (localRange > 1000)) {
+                  localRange = sensorVar.getDistance(DistanceUnit.INCH);
               }
+              sensor = localRange;
               //differenceDis = Math.abs(sensor - inAway);
               //pow = differenceDis*kP;
-              pow = 0.1;
-
-
-//              if (pow > .2)
+              pow = 0.15;
+//              if (pow > .2) edit once working on single power
 //                  pow = .2;
 //              if (pow < .19)
 //                  pow = .19;
@@ -640,6 +639,84 @@ public abstract class MyOpMode extends LinearOpMode {
 //        turnCorr(pow, deg, 8000);
 //    }
 
+    public double getDiff(double angle) {
+        imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+        return   currPos - angle;
+    }
+    public Double gyroVal() {
+        imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+        return currPos;
+    }
+    public void turnPID(double angle) throws InterruptedException {
+        double kP = .20/90;
+        double min = -.2;
+        double max = .2;
+        double changeCon = .04;
+        double PIDchange;
+        double angleDiff = getDiff(angle);
+        double oldDiff = angleDiff;
+        int counter = 0;
+        double startAngle = gyroVal();
+        while ((Math.abs(angleDiff) <= Math.abs(oldDiff)) && opModeIsActive()) {
+            PIDchange = angleDiff * kP;
+
+            if (PIDchange < 0) {
+                motorFR.setPower(Range.clip(-PIDchange + changeCon, min, max));
+                motorBR.setPower(Range.clip(-PIDchange + changeCon, min, max));
+                motorFL.setPower(Range.clip(-PIDchange + changeCon, min, max));
+                motorBL.setPower(Range.clip(-PIDchange + changeCon, min, max));
+            }
+            else {
+                motorFR.setPower(Range.clip(PIDchange - changeCon, min, max));
+                motorBR.setPower(Range.clip(PIDchange - changeCon, min, max));
+                motorFL.setPower(Range.clip(PIDchange - changeCon, min, max));
+                motorBL.setPower(Range.clip(PIDchange - changeCon, min, max));
+            }
+
+            sleep(250);
+            telemetry.addData("gyroStart", startAngle);
+            telemetry.addData("counter", counter++);
+            telemetry.addData("GyroVal", gyroVal());
+            telemetry.addData("GyroDiff",getDiff(angle));
+            telemetry.addData("Pow", -PIDchange - changeCon);
+            telemetry.update();
+
+            oldDiff = angleDiff;
+            angleDiff = getDiff(angle);
+        }
+        stopMotors();
+    }
+
+    public void turn(double pow, double deg) throws InterruptedException {
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+        if (deg > 0) {
+            while ((currPos > (deg + .25)) || (currPos < (deg-.25))){
+                if (currPos > (deg + .25))
+                    setMotors(-pow, pow);
+                if (currPos < (deg -.25))
+                    setMotors(pow, -pow);
+
+                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+                idle();
+            }
+            stopMotors();
+
+        }
+        if (deg < 0) {
+            while ((currPos > (deg + .25)) || (currPos < (deg-.25))){
+                if (currPos > (deg + .25))
+                    setMotors(-pow, pow);
+                if (currPos < (deg -.25))
+                    setMotors(pow, -pow);
+                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+                idle();
+            }
+            stopMotors();
+        }
+    }
     public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
         if (!opModeIsActive())
             return;

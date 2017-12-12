@@ -84,6 +84,8 @@ public class AutoBlueLeft extends MyOpMode {
         jewelHand.setPosition(.3);
         sleep(500);
 
+        setMotors(-.2, -.2);
+        sleep(500);
         try {
             turnCorr(.25, 176, 3000);
         } catch (InterruptedException e) {
@@ -91,23 +93,15 @@ public class AutoBlueLeft extends MyOpMode {
         }
         sleep(1000);
 
-        rangeMovePID(6.75, rangeF);
+        rangeMovePID(7, rangeF);
         sleep(1000);
 
         rangeMoveStrafe(26.5,rangeL);
-        sleep(1000);
-//
-        try {
-            turnCorr(.25, 176, 3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         sleep(1000);
 
         vfMovePerp( 'b', rangeL);
         sleep(1000);
 
-        rangeMovePID( 7, rangeF);
 
         manipAuto(-.75);
         sleep(1000);

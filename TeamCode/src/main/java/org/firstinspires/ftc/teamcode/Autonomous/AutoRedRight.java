@@ -77,7 +77,12 @@ public class AutoRedRight extends MyOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        column = getVuMark();
+        liftLeft.setPower(.5);
+        liftRight.setPower(-.5);
+        sleep(250);
+        liftLeft.setPower(0);
+        liftRight.setPower(0);
+
 
         jewelArm.setPosition(.6);
         jewelHand.setPosition(.45);
@@ -97,37 +102,51 @@ public class AutoRedRight extends MyOpMode {
         jewelHand.setPosition(.3);
         sleep(500);
 
-        rangeMovePID( 7, rangeF);
+        setMotors(.25,.25);
         sleep(1000);
+        stopMotors();
+
+        rangeMoveStrafe(3, rangeR);
+        sleep(1000);
+        rangeMovePID(8, rangeF);
+        sleep(500);
 //        try {
-//            turnCorr(.25, 0, 3000);
+//            turn(.25, 0.1);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        sleep(1000);
+        rangeMoveStrafe(26.25, rangeR);
+
+//[
+//        try {
+//            turnCorr(.25, -0.5, 3000);
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
 //        sleep(1000);
 
-        rangeMoveStrafe(26.5,rangeR);
+//        vfMovePerp( 'r', rangeR);
 
-//
-//        try {
-//            turnCorr(.25, 0, 3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        sleep(1000);
+        rangeMovePID(7, rangeF);
+        sleep(500);
 
-        vfMovePerp( 'r', rangeR);
+        manipAuto(-.75);
+        sleep(500);
 
+        manipAuto(-.75);
 
-        rangeMovePID( 7, rangeF);
-
-
-
-
-        manip.setPower(-.75);
-        setMotors(-.2,-.2);
+//back up, push forward, back up
+        setMotors(-.2, -.2);
         sleep(250);
-        manip.setPower(0);
+        stopMotors();
+
+        setMotors(.4, .4);
+        sleep(250);
+        stopMotors();
+
+        setMotors(-.2, -.2);
+        sleep(250);
         stopMotors();
         //Finish optimizing this Auto, then invert for the blue side.
         // Loop and update the dashboard
@@ -135,6 +154,5 @@ public class AutoRedRight extends MyOpMode {
 //
 //            telemetry.update();
 //        }
-
     }
 }

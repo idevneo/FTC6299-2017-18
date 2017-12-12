@@ -86,7 +86,15 @@ public class aBlueLeft extends MyOpMode {
             sleep(1000);
 
         setMotors(-0.2,-0.2);
-        Thread.sleep(750);
+        Thread.sleep(1750);
+        stopMotors();
+
+        turnCorr(0.2,-90,4000);
+
+
+
+
+        manipAuto(-.75);
 
         stopMotors();
 

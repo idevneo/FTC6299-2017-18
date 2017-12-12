@@ -42,7 +42,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 
-@Autonomous(name="Jewel Red", group="Linear Opmode")
+@Autonomous(name="TimeRedRight", group="Linear Opmode")
 
 public class aRedRight extends MyOpMode {
 
@@ -68,30 +68,110 @@ public class aRedRight extends MyOpMode {
 //        }
 
         // run until the end of the match (driver presses STOP)
-            jewelArm.setPosition(.6);
-            jewelHand.setPosition(.45);
-            sleep(2000);
-            jewelArm.setPosition(.15);
-            sleep(2000);
+//            jewelArm.setPosition(.6);
+//            jewelHand.setPosition(.45);
+//            sleep(2000);
+//            jewelArm.setPosition(.15);
+//            sleep(2000);
+//
+//            if (jewelColor.red() > jewelColor.blue()) {
+//                jewelHand.setPosition((.3));
+//
+//            } else if (jewelColor.red() < jewelColor.blue()) {
+//                jewelHand.setPosition((.6));
+//            }
+//
+//            sleep(1000);
+//            jewelArm.setPosition(.6);
+//            jewelHand.setPosition(.45);
+//            sleep(1000);
+//
+//            jewelHand.setPosition(.3);
+//            sleep(1000);
+//
+//            setMotors(0.2,0.2);
+//            Thread.sleep(1750);
+//            stopMotors();
+//
+//        try {
+//            turnCorr(.25, -86, 3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        sleep(1000);
+//
+//        manipAuto(-.75);
+//
+//        stopMotors();
+//recomment
 
-            if (jewelColor.red() > jewelColor.blue()) {
-                jewelHand.setPosition((.3));
+                // run until the end of the match (driver presses STOP)
 
-            } else if (jewelColor.red() < jewelColor.blue()) {
-                jewelHand.setPosition((.6));
-            }
+//        liftLeft.setPower(.5);
+//        liftRight.setPower(-.5);
+//        sleep(450);
+//        liftLeft.setPower(0);
+//        liftRight.setPower(0);
 
-            sleep(1000);
-            jewelArm.setPosition(.6);
-            jewelHand.setPosition(.45);
-            sleep(1000);
+        jewelArm.setPosition(.5);
+        jewelHand.setPosition(.45);
+        sleep(2000);
+        jewelArm.setPosition(.15);
+        sleep(2000);
+        if (jewelColor.red() > jewelColor.blue()) {
+            jewelHand.setPosition((.3));
+        } else if (jewelColor.red() < jewelColor.blue()) {
+            jewelHand.setPosition((.6));
+        }
+        sleep(1000);
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(3000);
+        jewelHand.setPosition(.3);
+        sleep(1000);
 
-            jewelHand.setPosition(.3);
-            sleep(1000);
+        manip.setPower(1);
+        Thread.sleep(400);
 
-            setMotors(0.2,0.2);
-            Thread.sleep(1500);
-            stopMotors();
+        motorFL.setPower(-0.5);
+        motorBL.setPower(-0.5);
+        motorFR.setPower(0.5);
+        motorBR.setPower(0.5);
+        Thread.sleep(1050);
+
+        motorFL.setPower(0);
+        motorBL.setPower(0);
+        motorFR.setPower(0);
+        motorBR.setPower(0);
+
+        sleep(700);
+        //strafing left
+        motorFL.setPower(.75);
+        motorBL.setPower(-.75);
+        motorFR.setPower(.75);
+        motorBR.setPower(-.75);
+        Thread.sleep(500);
+        motorFL.setPower(0);
+        motorBL.setPower(0);
+        motorFR.setPower(0);
+        motorBR.setPower(0);
+
+        sleep(500);
+        manip.setPower(-1);
+        Thread.sleep(1000);
+
+        manipAuto(-.75);
+
+//back up, push forward, back up
+        setMotors(-.2, -.2);
+        sleep(250);
+        stopMotors();
+        //            jewelKnockerRed(.2,.6,0.3,0.6,0.45);
+        //
+
+    }
+
+}
 
 
 
@@ -101,7 +181,7 @@ public class aRedRight extends MyOpMode {
 //            jewelKnockerRed(.2,.6,0.3,0.6,0.45);
 //
 
-        }
 
-}
+
+
 

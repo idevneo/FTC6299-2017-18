@@ -285,7 +285,13 @@ public class Plz extends LinearOpMode {
                     liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
 
-            }
+            telemetry.addData("MotorFL", motorFL.getCurrentPosition());
+            telemetry.addData("MotorFR", motorFR.getCurrentPosition());
+            telemetry.addData("MotorBL", motorBL.getCurrentPosition());
+            telemetry.addData("MotorBR", motorBR.getCurrentPosition());
+
+
+        }
         }
     }
 
