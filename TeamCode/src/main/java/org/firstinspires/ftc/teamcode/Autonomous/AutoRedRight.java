@@ -76,7 +76,6 @@ public class AutoRedRight extends MyOpMode {
 /**---------------------------------------------------------------------------------------------------------------*/
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-        relicTrackables.activate();
 
         liftLeft.setPower(.5);
         liftRight.setPower(-.5);

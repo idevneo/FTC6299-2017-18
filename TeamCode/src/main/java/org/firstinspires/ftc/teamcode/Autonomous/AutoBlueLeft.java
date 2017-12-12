@@ -64,7 +64,7 @@ public class AutoBlueLeft extends MyOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        column = getVuMark();
+        column = vfValue();
 
         jewelArm.setPosition(.55);
         jewelHand.setPosition(.45);

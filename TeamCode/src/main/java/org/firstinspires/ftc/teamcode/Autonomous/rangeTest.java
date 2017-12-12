@@ -63,10 +63,6 @@ public class rangeTest extends MyOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-
-        telemetry.addData("VuChar", getVuMark());
-        telemetry.update();
-
         //Need to put the Auto together - Message Caleb for the details on how.
 
         // Loop and update the dashboard

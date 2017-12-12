@@ -39,8 +39,7 @@ public abstract class MyOpMode extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     public static BNO055IMU imu;
 
-    public VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-    public VuforiaTrackable relicTemplate = relicTrackables.get(0);
+    public VuforiaLocalizer vuforia;
 
     public static DcMotor motorBL;
     public static DcMotor motorBR;
@@ -62,7 +61,6 @@ public abstract class MyOpMode extends LinearOpMode {
     public static ModernRoboticsI2cRangeSensor rangeL;
     public static ModernRoboticsI2cRangeSensor rangeF;
 
-    public VuforiaLocalizer vuforia;
     public char column;
 
     public String formatAngle(AngleUnit angleUnit, double angle) {
@@ -279,7 +277,10 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
     public char vfValue() {
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        relicTrackables.activate();
         telemetry.addData("VuMark ", vuMark);
         telemetry.update();
 
@@ -706,9 +707,12 @@ public abstract class MyOpMode extends LinearOpMode {
             stopMotors();
         }
     }
+
     public void turnCorr2point0(double pow, double deg) throws InterruptedException { //add in working turncorr pid
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+        double pidPow;
+
         if (deg > 0) {
             while ((currPos > (deg + .25)) || (currPos < (deg-.25))) {
                 if (currPos > (deg + .25))
@@ -717,6 +721,7 @@ public abstract class MyOpMode extends LinearOpMode {
                     setMotors(pow, -pow);
             }
         }
+
         if (deg < 0) {
             if (currPos > (deg + .25)) //need to review
                 setMotors(-pow, pow);
