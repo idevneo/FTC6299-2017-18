@@ -70,6 +70,6 @@ public class Vuforia extends MyOpMode {
         // run until the end of the match (driver presses STOP)
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        getVuMark();
+        vfValue();
     }
 }

@@ -38,6 +38,10 @@ public abstract class MyOpMode extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     public static BNO055IMU imu;
+
+    public VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+    public VuforiaTrackable relicTemplate = relicTrackables.get(0);
+
     public static DcMotor motorBL;
     public static DcMotor motorBR;
     public static DcMotor motorFL;
@@ -195,6 +199,13 @@ public abstract class MyOpMode extends LinearOpMode {
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters Vparameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        Vparameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
+        Vparameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(Vparameters);
+
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -267,28 +278,11 @@ public abstract class MyOpMode extends LinearOpMode {
         }
 
     }
-    public char getVuMark() {
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        parameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
-        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
-
-        //telemetry.addData(">", "Press Play to start");
-
-        relicTrackables.activate();
-
-
-        // copy pasta from the ftc ppl
+    public char vfValue() {
         RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-
-
         telemetry.addData("VuMark ", vuMark);
         telemetry.update();
+
         if (vuMark == RelicRecoveryVuMark.CENTER)
             column = 'C';
         else if (vuMark == RelicRecoveryVuMark.LEFT)
@@ -319,8 +313,6 @@ public abstract class MyOpMode extends LinearOpMode {
         }
 
     }
-
-
 
 //    public void rangeMove(double pow, double inAway, ModernRoboticsI2cRangeSensor sensorVar)    { //Set pow negative to move backward.
 //        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
@@ -391,13 +383,15 @@ public abstract class MyOpMode extends LinearOpMode {
         double localRange;
           while (((sensor < inAway - .5) || (sensor > inAway + .5))&& opModeIsActive()) {
               localRange = sensorVar.getDistance(DistanceUnit.INCH);
-              while (Double.isNaN(localRange) || (localRange > 1000)) {
+              while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
                   localRange = sensorVar.getDistance(DistanceUnit.INCH);
               }
               sensor = localRange;
               //differenceDis = Math.abs(sensor - inAway);
               //pow = differenceDis*kP;
-              pow = 0.25;
+
+              pow = 0.25; //Try testing the power higher and lower to see why the robot moves foward/back and not strafe straight. Try running with no encoders.
+
 //              if (pow > .2) edit once working on single power
 //                  pow = .2;
 //              if (pow < .19)
@@ -408,7 +402,6 @@ public abstract class MyOpMode extends LinearOpMode {
             }
             if (sensor < inAway) {
                 setMotorStrafe(-pow);
-
             }
               telemetry.addData("rightwhile", sensor);
               telemetry.update();
@@ -635,10 +628,6 @@ public abstract class MyOpMode extends LinearOpMode {
         }
     }
 
-//    public void turnCorr(double pow, double deg) throws InterruptedException {
-//        turnCorr(pow, deg, 8000);
-//    }
-
     public double getDiff(double angle) {
         imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
@@ -717,6 +706,25 @@ public abstract class MyOpMode extends LinearOpMode {
             stopMotors();
         }
     }
+    public void turnCorr2point0(double pow, double deg) throws InterruptedException { //add in working turncorr pid
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+        if (deg > 0) {
+            while ((currPos > (deg + .25)) || (currPos < (deg-.25))) {
+                if (currPos > (deg + .25))
+                    setMotors(-pow, pow);
+                if (currPos < (deg -.25))
+                    setMotors(pow, -pow);
+            }
+        }
+        if (deg < 0) {
+            if (currPos > (deg + .25)) //need to review
+                setMotors(-pow, pow);
+            if (currPos < (deg -.25)) //need to review
+                setMotors(pow, -pow);
+        }
+    }
+
     public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
         if (!opModeIsActive())
             return;
