@@ -39,8 +39,11 @@ public abstract class MyOpMode extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     public static BNO055IMU imu;
 
+    public VuforiaLocalizer vuforia;
     public VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
     public VuforiaTrackable relicTemplate = relicTrackables.get(0);
+    public RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+
 
     public static DcMotor motorBL;
     public static DcMotor motorBR;
@@ -62,7 +65,6 @@ public abstract class MyOpMode extends LinearOpMode {
     public static ModernRoboticsI2cRangeSensor rangeL;
     public static ModernRoboticsI2cRangeSensor rangeF;
 
-    public VuforiaLocalizer vuforia;
     public char column;
 
     public String formatAngle(AngleUnit angleUnit, double angle) {
@@ -205,6 +207,7 @@ public abstract class MyOpMode extends LinearOpMode {
         Vparameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
         Vparameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(Vparameters);
+        relicTrackables.activate();
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -278,8 +281,8 @@ public abstract class MyOpMode extends LinearOpMode {
         }
 
     }
-    public char vfValue() {
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+    public char getVuMark() {
+
         telemetry.addData("VuMark ", vuMark);
         telemetry.update();
 
@@ -408,6 +411,9 @@ public abstract class MyOpMode extends LinearOpMode {
         }
         stopMotors();
     }
+
+
+
 
 //    public void setMotorsMec() {
 //        if (!opModeIsActive())
