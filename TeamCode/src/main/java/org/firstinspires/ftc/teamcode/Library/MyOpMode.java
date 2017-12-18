@@ -305,7 +305,6 @@ public abstract class MyOpMode extends LinearOpMode {
                 telemetry.addData("VuMark", "%s visible", vuMark);
                 }
                 telemetry.update();
-
         }
     }
 
@@ -400,7 +399,7 @@ public abstract class MyOpMode extends LinearOpMode {
               //differenceDis = Math.abs(sensor - inAway);
               //pow = differenceDis*kP;
 
-              pow = 0.25; //Try testing the power higher and lower to see why the robot moves foward/back and not strafe straight. Try running with no encoders.
+              pow = .4; //Try testing the power higher and lower to see why the robot moves foward/back and not strafe straight. Try running with no encoders.
 
 //              if (pow > .2) edit once working on single power
 //                  pow = .2;
@@ -722,55 +721,32 @@ public abstract class MyOpMode extends LinearOpMode {
             return;
 
         double newPow;
-
         ElapsedTime time = new ElapsedTime();
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // startP is the current position
+        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // currPos is the current position
 
         delay(100);
         time.reset();
 
-        if (deg > 0) {
-            while ((deg > currPos && time.milliseconds() < timer) && opModeIsActive()) {
-                newPow = pow * (Math.abs(deg - currPos) / 80);
-                if (newPow < .15)
+        while (((currPos > (deg + 2.5)) || (currPos < (deg - 2.5)) && time.milliseconds() < timer && opModeIsActive())) {
+            newPow = pow * (Math.abs(deg - currPos) / 80);
+            if (newPow < .15)
                     newPow = .1;
 
-                setMotors(-newPow, newPow);
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                telemetry.addData("Gyro", currPos);
-                telemetry.addData("newpower", newPow);
-                telemetry.update();
+                if (currPos > deg) {
+                    setMotors(newPow, -newPow); //Right
+                    currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+                    telemetry.addData("Gyro", currPos);
+                    telemetry.update();
+                    }
+                if (deg > currPos) {
+                    setMotors(-newPow, newPow); //Left
+                    currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+                    telemetry.addData("Gyro", currPos);
+                    telemetry.update();
+                    }
                 idle();
             }
-
-            while ((currPos > deg && time.milliseconds() < timer) && opModeIsActive()) {
-                newPow = pow * (Math.abs(deg - currPos) / 80);
-                if (newPow < .15)
-                    newPow = .1;
-
-                setMotors(-newPow, newPow);
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                telemetry.addData("Gyro", currPos);
-                telemetry.addData("newpower", newPow);
-                telemetry.update();
-                idle();
-
-            }
-
-        } else {
-            while ((deg < currPos && time.milliseconds() < timer) && opModeIsActive()) {
-                newPow = pow * (Math.abs(deg - currPos) / 80);
-                if (newPow < .15)
-                    newPow = .1;
-                setMotors(newPow, -newPow);
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                telemetry.addData("Gyro", currPos);
-                telemetry.addData("newpower", newPow);
-                telemetry.update();
-                idle();
-            }
-        }
         stopMotors();
     }
 
@@ -800,7 +776,6 @@ public abstract class MyOpMode extends LinearOpMode {
                 telemetry.addData("newpower", newPow);
                 telemetry.update();
                 idle();
-
             }
         } else {
             while (deg < currPos && time.milliseconds() < tim) {

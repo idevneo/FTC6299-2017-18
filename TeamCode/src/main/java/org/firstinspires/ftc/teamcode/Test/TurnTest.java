@@ -71,7 +71,7 @@ public class TurnTest extends MyOpMode {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         try {
-            turnCorr(.25, 170, 3000);
+            turnCorr2(.25, 170, 5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
