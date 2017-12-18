@@ -36,7 +36,6 @@ import java.util.Locale;
 
 public abstract class MyOpMode extends LinearOpMode {
 
-    private ElapsedTime runtime = new ElapsedTime();
     public static BNO055IMU imu;
 
     public VuforiaLocalizer vuforia;
@@ -199,20 +198,20 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters Vparameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        Vparameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
-        Vparameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(Vparameters);
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        BNO055IMU.Parameters Gparameters = new BNO055IMU.Parameters();
+        Gparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        Gparameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        Gparameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        Gparameters.loggingEnabled = true;
+        Gparameters.loggingTag = "IMU";
+        Gparameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
+        imu.initialize(Gparameters);
         angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 //        relic = hardwareMap.dcMotor.get("relic");
 //        relicGrabber = hardwareMap.servo.get("relicGrabber");
@@ -276,24 +275,38 @@ public abstract class MyOpMode extends LinearOpMode {
         }
 
     }
-    public char vfValue() {
+
+    public void vfValue() {
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         relicTrackables.activate();
-        telemetry.addData("VuMark ", vuMark);
-        telemetry.update();
+        telemetry.addData("Column ", column);
 
-        if (vuMark == RelicRecoveryVuMark.CENTER)
-            column = 'C';
-        else if (vuMark == RelicRecoveryVuMark.LEFT)
-            column = 'L';
-        else if (vuMark == RelicRecoveryVuMark.RIGHT)
-            column = 'R';
-        else if (vuMark == RelicRecoveryVuMark.UNKNOWN)
-            column = 'U';
-        return column;
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+        resetStartTime();
 
+        while ((time.milliseconds() < 5000) && opModeIsActive()) {
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+                telemetry.addData("VuMark", "%s visible", vuMark);
+                if (vuMark == RelicRecoveryVuMark.CENTER) {
+                    column = 'C';
+                }
+                else if (vuMark == RelicRecoveryVuMark.LEFT) {
+                    column = 'L';
+                }
+                else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                    column = 'R';
+                 }
+            }
+             else {
+                column = 'U';
+                telemetry.addData("VuMark", "%s visible", vuMark);
+                }
+                telemetry.update();
+
+        }
     }
 
     public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar) {
@@ -371,10 +384,6 @@ public abstract class MyOpMode extends LinearOpMode {
         }
         stopMotors();
     }
-
-
-
-
 
     public void rangeMoveStrafe(double inAway , ModernRoboticsI2cRangeSensor sensorVar) { //Set pow to negative if we want to move left.
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
@@ -708,26 +717,61 @@ public abstract class MyOpMode extends LinearOpMode {
         }
     }
 
-    public void turnCorr2point0(double pow, double deg) throws InterruptedException { //add in working turncorr pid
+    public void turnCorr2(double pow, double deg, int timer) throws InterruptedException {
+        if (!opModeIsActive())
+            return;
+
+        double newPow;
+
+        ElapsedTime time = new ElapsedTime();
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-        double pidPow;
+        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // startP is the current position
+
+        delay(100);
+        time.reset();
 
         if (deg > 0) {
-            while ((currPos > (deg + .25)) || (currPos < (deg-.25))) {
-                if (currPos > (deg + .25))
-                    setMotors(-pow, pow);
-                if (currPos < (deg -.25))
-                    setMotors(pow, -pow);
+            while ((deg > currPos && time.milliseconds() < timer) && opModeIsActive()) {
+                newPow = pow * (Math.abs(deg - currPos) / 80);
+                if (newPow < .15)
+                    newPow = .1;
+
+                setMotors(-newPow, newPow);
+                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+                telemetry.addData("Gyro", currPos);
+                telemetry.addData("newpower", newPow);
+                telemetry.update();
+                idle();
+            }
+
+            while ((currPos > deg && time.milliseconds() < timer) && opModeIsActive()) {
+                newPow = pow * (Math.abs(deg - currPos) / 80);
+                if (newPow < .15)
+                    newPow = .1;
+
+                setMotors(-newPow, newPow);
+                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+                telemetry.addData("Gyro", currPos);
+                telemetry.addData("newpower", newPow);
+                telemetry.update();
+                idle();
+
+            }
+
+        } else {
+            while ((deg < currPos && time.milliseconds() < timer) && opModeIsActive()) {
+                newPow = pow * (Math.abs(deg - currPos) / 80);
+                if (newPow < .15)
+                    newPow = .1;
+                setMotors(newPow, -newPow);
+                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+                telemetry.addData("Gyro", currPos);
+                telemetry.addData("newpower", newPow);
+                telemetry.update();
+                idle();
             }
         }
-
-        if (deg < 0) {
-            if (currPos > (deg + .25)) //need to review
-                setMotors(-pow, pow);
-            if (currPos < (deg -.25)) //need to review
-                setMotors(pow, -pow);
-        }
+        stopMotors();
     }
 
     public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
@@ -756,6 +800,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 telemetry.addData("newpower", newPow);
                 telemetry.update();
                 idle();
+
             }
         } else {
             while (deg < currPos && time.milliseconds() < tim) {
@@ -764,37 +809,6 @@ public abstract class MyOpMode extends LinearOpMode {
                 if (newPow < .15)
                     newPow = .1;
                 setMotors(newPow, -newPow);
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                telemetry.addData("Gyro", currPos);
-                telemetry.addData("newpower", newPow);
-                telemetry.update();
-                idle();
-            }
-        }
-
-        stopMotors();
-
-        if (currPos > deg) {
-            while (opModeIsActive() && deg < currPos) {
-                newPow = pow * (Math.abs(deg - currPos) / 80);
-
-                if (newPow < .15)
-                    newPow = .1;
-                setMotors(newPow, -newPow);
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                telemetry.addData("Gyro", currPos);
-                telemetry.addData("newpower", newPow);
-                telemetry.update();
-                idle();
-            }
-        } else {
-            while (opModeIsActive() && deg > currPos) {
-                newPow = pow * (Math.abs(deg - currPos) / 80);
-
-                if (newPow < .15)
-                    newPow = .1;
-
-                setMotors(-newPow, newPow);
                 currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
                 telemetry.addData("Gyro", currPos);
                 telemetry.addData("newpower", newPow);

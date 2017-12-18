@@ -30,11 +30,18 @@
 package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
+
 
 
 /**
@@ -55,6 +62,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 public class Vuforia extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
+    VuforiaLocalizer vuforia;
 
     @Override
     public void runOpMode() {
@@ -64,12 +72,17 @@ public class Vuforia extends MyOpMode {
         // Set up our telemetry dashboard
         composeTelemetry();
         // Wait until we're told to go
-
         waitForStart();
         runtime.reset();
         // run until the end of the match (driver presses STOP)
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
+        telemetry.addData("Column ", column);
+
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+        resetStartTime();
+
         vfValue();
+        }
     }
-}
