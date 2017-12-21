@@ -116,20 +116,21 @@ public class AutoRedRight extends MyOpMode {
 //            e.printStackTrace();
 //        }
 //        sleep(1000);
-        rangeMoveStrafe(26.25, rangeR);
+        rangeMoveStrafe(26.75, rangeR);
+        sleep(750);
 
 
-        try {
-            turnCorr(.25, 1, 3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        sleep(1000);
+//        try {
+//            turnCorr(.1, -.1, 3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        sleep(1000);
 
 //        vfMovePerp( 'r', rangeR);
 
-        rangeMovePID(7, rangeF);
-        sleep(500);
+//        rangeMovePID(8, rangeF);
+//        sleep(500);
 
         manipAuto(-.75);
         sleep(500);

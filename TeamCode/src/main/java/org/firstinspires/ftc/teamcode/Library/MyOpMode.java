@@ -356,7 +356,7 @@ public abstract class MyOpMode extends LinearOpMode {
 //        double kP = .025; //to be determined
         double pow;
         double localRange;
-        while (((sensor < inAway - .25) || (sensor > inAway + .25)) && opModeIsActive()) { //While sensor doesn't = tolerance, run.
+        while (((sensor < inAway - .35) || (sensor > inAway + .35)) && opModeIsActive()) { //While sensor doesn't = tolerance, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
             while (Double.isNaN(localRange) || (localRange > 1000)) {
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
@@ -399,7 +399,7 @@ public abstract class MyOpMode extends LinearOpMode {
               //differenceDis = Math.abs(sensor - inAway);
               //pow = differenceDis*kP;
 
-              pow = .2; //Try testing the power higher and lower to see why the robot moves foward/back and not strafe straight. Try running with no encoders.
+              pow = .1; //Try testing the power higher and lower to see why the robot moves foward/back and not strafe straight. Try running with no encoders.
 
 //              if (pow > .2) edit once working on single power
 //                  pow = .2;
@@ -777,7 +777,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 telemetry.update();
                 idle();
             }
-        } else {
+        } else if (deg < 0){
             while (deg < currPos && time.milliseconds() < tim) {
                 newPow = pow * (Math.abs(deg - currPos) / 80);
 
