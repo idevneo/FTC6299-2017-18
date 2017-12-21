@@ -399,7 +399,7 @@ public abstract class MyOpMode extends LinearOpMode {
               //differenceDis = Math.abs(sensor - inAway);
               //pow = differenceDis*kP;
 
-              pow = .4; //Try testing the power higher and lower to see why the robot moves foward/back and not strafe straight. Try running with no encoders.
+              pow = .2; //Try testing the power higher and lower to see why the robot moves foward/back and not strafe straight. Try running with no encoders.
 
 //              if (pow > .2) edit once working on single power
 //                  pow = .2;
