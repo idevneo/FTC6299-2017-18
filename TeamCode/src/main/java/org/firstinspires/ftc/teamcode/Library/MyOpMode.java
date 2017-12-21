@@ -309,7 +309,7 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar) {
-        double centerDis = 30;
+        double centerDis = 26.75;
         double kC = 0;
         if (rb == 'r')
             kC = 8.5;

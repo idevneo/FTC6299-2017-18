@@ -37,16 +37,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 /**
- * {@link AutoBlueLeft} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
+ * {@link AutoRedLeft} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@Autonomous(name = "Blue Left Gyro", group = "Sensor")
+@Autonomous(name = "Red Left Gyro", group = "Sensor")
                             // Comment this out to add to the opmode list
-public class AutoBlueLeft extends MyOpMode {
+public class AutoRedLeft extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -64,62 +64,54 @@ public class AutoBlueLeft extends MyOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-//        jewelArm.setPosition(.55);
-//        jewelHand.setPosition(.45);
-//        sleep(750);
-//        jewelArm.setPosition(.15);
-//        sleep(1000);
-//        if (jewelColor.red() < jewelColor.blue()) {
-//            jewelHand.setPosition((.3));
-//        } else if (jewelColor.red() > jewelColor.blue()) {
-//            jewelHand.setPosition((.6));
-//        }
-//        sleep(500);
-//
-//        jewelArm.setPosition(.55);
-//        jewelHand.setPosition(.45);
-//        sleep(1000);
-//        jewelHand.setPosition(.3);
-//        sleep(500);
+        liftLeft.setPower(.5);
+        liftRight.setPower(-.5);
+        sleep(250);
+        liftLeft.setPower(0);
+        liftRight.setPower(0);
 
-        setMotors(-.25, -.25);
-        sleep(1650);
+
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(750);
+        jewelArm.setPosition(.15);
+        sleep(1000);
+        if (jewelColor.red() > jewelColor.blue()) {
+            jewelHand.setPosition((.3));
+        } else if (jewelColor.red() < jewelColor.blue()) {
+            jewelHand.setPosition((.6));
+        }
+        sleep(500);
+
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(1000);
+        jewelHand.setPosition(.3);
+        sleep(500);
+
+        setMotors(.25,.25);
+        sleep(1850);
         stopMotors();
 
 
+
+
         try {
-            turnCorr(.2, 170, 5000);
+            turnCorr(.1, -70, 4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         sleep(1000);
 
-        rangeMoveStrafe(3, rangeL);
-        sleep(1000);
-
-        rangeMovePID(8, rangeF);
-        sleep(500);
-//        try {
-//            turn(.25, 0.1);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        sleep(1000);
-        rangeMoveStrafe(26.75, rangeL);
-        sleep(750);
-
-
-//        try {
-//            turnCorr(.1, -.1, 3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        sleep(1000);
-
 //        vfMovePerp( 'r', rangeR);
 
-//        rangeMovePID(8, rangeF);
-//        sleep(500);
+//        rangeMoveStrafe(42.5, rangeR);
+//        sleep(750);
+
+        rangeMovePID(6.25, rangeF);
+        sleep(500);
+
+
 
         manipAuto(-.75);
         sleep(500);
@@ -131,9 +123,12 @@ public class AutoBlueLeft extends MyOpMode {
         sleep(250);
         stopMotors();
 
-        setMotors(.4, .4);
+        setMotors(.3, .3);
         sleep(250);
         stopMotors();
+
+        manipAuto(-.75);
+        sleep(200);
 
         setMotors(-.2, -.2);
         sleep(250);
@@ -144,6 +139,5 @@ public class AutoBlueLeft extends MyOpMode {
 //
 //            telemetry.update();
 //        }
-
     }
 }
