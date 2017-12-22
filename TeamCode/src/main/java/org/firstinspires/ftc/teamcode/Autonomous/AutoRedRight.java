@@ -119,6 +119,8 @@ public class AutoRedRight extends MyOpMode {
         rangeMoveStrafe(26.75, rangeR);
         sleep(750);
 
+        vfMovePerp('r', rangeR);
+
 
 //        try {
 //            turnCorr(.1, -.1, 3000);

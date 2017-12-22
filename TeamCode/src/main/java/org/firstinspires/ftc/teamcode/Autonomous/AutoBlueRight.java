@@ -116,6 +116,9 @@ public class AutoBlueRight extends MyOpMode {
             sleep(1000);
 
 
+        vfMovePerp('b', rangeL);
+
+
         rangeMovePID(6.25, rangeF);
         sleep(500);
 
