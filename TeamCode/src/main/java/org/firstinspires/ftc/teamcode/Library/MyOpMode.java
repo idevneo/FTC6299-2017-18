@@ -405,14 +405,15 @@ public abstract class MyOpMode extends LinearOpMode {
 //                  pow = .2;
 //              if (pow < .19)
 //                  pow = .19;
-
+// I CHANGED THE NEGATIVE SIGNS FOR BLUE AUTO JUST TO TEST*************************
+// FOR NORMAL RED AUTO THE NEGATIVE SIGN WILL BE ON BOTTOM IF STATEMENT
             if (sensor > inAway) {
-                setMotorStrafe(pow);
-            }
-            if (sensor < inAway) {
                 setMotorStrafe(-pow);
             }
-              telemetry.addData("rightwhile", sensor);
+            if (sensor < inAway) {
+                setMotorStrafe(pow);
+            }
+              telemetry.addData("rangeDis", sensor);
               telemetry.update();
         }
         stopMotors();

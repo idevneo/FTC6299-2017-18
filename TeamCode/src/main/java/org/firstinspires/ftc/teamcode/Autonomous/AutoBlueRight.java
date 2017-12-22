@@ -33,20 +33,23 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 /**
- * {@link AutoBlueLeft} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
+ * {@link AutoBlueRight} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@Autonomous(name = "Blue Left Gyro", group = "Sensor")
+@Autonomous(name = "Blue Right Gyro", group = "Sensor")
                             // Comment this out to add to the opmode list
-public class AutoBlueLeft extends MyOpMode {
+public class AutoBlueRight extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -54,9 +57,19 @@ public class AutoBlueLeft extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         hMap(hardwareMap);
+
         // Set up our telemetry dashboard
         composeTelemetry();
         // Wait until we're told to go
+
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTrackables.activate();
+        telemetry.addData("Column ", column);
+
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+        resetStartTime();
 
         waitForStart();
         runtime.reset();
@@ -64,64 +77,48 @@ public class AutoBlueLeft extends MyOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        jewelArm.setPosition(.55);
-        jewelHand.setPosition(.45);
+
+            liftLeft.setPower(.5);
+            liftRight.setPower(-.5);
+            sleep(250);
+            liftLeft.setPower(0);
+            liftRight.setPower(0);
+
+
+            jewelArm.setPosition(.55);
+            jewelHand.setPosition(.45);
+            sleep(500);
+            jewelArm.setPosition(.15);
+            sleep(1000);
+            if (jewelColor.red() < jewelColor.blue()) {
+                jewelHand.setPosition((.3));
+            } else if (jewelColor.red() > jewelColor.blue()) {
+                jewelHand.setPosition((.6));
+            }
+            sleep(500);
+
+            jewelArm.setPosition(.55);
+            jewelHand.setPosition(.45);
+            sleep(500);
+            jewelHand.setPosition(.3);
+            sleep(500);
+
+            setMotors(-.25, -.25);
+            sleep(1850);
+            stopMotors();
+
+
+            try {
+                turnCorr(.1, -70, 4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sleep(1000);
+
+
+        rangeMovePID(6.25, rangeF);
         sleep(500);
-        jewelArm.setPosition(.15);
-        sleep(1000);
-        if (jewelColor.red() < jewelColor.blue()) {
-            jewelHand.setPosition((.3));
-        } else if (jewelColor.red() > jewelColor.blue()) {
-            jewelHand.setPosition((.6));
-        }
-        sleep(500);
 
-        jewelArm.setPosition(.55);
-        jewelHand.setPosition(.45);
-        sleep(500);
-        jewelHand.setPosition(.3);
-        sleep(500);
-
-        setMotors(-.25, -.25);
-        sleep(1550);
-        stopMotors();
-
-
-        try {
-            turnCorr(.2, 174, 5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        sleep(1000);
-
-//        rangeMoveStrafe(3, rangeL);
-//        sleep(750);
-
-//        rangeMovePID(5.5, rangeF);
-//        sleep(1000);
-//        try {
-//            turn(.25, 0.1);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        sleep(1000);
-
-        rangeMoveStrafe(26.5, rangeL);
-        sleep(750);
-
-
-
-        try {
-            turnCorr(.2, 4, 5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        sleep(1000);
-
-//        vfMovePerp( 'r', rangeR);
-
-        rangeMovePID(5.5, rangeF);
-        sleep(500);
 
         manipAuto(-.75);
         sleep(500);
@@ -133,19 +130,33 @@ public class AutoBlueLeft extends MyOpMode {
         sleep(250);
         stopMotors();
 
-        setMotors(.4, .4);
+        setMotors(.3, .3);
         sleep(250);
         stopMotors();
+
+        manipAuto(-.75);
+        sleep(200);
 
         setMotors(-.2, -.2);
         sleep(250);
         stopMotors();
-        //Finish optimizing this Auto, then invert for the blue side.
-        // Loop and update the dashboard
+
+
+
+
+//        vfMovePerp( 'r', rangeR);
+
+//        rangeMoveStrafe(42.5, rangeR);
+//        sleep(750);
+
+
+            //Finish optimizing this Auto, then invert for the blue side.
+            // Loop and update the dashboard
 //        while (opModeIsActive()) {
 //
 //            telemetry.update();
 //        }
-
+        }
     }
-}
+
+

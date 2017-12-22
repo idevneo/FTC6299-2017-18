@@ -81,8 +81,8 @@ public class Plz extends LinearOpMode {
     float gamepad1_left;
     float gamepad1_right;
 
-    double left = 1;
-    double right = 1;
+    double left = .1;
+    double right = .1;
     double strafeMod = .25;
     double jewelHandStart = 0.1;
     double jewelHandDeploy = 0.9;
@@ -108,6 +108,12 @@ public class Plz extends LinearOpMode {
 
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
+
+
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 //        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
 //        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
