@@ -106,7 +106,7 @@ public class AutoRedRight extends MyOpMode {
         sleep(1000);
         stopMotors();
 
-        rangeMoveStrafe(3, rangeR);
+        rangeMoveStrafe(3, rangeR, 0);
         sleep(1000);
         rangeMovePID(8, rangeF);
         sleep(500);
@@ -116,10 +116,10 @@ public class AutoRedRight extends MyOpMode {
 //            e.printStackTrace();
 //        }
 //        sleep(1000);
-        rangeMoveStrafe(26.75, rangeR);
+        rangeMoveStrafe(26.75, rangeR, 0);
         sleep(750);
 
-        vfMovePerp('r', rangeR);
+        vfMovePerp('r', rangeR,0);
 
 
 //        try {

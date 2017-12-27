@@ -70,6 +70,6 @@ public class Strafe extends MyOpMode {
         // run until the end of the match (driver presses STOP)
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        rangeMoveStrafe(10, rangeR);
+        rangeMoveStrafe(10, rangeR,0);
     }
 }

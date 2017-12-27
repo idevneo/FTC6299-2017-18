@@ -113,7 +113,7 @@ public class AutoBlueLeft extends MyOpMode {
 //        }
 //        sleep(1000);
 
-        rangeMoveStrafe(26.5, rangeL);
+        rangeMoveStrafe(26.5, rangeL, 1);
         sleep(750);
 
 //THE SECOND TURNCORR (THE ONE BELOW) DOESN'T MOVE ANYTHING

@@ -133,7 +133,7 @@ public class AutoRedDriveLeft extends MyOpMode {
 //        }
 //        sleep(1000);
 
-        rangeMoveStrafe(26.25, rangeR);
+        rangeMoveStrafe(26.25, rangeR, 0);
 
 //[
 //        try {

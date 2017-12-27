@@ -71,6 +71,6 @@ public class PIDtoStrafe extends MyOpMode {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         rangeMovePID(10, rangeF);
-        rangeMoveStrafe(26.25, rangeR);
+        rangeMoveStrafe(26.25, rangeR, 0);
     }
 }

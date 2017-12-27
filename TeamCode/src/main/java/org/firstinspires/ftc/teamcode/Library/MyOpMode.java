@@ -106,7 +106,7 @@ public abstract class MyOpMode extends LinearOpMode {
 //        telemetry.addLine()
 //                .addData("VumarkGoal", new Func<String>() {
 //                    @Override public String  value() {
-//                        return Character.toString(getVuMark());
+//                        return Character.toString(vfValue());
 //                    }
 //                });
           telemetry.addLine()
@@ -308,7 +308,7 @@ public abstract class MyOpMode extends LinearOpMode {
         }
     }
 
-    public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar) {
+    public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {
         double centerDis = 26.75;
         double kC = 0;
         if (rb == 'r')
@@ -316,13 +316,13 @@ public abstract class MyOpMode extends LinearOpMode {
         if (rb == 'b')
             kC = -8.5;
         if (column == 'L') {
-            rangeMoveStrafe((centerDis + kC) , sensorVar);
+            rangeMoveStrafe((centerDis + kC) , sensorVar, bSwitch);
         } else if (column == 'R') {
-            rangeMoveStrafe((centerDis - kC), sensorVar);
+            rangeMoveStrafe((centerDis - kC), sensorVar, bSwitch);
         } else if (column == 'C') {
-            rangeMoveStrafe(centerDis, sensorVar);
+            rangeMoveStrafe(centerDis, sensorVar, bSwitch);
         } else if (column == 'U'){
-            rangeMoveStrafe(centerDis, sensorVar);
+            rangeMoveStrafe(centerDis, sensorVar, bSwitch);
         }
 
     }
@@ -384,7 +384,7 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void rangeMoveStrafe(double inAway , ModernRoboticsI2cRangeSensor sensorVar) { //Set pow to negative if we want to move left.
+    public void rangeMoveStrafe(double inAway , ModernRoboticsI2cRangeSensor sensorVar, double bSet ) { //Basing Switch | 1 = Left | 0 = Right
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
 //        double differenceDis;
 //        double kP = .025; //to be determined
@@ -396,22 +396,27 @@ public abstract class MyOpMode extends LinearOpMode {
                   localRange = sensorVar.getDistance(DistanceUnit.INCH);
               }
               sensor = localRange;
+
               //differenceDis = Math.abs(sensor - inAway);
               //pow = differenceDis*kP;
+              pow = .15; //Try running with no encoders.
 
-              pow = .1; //Try testing the power higher and lower to see why the robot moves foward/back and not strafe straight. Try running with no encoders.
-
-//              if (pow > .2) edit once working on single power
-//                  pow = .2;
-//              if (pow < .19)
-//                  pow = .19;
-// I CHANGED THE NEGATIVE SIGNS FOR BLUE AUTO JUST TO TEST*************************
-// FOR NORMAL RED AUTO THE NEGATIVE SIGN WILL BE ON BOTTOM IF STATEMENT
-            if (sensor > inAway) {
-                setMotorStrafe(-pow);
+            if (bSet == 0) {
+                if (sensor > inAway) {
+                    setMotorStrafe(pow);
+                }
+                if (sensor < inAway) {
+                    setMotorStrafe(-pow);
+                }
             }
-            if (sensor < inAway) {
-                setMotorStrafe(pow);
+
+            if (bSet == 1) {
+                if (sensor > inAway) {
+                    setMotorStrafe(-pow);
+                }
+                if (sensor < inAway) {
+                    setMotorStrafe(pow);
+                }
             }
               telemetry.addData("rangeDis", sensor);
               telemetry.update();
