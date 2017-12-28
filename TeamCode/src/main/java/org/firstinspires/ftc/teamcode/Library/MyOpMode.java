@@ -327,6 +327,23 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
 
+    public void vfMoveAlt() {
+
+        if (column == 'L') {
+            setMotorStrafe(-.1);
+            sleep(650);
+        } else if (column == 'R') {
+            setMotorStrafe(.1);
+            sleep(650);
+        } else if (column == 'C') {
+            stopMotors();
+            sleep(250);
+        } else if (column == 'U'){
+            stopMotors();
+            sleep(250);
+        }
+
+    }
 //    public void rangeMove(double pow, double inAway, ModernRoboticsI2cRangeSensor sensorVar)    { //Set pow negative to move backward.
 //        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
 //

@@ -108,6 +108,8 @@ public class AutoRedLeft extends MyOpMode {
 //        rangeMoveStrafe(42.5, rangeR);
 //        sleep(750);
 
+        vfMoveAlt();
+
         rangeMovePID(6.25, rangeF);
         sleep(500);
 
