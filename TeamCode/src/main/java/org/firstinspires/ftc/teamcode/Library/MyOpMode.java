@@ -777,6 +777,8 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
+
+
     public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
         if (!opModeIsActive())
             return;
@@ -797,7 +799,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
                 if (error > 180){
                     error = error -360;
-                } else if (error < -180){
+                } else if (error <= -180){
                     error = error +360;
                 }
 
