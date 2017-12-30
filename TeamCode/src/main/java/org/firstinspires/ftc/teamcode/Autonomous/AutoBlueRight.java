@@ -62,14 +62,7 @@ public class AutoBlueRight extends MyOpMode {
         composeTelemetry();
         // Wait until we're told to go
 
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTrackables.activate();
-        telemetry.addData("Column ", column);
 
-        ElapsedTime time = new ElapsedTime();
-        time.reset();
-        resetStartTime();
 
         waitForStart();
         runtime.reset();
@@ -77,43 +70,44 @@ public class AutoBlueRight extends MyOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
+        vfValue();
 
-            liftLeft.setPower(.5);
-            liftRight.setPower(-.5);
-            sleep(250);
-            liftLeft.setPower(0);
-            liftRight.setPower(0);
-
-
-            jewelArm.setPosition(.55);
-            jewelHand.setPosition(.45);
-            sleep(500);
-            jewelArm.setPosition(.15);
-            sleep(1000);
-            if (jewelColor.red() < jewelColor.blue()) {
-                jewelHand.setPosition((.3));
-            } else if (jewelColor.red() > jewelColor.blue()) {
-                jewelHand.setPosition((.6));
-            }
-            sleep(500);
-
-            jewelArm.setPosition(.55);
-            jewelHand.setPosition(.45);
-            sleep(500);
-            jewelHand.setPosition(.3);
-            sleep(500);
-
-            setMotors(-.25, -.25);
-            sleep(1850);
-            stopMotors();
+//        liftLeft.setPower(.5);
+//        liftRight.setPower(-.5);
+//        sleep(250);
+//        liftLeft.setPower(0);
+//        liftRight.setPower(0);
 
 
-            try {
-                turnCorr(.1, -70, 4000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            sleep(1000);
+        jewelArm.setPosition(.55);
+        jewelHand.setPosition(.4);
+        sleep(500);
+        jewelArm.setPosition(.15);
+        sleep(1000);
+        if (jewelColor.red() < jewelColor.blue()) {
+            jewelHand.setPosition((.3));
+        } else if (jewelColor.red() > jewelColor.blue()) {
+            jewelHand.setPosition((.6));
+        }
+        sleep(500);
+
+        jewelArm.setPosition(.55);
+        jewelHand.setPosition(.45);
+        sleep(500);
+        jewelHand.setPosition(.3);
+        sleep(500);
+
+        setMotors(-.4, -.4);
+        sleep(1100);
+        stopMotors();
+
+
+       try {
+           turnCorr(0.1,-70, 10000);
+       } catch (InterruptedException e) {
+           e.printStackTrace();
+       }
+        sleep(1000);
 
 
         vfMoveAlt();

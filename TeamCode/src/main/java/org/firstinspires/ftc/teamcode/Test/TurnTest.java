@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -61,6 +62,7 @@ public class TurnTest extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         hMap(hardwareMap);
+
         // Set up our telemetry dashboard
         composeTelemetry();
         // Wait until we're told to go
@@ -71,7 +73,7 @@ public class TurnTest extends MyOpMode {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         try {
-            turnCorr2(.25, 170, 5000);
+            turnCorr(.1, -90, 5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

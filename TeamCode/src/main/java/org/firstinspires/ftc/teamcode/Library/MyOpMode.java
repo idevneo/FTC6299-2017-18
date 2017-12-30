@@ -286,7 +286,7 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
         resetStartTime();
 
-        while ((time.milliseconds() < 5000) && opModeIsActive()) {
+        while ((time.milliseconds() < 4000) && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
                 telemetry.addData("VuMark", "%s visible", vuMark);
@@ -331,10 +331,10 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (column == 'L') {
             setMotorStrafe(-.1);
-            sleep(650);
+            sleep(1400);
         } else if (column == 'R') {
             setMotorStrafe(.1);
-            sleep(650);
+            sleep(1400);
         } else if (column == 'C') {
             stopMotors();
             sleep(250);
@@ -418,6 +418,8 @@ public abstract class MyOpMode extends LinearOpMode {
               //pow = differenceDis*kP;
               pow = .15; //Try running with no encoders.
 
+
+              //RED SIDE AUTOS
             if (bSet == 0) {
                 if (sensor > inAway) {
                     setMotorStrafe(pow);
@@ -427,6 +429,8 @@ public abstract class MyOpMode extends LinearOpMode {
                 }
             }
 
+
+            //BLUE SIDE AUTOS
             if (bSet == 1) {
                 if (sensor > inAway) {
                     setMotorStrafe(-pow);
@@ -751,7 +755,7 @@ public abstract class MyOpMode extends LinearOpMode {
         delay(100);
         time.reset();
 
-        while (((currPos > (deg + 2.5)) || (currPos < (deg - 2.5)) && time.milliseconds() < timer && opModeIsActive())) {
+        while (((currPos > (deg + 2.5)) || (currPos < (deg - 2.5)) && (time.milliseconds() < timer) && opModeIsActive())) {
             newPow = pow * (Math.abs(deg - currPos) / 80);
             if (newPow < .15)
                     newPow = .1;
@@ -778,6 +782,7 @@ public abstract class MyOpMode extends LinearOpMode {
             return;
 
         double newPow;
+        double error;
 
         ElapsedTime time = new ElapsedTime();
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -788,25 +793,57 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (deg > 0) {
             while ((deg > currPos && time.milliseconds() < tim)) {
-                newPow = pow * (Math.abs(deg - currPos) / 80);
+                error = deg - currPos;
+
+                if (error > 180){
+                    error = error -360;
+                } else if (error < -180){
+                    error = error +360;
+                }
+
+                newPow = pow * (Math.abs(error) / 80);
+
+//                if ((deg - currPos) - 360)
 
                 if (newPow < .15)
                     newPow = .1;
 
-                setMotors(-newPow, newPow);
+                if (currPos > 0) {
+                    setMotors(-newPow, newPow);
+                }else if (currPos < 0){
+                    setMotors(-newPow, newPow);
+
+                }
                 currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
                 telemetry.addData("Gyro", currPos);
                 telemetry.addData("newpower", newPow);
+                telemetry.addData("Error", (Math.abs(deg - currPos)));
                 telemetry.update();
                 idle();
             }
         } else if (deg < 0){
+
             while (deg < currPos && time.milliseconds() < tim) {
-                newPow = pow * (Math.abs(deg - currPos) / 80);
+
+                error = deg - currPos;
+
+                if (error > 180){
+                    error = error - 360;
+                } else if (error < -180){
+                    error = error + 360;
+                }
+
+                newPow = pow * (Math.abs(error) / 80);
 
                 if (newPow < .15)
                     newPow = .1;
-                setMotors(newPow, -newPow);
+
+                if (currPos < 0) {
+                    setMotors(newPow, -newPow);
+                }else if (currPos > 0){
+                    setMotors(newPow, -newPow);
+
+                }
                 currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
                 telemetry.addData("Gyro", currPos);
                 telemetry.addData("newpower", newPow);

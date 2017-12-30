@@ -64,15 +64,17 @@ public class AutoBlueLeft extends MyOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        liftLeft.setPower(.5);
-        liftRight.setPower(-.5);
-        sleep(250);
-        liftLeft.setPower(0);
-        liftRight.setPower(0);
+        vfValue();
+
+//        liftLeft.setPower(.5);
+//        liftRight.setPower(-.5);
+//        sleep(250);
+//        liftLeft.setPower(0);
+//        liftRight.setPower(0);
 
 
         jewelArm.setPosition(.55);
-        jewelHand.setPosition(.45);
+        jewelHand.setPosition(.4);
         sleep(500);
         jewelArm.setPosition(.15);
         sleep(1000);
@@ -120,19 +122,21 @@ public class AutoBlueLeft extends MyOpMode {
 //AFTER THE ROBOT STRAFES, IT DOESN'T DO THE SECOND TURNCORR FOR SOME REASON
 //***********************   NEEDS TO BE FIXED *************************
         
-        try {
-            turnCorr(.1, 4, 5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        sleep(1000);
+//        try {
+//            turnCorr(.1, -166, 5000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        sleep(1000);
 
 
 
 //        vfMovePerp( 'r', rangeR);
 
-        rangeMovePID(5.5, rangeF);
-        sleep(500);
+//        rangeMovePID(5.5, rangeF);
+//        sleep(500);
+
+        vfMovePerp('b',rangeL, 1);
 
         manipAuto(-.75);
         sleep(500);

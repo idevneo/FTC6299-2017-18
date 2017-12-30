@@ -50,9 +50,9 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="StrafeTest", group="Linear Opmode")
+@Autonomous(name="BackwardOffStone", group="Linear Opmode")
 
-public class Strafe extends MyOpMode {
+public class BackwardOffStone extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -70,6 +70,20 @@ public class Strafe extends MyOpMode {
         // run until the end of the match (driver presses STOP)
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        rangeMoveStrafe(10, rangeL,1);
+        setMotors(-.4,-.4);
+        sleep(1000);
+        stopMotors();
+
+
+
+        try {
+            turnCorr(.1, -70, 4000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        sleep(1000);
+
+
+
     }
 }

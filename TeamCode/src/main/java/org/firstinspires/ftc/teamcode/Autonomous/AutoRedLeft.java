@@ -64,15 +64,10 @@ public class AutoRedLeft extends MyOpMode {
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        liftLeft.setPower(.5);
-        liftRight.setPower(-.5);
-        sleep(250);
-        liftLeft.setPower(0);
-        liftRight.setPower(0);
-
+        vfValue();
 
         jewelArm.setPosition(.6);
-        jewelHand.setPosition(.45);
+        jewelHand.setPosition(.4);
         sleep(750);
         jewelArm.setPosition(.15);
         sleep(1000);
@@ -90,7 +85,7 @@ public class AutoRedLeft extends MyOpMode {
         sleep(500);
 
         setMotors(.25,.25);
-        sleep(1850);
+        sleep(1950);
         stopMotors();
 
 
