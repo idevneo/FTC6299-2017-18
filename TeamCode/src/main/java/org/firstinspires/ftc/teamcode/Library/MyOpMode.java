@@ -748,6 +748,9 @@ public abstract class MyOpMode extends LinearOpMode {
             return;
 
         double newPow;
+        double error;
+        double errorMove;
+
         ElapsedTime time = new ElapsedTime();
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // currPos is the current position
@@ -755,26 +758,40 @@ public abstract class MyOpMode extends LinearOpMode {
         delay(100);
         time.reset();
 
-        while (((currPos > (deg + 2.5)) || (currPos < (deg - 2.5)) && (time.milliseconds() < timer) && opModeIsActive())) {
-            newPow = pow * (Math.abs(deg - currPos) / 80);
-            if (newPow < .15)
-                    newPow = .1;
+        while (((currPos > (deg + 2.5)) || (currPos < (deg - 2.5))) && (time.milliseconds() < timer) && opModeIsActive()) {
+            error = deg - currPos;
+            errorMove = Math.abs(deg - currPos);
 
-                if (currPos > deg) {
-                    setMotors(newPow, -newPow); //Right
-                    currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                    telemetry.addData("Gyro", currPos);
-                    telemetry.update();
-                    }
-                if (deg > currPos) {
-                    setMotors(-newPow, newPow); //Left
-                    currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                    telemetry.addData("Gyro", currPos);
-                    telemetry.update();
-                    }
-                idle();
+            if (error > 180) {
+                error = error - 360;
+            } else if (error < -180) {
+                error = error + 360;
             }
-        stopMotors();
+
+            newPow = pow * (Math.abs(error) / 70);
+            if (newPow < .15)
+                newPow = .1;
+
+            if (currPos < deg) {
+                if (errorMove < 180) {
+                    setMotors(-newPow, newPow); //Turns left
+                }
+                if (errorMove > 180) {
+                    setMotors(newPow, -newPow); //Turns right if we go past the pos/neg mark.
+                }
+            } else if (currPos > deg) {
+                if (errorMove < 180) {
+                    setMotors(newPow, -newPow); //Turns right
+                }
+                if (errorMove > 180) {
+                    setMotors(-newPow, newPow); //Turns left if we go past the pos/neg mark.
+                }
+            }
+            currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+            telemetry.addData("Gyro", currPos);
+            telemetry.update();
+        }
+            stopMotors();
     }
 
     public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
