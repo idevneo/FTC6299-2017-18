@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -45,7 +46,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
 @Autonomous(name = "Blue Left Gyro", group = "Sensor")
-                            // Comment this out to add to the opmode list
+@Disabled                            // Comment this out to add to the opmode list
 public class AutoBlueLeft extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -97,7 +98,7 @@ public class AutoBlueLeft extends MyOpMode {
 
 
         try {
-            turnCorr(.1, 170, 5000);
+            turnCorr2(.1, 170, 5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -115,8 +116,17 @@ public class AutoBlueLeft extends MyOpMode {
 //        }
 //        sleep(1000);
 
-        rangeMoveStrafe(26.5, rangeL, 1);
-        sleep(750);
+
+        rangeMoveStrafe(20, rangeL, 1);
+
+        try {
+            turnCorr2(20, 175, 2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        rangeMoveStrafe(26.75, rangeL, 1);
+        sleep(350);
 
 //THE SECOND TURNCORR (THE ONE BELOW) DOESN'T MOVE ANYTHING
 //AFTER THE ROBOT STRAFES, IT DOESN'T DO THE SECOND TURNCORR FOR SOME REASON

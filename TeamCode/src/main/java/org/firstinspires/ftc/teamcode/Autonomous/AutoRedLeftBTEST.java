@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.Test;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -36,24 +36,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-
 /**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
+ * {@link AutoRedLeftBTEST} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
  *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ *
+ * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-
-@Autonomous(name="BackwardOffStone", group="Linear Opmode")
-
-public class BackwardOffStone extends MyOpMode {
-
+@Autonomous(name = "Red Left GYROWORK", group = "Sensor")
+                            // Comment this out to add to the opmode list
+public class AutoRedLeftBTEST extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -61,29 +54,105 @@ public class BackwardOffStone extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         hMap(hardwareMap);
+
         // Set up our telemetry dashboard
         composeTelemetry();
         // Wait until we're told to go
 
+
+
         waitForStart();
         runtime.reset();
-        // run until the end of the match (driver presses STOP)
+/**---------------------------------------------------------------------------------------------------------------*/
+        // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        setMotors(-.4,-.4);
+        vfValue();
+
+//        liftLeft.setPower(.5);
+//        liftRight.setPower(-.5);
+//        sleep(250);
+//        liftLeft.setPower(0);
+//        liftRight.setPower(0);
+
+
+//        jewelArm.setPosition(.6);
+//        jewelHand.setPosition(.4);
+//        sleep(750);
+//        jewelArm.setPosition(.15);
+//        sleep(1000);
+//        if (jewelColor.red() > jewelColor.blue()) {
+//            jewelHand.setPosition((.3));
+//        } else if (jewelColor.red() < jewelColor.blue()) {
+//            jewelHand.setPosition((.6));
+//        }
+//        sleep(500);
+//
+//        jewelArm.setPosition(.6);
+//        jewelHand.setPosition(.45);
+//        sleep(1000);
+//        jewelHand.setPosition(.3);
+//        sleep(500);
+//
+        setMotors(.4, .4);
         sleep(1000);
+        stopMotors();
+        sleep(100);
+       try {
+           turnCorr2(0.1,-85, 7000);
+       } catch (InterruptedException e) {
+           e.printStackTrace();
+       }
+        sleep(1000);
+
+
+        setMotorStrafe(.4);
+        sleep(800);
+        stopMotors();
+
+        setMotorStrafe(-.4);
+        sleep(825);
+        stopMotors();
+
+        vfMoveAlt();
+
+        manipAuto(-.75);
+        sleep(500);
+
+        manipAuto(-.75);
+
+//back up, push forward, back up
+        setMotors(-.2, -.2);
+        sleep(250);
+        stopMotors();
+
+        setMotors(.3, .3);
+        sleep(250);
+        stopMotors();
+
+        manipAuto(-.75);
+        sleep(200);
+
+        setMotors(-.2, -.2);
+        sleep(250);
         stopMotors();
 
 
 
-        try {
-            turnCorr2(.1, -70, 4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+//        vfMovePerp( 'r', rangeR);
+
+//        rangeMoveStrafe(42.5, rangeR);
+//        sleep(750);
+
+
+            //Finish optimizing this Auto, then invert for the blue side.
+            // Loop and update the dashboard
+//        while (opModeIsActive()) {
+//
+//            telemetry.update();
+//        }
         }
-        sleep(1000);
-
-
-
     }
-}
+
+

@@ -109,21 +109,23 @@ public abstract class MyOpMode extends LinearOpMode {
 //                        return Character.toString(vfValue());
 //                    }
 //                });
-          telemetry.addLine()
-                  .addData("Left", new Func<String>() {
-                      @Override public String  value() {
-                          double localRange;
-                          double sensor = 0;
-                          localRange = rangeL.getDistance(DistanceUnit.INCH);
-                          if (!Double.isNaN(localRange) && (localRange < 1000)) {
-                              sensor = localRange;
-                          }
-                          return Double.toString(sensor);
-                      }
-                  });
+        telemetry.addLine()
+                .addData("Left", new Func<String>() {
+                    @Override
+                    public String value() {
+                        double localRange;
+                        double sensor = 0;
+                        localRange = rangeL.getDistance(DistanceUnit.INCH);
+                        if (!Double.isNaN(localRange) && (localRange < 1000)) {
+                            sensor = localRange;
+                        }
+                        return Double.toString(sensor);
+                    }
+                });
         telemetry.addLine()
                 .addData("Right", new Func<String>() {
-                    @Override public String  value() {
+                    @Override
+                    public String value() {
                         double localRange;
                         double sensor = 0;
                         localRange = rangeR.getDistance(DistanceUnit.INCH);
@@ -136,7 +138,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
         telemetry.addLine()
                 .addData("Front", new Func<String>() {
-                    @Override public String  value() {
+                    @Override
+                    public String value() {
                         double localRange;
                         double sensor = 0;
                         localRange = rangeF.getDistance(DistanceUnit.INCH);
@@ -292,19 +295,16 @@ public abstract class MyOpMode extends LinearOpMode {
                 telemetry.addData("VuMark", "%s visible", vuMark);
                 if (vuMark == RelicRecoveryVuMark.CENTER) {
                     column = 'C';
-                }
-                else if (vuMark == RelicRecoveryVuMark.LEFT) {
+                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
                     column = 'L';
-                }
-                else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
                     column = 'R';
-                 }
-            }
-             else {
+                }
+            } else {
                 column = 'U';
                 telemetry.addData("VuMark", "%s visible", vuMark);
-                }
-                telemetry.update();
+            }
+            telemetry.update();
         }
     }
 
@@ -312,17 +312,17 @@ public abstract class MyOpMode extends LinearOpMode {
         double centerDis = 26.75;
         double kC = 0;
         if (rb == 'r')
-            kC = 8.5;
+            kC = 6;
         if (rb == 'b')
-            kC = -8.5;
+            kC = -6;
         if (column == 'L') {
-            rangeMoveStrafe((centerDis + kC) , sensorVar, bSwitch);
+            rangeMoveStrafe((centerDis + kC), sensorVar, bSwitch);
         } else if (column == 'R') {
             rangeMoveStrafe((centerDis - kC), sensorVar, bSwitch);
         } else if (column == 'C') {
-            rangeMoveStrafe(centerDis, sensorVar, bSwitch);
-        } else if (column == 'U'){
-            rangeMoveStrafe(centerDis, sensorVar, bSwitch);
+
+        } else if (column == 'U') {
+
         }
 
     }
@@ -330,17 +330,17 @@ public abstract class MyOpMode extends LinearOpMode {
     public void vfMoveAlt() {
 
         if (column == 'L') {
-            setMotorStrafe(-.1);
-            sleep(1400);
+            setMotorStrafe(-.25);
+            sleep(750);
+            stopMotors();
         } else if (column == 'R') {
-            setMotorStrafe(.1);
-            sleep(1400);
+            setMotorStrafe(.25);
+            sleep(750);
+            stopMotors();
         } else if (column == 'C') {
-            stopMotors();
-            sleep(250);
-        } else if (column == 'U'){
-            stopMotors();
-            sleep(250);
+
+        } else if (column == 'U') {
+
         }
 
     }
@@ -367,7 +367,7 @@ public abstract class MyOpMode extends LinearOpMode {
 //        stopMotors();
 //    }
 
-    public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar)    {
+    public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar) {
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
 //        double differenceDis;
 //        double kP = .025; //to be determined
@@ -401,25 +401,27 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void rangeMoveStrafe(double inAway , ModernRoboticsI2cRangeSensor sensorVar, double bSet ) { //Basing Switch | 1 = Left | 0 = Right
+    public void rangeMoveStrafe(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet) { //Basing Switch | 1 = Left | 0 = Right
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-//        double differenceDis;
-//        double kP = .025; //to be determined
-        double pow;
+
+        double range;
+        double pow = .15;
+//        double newPow;
         double localRange;
-          while (((sensor < inAway - .5) || (sensor > inAway + .5))&& opModeIsActive()) {
-              localRange = sensorVar.getDistance(DistanceUnit.INCH);
-              while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
-                  localRange = sensorVar.getDistance(DistanceUnit.INCH);
-              }
-              sensor = localRange;
 
-              //differenceDis = Math.abs(sensor - inAway);
-              //pow = differenceDis*kP;
-              pow = .15; //Try running with no encoders.
+        while (((sensor < inAway - .5) || (sensor > inAway + .5)) && opModeIsActive()) {
+            localRange = sensorVar.getDistance(DistanceUnit.INCH);
+            while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
+                localRange = sensorVar.getDistance(DistanceUnit.INCH);
+            }
+            sensor = localRange;
+            range = Math.abs(inAway - sensor);
 
 
-              //RED SIDE AUTOS
+
+            pow = .15;
+
+            //RED SIDE AUTOS
             if (bSet == 0) {
                 if (sensor > inAway) {
                     setMotorStrafe(pow);
@@ -439,8 +441,8 @@ public abstract class MyOpMode extends LinearOpMode {
                     setMotorStrafe(pow);
                 }
             }
-              telemetry.addData("rangeDis", sensor);
-              telemetry.update();
+            telemetry.addData("rangeDis", sensor);
+            telemetry.update();
         }
         stopMotors();
     }
@@ -667,15 +669,17 @@ public abstract class MyOpMode extends LinearOpMode {
     public double getDiff(double angle) {
         imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-        return   currPos - angle;
+        return currPos - angle;
     }
+
     public Double gyroVal() {
         imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
         return currPos;
     }
+
     public void turnPID(double angle) throws InterruptedException {
-        double kP = .20/90;
+        double kP = .20 / 90;
         double min = -.2;
         double max = .2;
         double changeCon = .04;
@@ -692,8 +696,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 motorBR.setPower(Range.clip(-PIDchange + changeCon, min, max));
                 motorFL.setPower(Range.clip(-PIDchange + changeCon, min, max));
                 motorBL.setPower(Range.clip(-PIDchange + changeCon, min, max));
-            }
-            else {
+            } else {
                 motorFR.setPower(Range.clip(PIDchange - changeCon, min, max));
                 motorBR.setPower(Range.clip(PIDchange - changeCon, min, max));
                 motorFL.setPower(Range.clip(PIDchange - changeCon, min, max));
@@ -704,7 +707,7 @@ public abstract class MyOpMode extends LinearOpMode {
             telemetry.addData("gyroStart", startAngle);
             telemetry.addData("counter", counter++);
             telemetry.addData("GyroVal", gyroVal());
-            telemetry.addData("GyroDiff",getDiff(angle));
+            telemetry.addData("GyroDiff", getDiff(angle));
             telemetry.addData("Pow", -PIDchange - changeCon);
             telemetry.update();
 
@@ -718,10 +721,10 @@ public abstract class MyOpMode extends LinearOpMode {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
         if (deg > 0) {
-            while ((currPos > (deg + .25)) || (currPos < (deg-.25))){
+            while ((currPos > (deg + .25)) || (currPos < (deg - .25))) {
                 if (currPos > (deg + .25))
                     setMotors(-pow, pow);
-                if (currPos < (deg -.25))
+                if (currPos < (deg - .25))
                     setMotors(pow, -pow);
 
                 currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
@@ -731,10 +734,10 @@ public abstract class MyOpMode extends LinearOpMode {
 
         }
         if (deg < 0) {
-            while ((currPos > (deg + .25)) || (currPos < (deg-.25))){
+            while ((currPos > (deg + .25)) || (currPos < (deg - .25))) {
                 if (currPos > (deg + .25))
                     setMotors(-pow, pow);
-                if (currPos < (deg -.25))
+                if (currPos < (deg - .25))
                     setMotors(pow, -pow);
                 currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
                 idle();
@@ -791,161 +794,160 @@ public abstract class MyOpMode extends LinearOpMode {
             telemetry.addData("Gyro", currPos);
             telemetry.update();
         }
-            stopMotors();
+        stopMotors();
     }
 
 
-
-    public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
-        if (!opModeIsActive())
-            return;
-
-        double newPow = 0.0;
-        double error;
-        double timer = 0.0;
-
-        ElapsedTime time = new ElapsedTime();
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // startP is the current position
-
-        delay(100);
-        time.reset();
-
-        if (deg > 0) {
-<<<<<<< HEAD
-            while ((deg > currPos && time.milliseconds() < tim)) {
-                error = deg - currPos;
-
-                if (error > 180){
-                    error = error -360;
-                } else if (error <= -180){
-                    error = error +360;
-                }
-=======
-            telemetry.addData("deg", "positive");
-            while ((deg > currPos && time.milliseconds() < tim && opModeIsActive())) {
+//    public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
+//        if (!opModeIsActive())
+//            return;
+//
+//        double newPow = 0.0;
+//        double error;
+//        double timer = 0.0;
+//
+//        ElapsedTime time = new ElapsedTime();
+//        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // startP is the current position
+//
+//        delay(100);
+//        time.reset();
+//
+//        if (deg > 0) {
+//<<<<<<<HEAD
+//            while ((deg > currPos && time.milliseconds() < tim)) {
 //                error = deg - currPos;
 //
-//                if (error > 180){
-//                    error = error -360;
-//                } else if (error < -180){
-//                    error = error +360;
+//                if (error > 180) {
+//                    error = error - 360;
+//                } else if (error <= -180) {
+//                    error = error + 360;
 //                }
+//=======
+//                telemetry.addData("deg", "positive");
+//                while ((deg > currPos && time.milliseconds() < tim && opModeIsActive())) {
+////                error = deg - currPos;
+////
+////                if (error > 180){
+////                    error = error -360;
+////                } else if (error < -180){
+////                    error = error +360;
+////                }
+////
+////                newPow = pow * (Math.abs(error) / 80);
+////
+//////                if ((deg - currPos) - 360)
+////
+////                if (newPow < .15)
+////                    newPow = .1;
+////
+////                if (currPos > 0) {
+////                    setMotors(-newPow, newPow);
+////                } else if (currPos < 0) {
+////                    setMotors(-newPow, newPow);
+////
+////                }
+//                    //delay(100);
+////                if (Math.abs(time.milliseconds() - timer) > 100) {
+////                    if (currPos > 0) {
+////                        setMotors(-newPow, newPow);
+////                    } else if (currPos < 0) {
+////                        setMotors(-newPow, newPow);
+////
+////                    }
+////                    timer = time.milliseconds();
+////                }
+//                    if (Math.abs(time.milliseconds() - timer) > 100) {
+//                        error = deg - currPos;
 //
-//                newPow = pow * (Math.abs(error) / 80);
+//                        if (error > 180) {
+//                            error = error - 360;
+//                        } else if (error < -180) {
+//                            error = error + 360;
+//                        }
+//>>>>>>>3208f 66678255ed 1025e3 ab9fac5fa2ffba0980b
+//
+//                                newPow = pow * (Math.abs(error) / 80);
 //
 ////                if ((deg - currPos) - 360)
 //
-//                if (newPow < .15)
-//                    newPow = .1;
+//                        if (newPow < .15)
+//                            newPow = .1;
 //
-//                if (currPos > 0) {
-//                    setMotors(-newPow, newPow);
-//                } else if (currPos < 0) {
-//                    setMotors(-newPow, newPow);
+//                        if (currPos > 0) {
+//                            setMotors(-newPow, newPow);
+//                        } else if (currPos < 0) {
+//                            setMotors(-newPow, newPow);
 //
-//                }
-                //delay(100);
-//                if (Math.abs(time.milliseconds() - timer) > 100) {
-//                    if (currPos > 0) {
-//                        setMotors(-newPow, newPow);
-//                    } else if (currPos < 0) {
-//                        setMotors(-newPow, newPow);
-//
+//                        }
+//                        timer = time.milliseconds();
 //                    }
-//                    timer = time.milliseconds();
+//                    currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+//                    telemetry.addData("Gyro", currPos);
+//                    telemetry.addData("newpower", newPow);
+//                    telemetry.addData("Error", (Math.abs(deg - currPos)));
+//                    telemetry.update();
 //                }
-                if (Math.abs(time.milliseconds() - timer) > 100) {
-                    error = deg - currPos;
-
-                    if (error > 180){
-                        error = error -360;
-                    } else if (error < -180){
-                        error = error +360;
-                    }
->>>>>>> 3208f66678255ed1025e3ab9fac5fa2ffba0980b
-
-                    newPow = pow * (Math.abs(error) / 80);
-
-//                if ((deg - currPos) - 360)
-
-                    if (newPow < .15)
-                        newPow = .1;
-
-                    if (currPos > 0) {
-                        setMotors(-newPow, newPow);
-                    } else if (currPos < 0) {
-                        setMotors(-newPow, newPow);
-
-                    }
-                    timer = time.milliseconds();
-                }
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                telemetry.addData("Gyro", currPos);
-                telemetry.addData("newpower", newPow);
-                telemetry.addData("Error", (Math.abs(deg - currPos)));
-                telemetry.update();
-            }
-        } else if (deg < 0){
-
-            telemetry.addData("deg", "negative");
-            telemetry.update();
-            while (deg < currPos && time.milliseconds() < tim && opModeIsActive()) {
-
-//                error = deg - currPos;
+//            } else if (deg < 0) {
 //
-//                if (error > 180){
-//                    error = error - 360;
-//                } else if (error < -180){
-//                    error = error + 360;
+//                telemetry.addData("deg", "negative");
+//                telemetry.update();
+//                while (deg < currPos && time.milliseconds() < tim && opModeIsActive()) {
+//
+////                error = deg - currPos;
+////
+////                if (error > 180){
+////                    error = error - 360;
+////                } else if (error < -180){
+////                    error = error + 360;
+////                }
+////
+////                newPow = pow * (Math.abs(error) / 80);
+////
+////                if (newPow < .15)
+////                    newPow = .1;
+////
+////                if (currPos < 0) {
+////                    setMotors(newPow, -newPow);
+////                }else if (currPos > 0){
+////                    setMotors(newPow, -newPow);
+////
+////                }
+////                delay(100);
+//                    if (Math.abs(time.milliseconds() - timer) > 100) {
+//                        error = deg - currPos;
+//
+//                        if (error > 180) {
+//                            error = error - 360;
+//                        } else if (error < -180) {
+//                            error = error + 360;
+//                        }
+//
+//                        newPow = pow * (Math.abs(error) / 80);
+//
+//                        if (newPow < .15)
+//                            newPow = .1;
+//
+//                        if (currPos < 0) {
+//                            setMotors(newPow, -newPow);
+//                        } else if (currPos > 0) {
+//                            setMotors(newPow, -newPow);
+//                        }
+//                        timer = time.milliseconds();
+//                    }
+//                    currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+//                    telemetry.addData("Gyro", currPos);
+//                    telemetry.addData("newpower", newPow);
+//                    telemetry.addData("Error", (Math.abs(deg - currPos)));
+//                    telemetry.update();
+//                    // idle();
 //                }
-//
-//                newPow = pow * (Math.abs(error) / 80);
-//
-//                if (newPow < .15)
-//                    newPow = .1;
-//
-//                if (currPos < 0) {
-//                    setMotors(newPow, -newPow);
-//                }else if (currPos > 0){
-//                    setMotors(newPow, -newPow);
-//
-//                }
-//                delay(100);
-                if (Math.abs(time.milliseconds() - timer) > 100) {
-                    error = deg - currPos;
+//            } else {
+//                telemetry.addData("nothing", "nothing");
+//                telemetry.update();
+//            }
+//            telemetry.addData("status", "done");
+//            telemetry.update();
+//            stopMotors();
 
-                    if (error > 180){
-                        error = error - 360;
-                    } else if (error < -180){
-                        error = error + 360;
-                    }
-
-                    newPow = pow * (Math.abs(error) / 80);
-
-                    if (newPow < .15)
-                        newPow = .1;
-
-                    if (currPos < 0) {
-                        setMotors(newPow, -newPow);
-                    } else if (currPos > 0) {
-                        setMotors(newPow, -newPow);
-                    }
-                    timer = time.milliseconds();
-                }
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                telemetry.addData("Gyro", currPos);
-                telemetry.addData("newpower", newPow);
-                telemetry.addData("Error", (Math.abs(deg - currPos)));
-                telemetry.update();
-               // idle();
-            }
-        } else {
-            telemetry.addData("nothing", "nothing");
-            telemetry.update();
-        }
-        telemetry.addData("status", "done");
-        telemetry.update();
-        stopMotors();
     }
-}

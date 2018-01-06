@@ -225,9 +225,9 @@ public class Plz extends LinearOpMode {
                 telemetry.update();
             }
 
-                if (gamepad1.left_trigger > .15){
+                if ((gamepad1.left_trigger > .15) || (gamepad2.left_trigger > .15)){
                 manip.setPower(-1);
-                } else if (gamepad1.right_trigger > .15 ) {
+                } else if ((gamepad1.right_trigger > .15 ) || (gamepad2.right_trigger > .15)) {
                     manip.setPower(1);
                 } else {
                     manip.setPower(0);

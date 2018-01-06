@@ -66,23 +66,23 @@ public class AutoRedLeft extends MyOpMode {
 
         vfValue();
 
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.4);
-        sleep(750);
-        jewelArm.setPosition(.15);
-        sleep(1000);
-        if (jewelColor.red() > jewelColor.blue()) {
-            jewelHand.setPosition((.3));
-        } else if (jewelColor.red() < jewelColor.blue()) {
-            jewelHand.setPosition((.6));
-        }
-        sleep(500);
-
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.45);
-        sleep(1000);
-        jewelHand.setPosition(.3);
-        sleep(500);
+//        jewelArm.setPosition(.6);
+//        jewelHand.setPosition(.4);
+//        sleep(750);
+//        jewelArm.setPosition(.15);
+//        sleep(1000);
+//        if (jewelColor.red() > jewelColor.blue()) {
+//            jewelHand.setPosition((.3));
+//        } else if (jewelColor.red() < jewelColor.blue()) {
+//            jewelHand.setPosition((.6));
+//        }
+//        sleep(500);
+//
+//        jewelArm.setPosition(.6);
+//        jewelHand.setPosition(.45);
+//        sleep(1000);
+//        jewelHand.setPosition(.3);
+//        sleep(500);
 
         setMotors(.25,.25);
         sleep(1950);
@@ -92,7 +92,7 @@ public class AutoRedLeft extends MyOpMode {
 
 
         try {
-            turnCorr(.1, -70, 4000);
+            turnCorr2(.1, -70, 4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
