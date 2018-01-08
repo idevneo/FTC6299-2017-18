@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -45,8 +44,8 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@Autonomous(name = "Blue Left Gyro", group = "Sensor")
-@Disabled                            // Comment this out to add to the opmode list
+@Autonomous(name = "AutoBlueLeft", group = "Sensor")
+                            // Comment this out to add to the opmode list
 public class AutoBlueLeft extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -66,13 +65,6 @@ public class AutoBlueLeft extends MyOpMode {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         vfValue();
-
-//        liftLeft.setPower(.5);
-//        liftRight.setPower(-.5);
-//        sleep(250);
-//        liftLeft.setPower(0);
-//        liftRight.setPower(0);
-
 
         jewelArm.setPosition(.55);
         jewelHand.setPosition(.4);
@@ -97,6 +89,9 @@ public class AutoBlueLeft extends MyOpMode {
         stopMotors();
 
 
+        rangeMoveStrafe(26.25, rangeR,0);
+        sleep(350);
+
         try {
             turnCorr2(.1, 170, 5000);
         } catch (InterruptedException e) {
@@ -104,49 +99,9 @@ public class AutoBlueLeft extends MyOpMode {
         }
         sleep(1000);
 
-//        rangeMoveStrafe(3, rangeL);
-//        sleep(750);
-
-//        rangeMovePID(5.5, rangeF);
-//        sleep(1000);
-//        try {
-//            turn(.25, 0.1);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        sleep(1000);
-
-
-        rangeMoveStrafe(20, rangeL, 1);
-
-        try {
-            turnCorr2(20, 175, 2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        rangeMoveStrafe(26.75, rangeL, 1);
-        sleep(350);
-
-//THE SECOND TURNCORR (THE ONE BELOW) DOESN'T MOVE ANYTHING
-//AFTER THE ROBOT STRAFES, IT DOESN'T DO THE SECOND TURNCORR FOR SOME REASON
-//***********************   NEEDS TO BE FIXED *************************
-        
-//        try {
-//            turnCorr(.1, -166, 5000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        sleep(1000);
-
-
-
-//        vfMovePerp( 'r', rangeR);
-
-//        rangeMovePID(5.5, rangeF);
-//        sleep(500);
-
         vfMovePerp('b',rangeL, 1);
+
+        rangeMovePID(6, rangeF);
 
         manipAuto(-.75);
         sleep(500);
@@ -165,12 +120,5 @@ public class AutoBlueLeft extends MyOpMode {
         setMotors(-.2, -.2);
         sleep(250);
         stopMotors();
-        //Finish optimizing this Auto, then invert for the blue side.
-        // Loop and update the dashboard
-//        while (opModeIsActive()) {
-//
-//            telemetry.update();
-//        }
-
     }
 }

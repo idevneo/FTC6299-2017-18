@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -37,16 +38,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 /**
- * {@link AutoRedLeftBTEST} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
+ * {@link AltBlueLeft} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
  *
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@Autonomous(name = "Red Left GYROWORK", group = "Sensor")
-                            // Comment this out to add to the opmode list
-public class AutoRedLeftBTEST extends MyOpMode {
+@Autonomous(name = "AltBlueLeft", group = "Sensor")
+@Disabled                            // Comment this out to add to the opmode list
+public class AltBlueLeft extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -54,12 +55,9 @@ public class AutoRedLeftBTEST extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         hMap(hardwareMap);
-
         // Set up our telemetry dashboard
         composeTelemetry();
         // Wait until we're told to go
-
-
 
         waitForStart();
         runtime.reset();
@@ -76,45 +74,79 @@ public class AutoRedLeftBTEST extends MyOpMode {
 //        liftRight.setPower(0);
 
 
-//        jewelArm.setPosition(.6);
-//        jewelHand.setPosition(.4);
+        jewelArm.setPosition(.55);
+        jewelHand.setPosition(.4);
+        sleep(500);
+        jewelArm.setPosition(.15);
+        sleep(1000);
+        if (jewelColor.red() < jewelColor.blue()) {
+            jewelHand.setPosition((.3));
+        } else if (jewelColor.red() > jewelColor.blue()) {
+            jewelHand.setPosition((.6));
+        }
+        sleep(500);
+
+        jewelArm.setPosition(.55);
+        jewelHand.setPosition(.45);
+        sleep(500);
+        jewelHand.setPosition(.3);
+        sleep(500);
+
+        setMotors(-.25, -.25);
+        sleep(1550);
+        stopMotors();
+
+
+        try {
+            turnCorr2(.1, 170, 5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        sleep(1000);
+
+//        rangeMoveStrafe(3, rangeL);
 //        sleep(750);
-//        jewelArm.setPosition(.15);
+
+//        rangeMovePID(5.5, rangeF);
 //        sleep(1000);
-//        if (jewelColor.red() > jewelColor.blue()) {
-//            jewelHand.setPosition((.3));
-//        } else if (jewelColor.red() < jewelColor.blue()) {
-//            jewelHand.setPosition((.6));
+//        try {
+//            turn(.25, 0.1);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
 //        }
-//        sleep(500);
-//
-//        jewelArm.setPosition(.6);
-//        jewelHand.setPosition(.45);
 //        sleep(1000);
-//        jewelHand.setPosition(.3);
+
+
+        rangeMoveStrafe(20, rangeL, 1);
+
+        try {
+            turnCorr2(20, 175, 2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        rangeMoveStrafe(26.75, rangeL, 1);
+        sleep(350);
+
+//THE SECOND TURNCORR (THE ONE BELOW) DOESN'T MOVE ANYTHING
+//AFTER THE ROBOT STRAFES, IT DOESN'T DO THE SECOND TURNCORR FOR SOME REASON
+//***********************   NEEDS TO BE FIXED *************************
+        
+//        try {
+//            turnCorr(.1, -166, 5000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        sleep(1000);
+
+
+
+//        vfMovePerp( 'r', rangeR);
+
+//        rangeMovePID(5.5, rangeF);
 //        sleep(500);
-//
-        setMotors(.4, .4);
-        sleep(1000);
-        stopMotors();
-        sleep(100);
-       try {
-           turnCorr2(0.1,-85, 7000);
-       } catch (InterruptedException e) {
-           e.printStackTrace();
-       }
-        sleep(1000);
 
-
-        setMotorStrafe(.4);
-        sleep(800);
-        stopMotors();
-
-        setMotorStrafe(-.4);
-        sleep(825);
-        stopMotors();
-
-        vfMoveAlt();
+        vfMovePerp('b',rangeL, 1);
 
         manipAuto(-.75);
         sleep(500);
@@ -126,33 +158,19 @@ public class AutoRedLeftBTEST extends MyOpMode {
         sleep(250);
         stopMotors();
 
-        setMotors(.3, .3);
+        setMotors(.4, .4);
         sleep(250);
         stopMotors();
-
-        manipAuto(-.75);
-        sleep(200);
 
         setMotors(-.2, -.2);
         sleep(250);
         stopMotors();
-
-
-
-
-//        vfMovePerp( 'r', rangeR);
-
-//        rangeMoveStrafe(42.5, rangeR);
-//        sleep(750);
-
-
-            //Finish optimizing this Auto, then invert for the blue side.
-            // Loop and update the dashboard
+        //Finish optimizing this Auto, then invert for the blue side.
+        // Loop and update the dashboard
 //        while (opModeIsActive()) {
 //
 //            telemetry.update();
 //        }
-        }
+
     }
-
-
+}

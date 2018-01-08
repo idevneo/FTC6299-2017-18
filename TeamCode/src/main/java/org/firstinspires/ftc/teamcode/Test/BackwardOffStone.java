@@ -74,8 +74,6 @@ public class BackwardOffStone extends MyOpMode {
         sleep(1000);
         stopMotors();
 
-
-
         try {
             turnCorr2(.1, -70, 4000);
         } catch (InterruptedException e) {

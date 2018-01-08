@@ -30,14 +30,10 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 /**
@@ -48,8 +44,8 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@Autonomous(name = "Blue Right Gyro", group = "Sensor")
-@Disabled                            // Comment this out to add to the opmode list
+@Autonomous(name = "AutoBlueRight", group = "Sensor")
+                            // Comment this out to add to the opmode list
 public class AutoBlueRight extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -73,36 +69,28 @@ public class AutoBlueRight extends MyOpMode {
 
         vfValue();
 
-//        liftLeft.setPower(.5);
-//        liftRight.setPower(-.5);
-//        sleep(250);
-//        liftLeft.setPower(0);
-//        liftRight.setPower(0);
+        jewelArm.setPosition(.55);
+        jewelHand.setPosition(.4);
+        sleep(500);
+        jewelArm.setPosition(.15);
+        sleep(1000);
+        if (jewelColor.red() < jewelColor.blue()) {
+            jewelHand.setPosition((.3));
+        } else if (jewelColor.red() > jewelColor.blue()) {
+            jewelHand.setPosition((.6));
+        }
+        sleep(500);
 
-
-//        jewelArm.setPosition(.55);
-//        jewelHand.setPosition(.4);
-//        sleep(500);
-//        jewelArm.setPosition(.15);
-//        sleep(1000);
-//        if (jewelColor.red() < jewelColor.blue()) {
-//            jewelHand.setPosition((.3));
-//        } else if (jewelColor.red() > jewelColor.blue()) {
-//            jewelHand.setPosition((.6));
-//        }
-//        sleep(500);
-//
-//        jewelArm.setPosition(.55);
-//        jewelHand.setPosition(.45);
-//        sleep(500);
-//        jewelHand.setPosition(.3);
-//        sleep(500);
+        jewelArm.setPosition(.55);
+        jewelHand.setPosition(.45);
+        sleep(500);
+        jewelHand.setPosition(.3);
+        sleep(500);
 //
         setMotors(-.4, -.4);
-        sleep(1250);
+        sleep(1000);
         stopMotors();
-
-
+        sleep(100);
        try {
            turnCorr2(0.1,-85, 7000);
        } catch (InterruptedException e) {
@@ -111,8 +99,15 @@ public class AutoBlueRight extends MyOpMode {
         sleep(1000);
 
 
-        vfMoveAlt();
+        setMotorStrafe(-.4);
+        sleep(800);
+        stopMotors();
 
+        setMotorStrafe(.4);
+        sleep(825);
+        stopMotors();
+
+        vfMoveAlt();
 
         manipAuto(-.75);
         sleep(500);
@@ -134,22 +129,6 @@ public class AutoBlueRight extends MyOpMode {
         setMotors(-.2, -.2);
         sleep(250);
         stopMotors();
-
-
-
-
-//        vfMovePerp( 'r', rangeR);
-
-//        rangeMoveStrafe(42.5, rangeR);
-//        sleep(750);
-
-
-            //Finish optimizing this Auto, then invert for the blue side.
-            // Loop and update the dashboard
-//        while (opModeIsActive()) {
-//
-//            telemetry.update();
-//        }
         }
     }
 

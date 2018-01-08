@@ -57,7 +57,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@Autonomous(name = "Red Right Gyro", group = "Sensor")
+@Autonomous(name = "AutoRedRight", group = "Sensor")
                             // Comment this out to add to the opmode list
 public class AutoRedRight extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
@@ -118,19 +118,6 @@ public class AutoRedRight extends MyOpMode {
 
         vfMovePerp('r', rangeR,0);
 
-
-//        try {
-//            turnCorr(.1, -.1, 3000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        sleep(1000);
-
-//        vfMovePerp( 'r', rangeR);
-
-//        rangeMovePID(8, rangeF);
-//        sleep(500);
-
         manipAuto(-.75);
         sleep(500);
 
@@ -148,11 +135,5 @@ public class AutoRedRight extends MyOpMode {
         setMotors(-.2, -.2);
         sleep(250);
         stopMotors();
-        //Finish optimizing this Auto, then invert for the blue side.
-        // Loop and update the dashboard
-//        while (opModeIsActive()) {
-//
-//            telemetry.update();
-//        }
     }
 }

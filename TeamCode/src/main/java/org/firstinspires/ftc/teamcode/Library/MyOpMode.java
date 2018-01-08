@@ -195,11 +195,6 @@ public abstract class MyOpMode extends LinearOpMode {
         rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
         rangeF = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeC");
 
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
@@ -218,6 +213,11 @@ public abstract class MyOpMode extends LinearOpMode {
         angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 //        relic = hardwareMap.dcMotor.get("relic");
 //        relicGrabber = hardwareMap.servo.get("relicGrabber");
+
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void delay(long milliseconds) throws InterruptedException {
@@ -344,28 +344,6 @@ public abstract class MyOpMode extends LinearOpMode {
         }
 
     }
-//    public void rangeMove(double pow, double inAway, ModernRoboticsI2cRangeSensor sensorVar)    { //Set pow negative to move backward.
-//        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-//
-//        while ((sensor < inAway - .25) || (sensor > inAway + .25)) { //While sensor doesn't = tolerance, run.
-//            double localRange;
-//            localRange = sensorVar.getDistance(DistanceUnit.INCH);
-//            if (!Double.isNaN(localRange) && (localRange < 1000)) {
-//                sensor = localRange;
-//            }
-//
-//            telemetry.addData("SensorValue", sensor); //optional telemetry
-//            telemetry.update();
-//
-//            if (sensor > inAway) {
-//                setMotors(pow, pow);
-//            }
-//            if (sensor < inAway) {
-//                setMotors(-pow, -pow);
-//            }
-//        }
-//        stopMotors();
-//    }
 
     public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar) {
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
@@ -375,7 +353,7 @@ public abstract class MyOpMode extends LinearOpMode {
         double localRange;
         while (((sensor < inAway - .35) || (sensor > inAway + .35)) && opModeIsActive()) { //While sensor doesn't = tolerance, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            while (Double.isNaN(localRange) || (localRange > 1000)) {
+            while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
             sensor = localRange;
@@ -404,7 +382,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public void rangeMoveStrafe(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet) { //Basing Switch | 1 = Left | 0 = Right
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
 
-        double range;
+//        double range;
         double pow = .15;
 //        double newPow;
         double localRange;
@@ -415,7 +393,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
             sensor = localRange;
-            range = Math.abs(inAway - sensor);
+//            range = Math.abs(inAway - sensor);
 
 
 
@@ -445,305 +423,6 @@ public abstract class MyOpMode extends LinearOpMode {
             telemetry.update();
         }
         stopMotors();
-    }
-
-//    public void setMotorsMec() {
-//        if (!opModeIsActive())
-//            return;
-//
-//        if (gamepad1.left_trigger > .1) {
-//            motorFL.setPower(-gamepad1.left_trigger);
-//            motorBL.setPower(gamepad1.left_trigger);
-//            motorFR.setPower(gamepad1.left_trigger);
-//            motorBR.setPower(-gamepad1.left_trigger);
-//        }
-//        else if (gamepad1.right_trigger > .1){
-//            motorFL.setPower(gamepad1.right_trigger);
-//            motorBL.setPower(-gamepad1.right_trigger);
-//            motorFR.setPower(-gamepad1.right_trigger);
-//            motorBR.setPower(gamepad1.right_trigger);
-//        }
-//        else {
-//            motorFL.setPower(0);
-//            motorBL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBR.setPower(0);
-//        }
-//    }
-
-    // code for strafing using the dpad on driver 1 controller
-
-
-    //Why do we have this method if we do the same thing in TeleOp ????
-//    public void setMotorsMecDPAD(double left, double right, double lessenPower, double increasePower) {
-//        if (!opModeIsActive())
-//            return;
-//        double less = lessenPower;
-//        double increase = increasePower;
-//
-//        if (gamepad1.dpad_up &&  left <= .75 && right <= .75) {
-//            left += increasePower;
-//            right += increasePower;
-//        }
-//
-//        else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25){
-//            left += lessenPower;
-//            right += lessenPower;
-//
-//        }
-//
-//        if (gamepad1.dpad_left) {
-//            motorFL.setPower(left);
-//            motorBL.setPower(-left);
-//            motorFR.setPower(-right);
-//            motorBR.setPower(right);
-//        }
-//        else if (gamepad1.dpad_right){
-//            motorFL.setPower(-left);
-//            motorBL.setPower(left);
-//            motorFR.setPower(right);
-//            motorBR.setPower(-right);
-//        }
-//        else {
-//            motorFL.setPower(0);
-//            motorBL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBR.setPower(0);
-//        }
-//
-//    }
-
-    public void slowDown(double reduction) {
-        //first reduction making power 0.5
-        while (motorFL.getPower() > 0.05 && motorBL.getPower() > 0.05 && motorFR.getPower() > 0.05 && motorFL.getPower() > 0.05) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            motorFL.setPower(motorFL.getPower() * reduction);
-            motorBL.setPower(motorBL.getPower() * reduction);
-            motorFR.setPower(motorFL.getPower() * reduction);
-            motorBR.setPower(motorBL.getPower() * reduction);
-        }
-
-        if (motorFL.getPower() < 0.05 && motorBL.getPower() < 0.05 && motorFR.getPower() < 0.05 && motorFL.getPower() < 0.05) {
-            motorFL.setPower(0);
-            motorBL.setPower(0);
-            motorFR.setPower(0);
-            motorBR.setPower(0);
-        }
-
-    }
-
-//    public void mecAutoLeft(double left, double right, double distance ,int tim ) {
-//        if (!opModeIsActive())
-//            return;
-//        ElapsedTime time = new ElapsedTime();
-//
-//        time.reset();
-//        resetStartTime();
-//
-//
-//        if (distance > 0 && getRangeDistanceRight() < distance && time.milliseconds() < tim) {
-//            motorFL.setPower(-left);
-//            motorBL.setPower(left);
-//            motorFR.setPower(right);
-//            motorBR.setPower(-right);
-//        }
-//        else {
-//            motorFL.setPower(0);
-//            motorBL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBR.setPower(0);
-//        }
-//    }
-
-//    public void mecAutoRight(double left, double right, double distance ,int tim) {
-//        if (!opModeIsActive())
-//            return;
-//
-//        ElapsedTime time = new ElapsedTime();
-//
-//        time.reset();
-//        resetStartTime();
-//
-//        if (distance > 0 && getRangeDistanceRight() < distance && time.milliseconds() < tim) {
-//            motorFL.setPower(left);
-//            motorBL.setPower(-left);
-//            motorFR.setPower(-right);
-//            motorBR.setPower(right);
-//        }
-//        else {
-//            motorFL.setPower(0);
-//            motorBL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBR.setPower(0);
-//        }
-//    }
-
-//    public double getRangeDistanceRight() {
-//        double value = rangeR.getDistance(DistanceUnit.CM);
-//        if (value != 255)
-//            rangeDistance = value;
-//        return rangeDistance;
-//    }
-
-    public void jewelKnockerRed() {
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.45);
-        sleep(2000);
-        jewelArm.setPosition(.15);
-        sleep(2000);
-
-        if (jewelColor.red() > jewelColor.blue()) {
-            jewelHand.setPosition((.3));
-
-        } else if (jewelColor.red() < jewelColor.blue()) {
-            jewelHand.setPosition((.6));
-        }
-
-        sleep(1000);
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.45);
-        sleep(3000);
-
-        jewelHand.setPosition(.3);
-        sleep(1000);
-    }
-    // int colorDif = jewelColor.red() - jewelColor.blue();
-
-    public void jewelKnockerBlue() {
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.45);
-        sleep(2000);
-        jewelArm.setPosition(.15);
-        sleep(2000);
-
-        if (jewelColor.red() < jewelColor.blue()) {
-            jewelHand.setPosition((.3));
-
-        } else if (jewelColor.red() > jewelColor.blue()) {
-            jewelHand.setPosition((.6));
-        }
-
-        sleep(1000);
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.45);
-        sleep(1000);
-
-        jewelHand.setPosition(.3);
-        sleep(1000);
-    }
-
-//    public double getUltraDistance() {
-//        double value = ultra.cmUltrasonic();
-//        if (value != 255)
-//            ultraDistance = value;
-//        return ultraDistance;
-//    }
-//
-//    public void setManip(double pow) {
-//        if (!opModeIsActive())
-//            return;
-//
-//        manip.setPower(pow);
-//    }
-
-    public void setServoSlow(Servo servo, double pos) throws InterruptedException {
-        double currentPosition = servo.getPosition();
-
-        if (currentPosition - pos > 0) {
-            for (; currentPosition > pos; currentPosition -= .005) {
-                servo.setPosition(currentPosition);
-                delay(1);
-                idle();
-            }
-        } else for (; currentPosition < pos; currentPosition += .005) {
-            servo.setPosition(currentPosition);
-            delay(1);
-            idle();
-        }
-    }
-
-    public double getDiff(double angle) {
-        imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-        return currPos - angle;
-    }
-
-    public Double gyroVal() {
-        imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-        return currPos;
-    }
-
-    public void turnPID(double angle) throws InterruptedException {
-        double kP = .20 / 90;
-        double min = -.2;
-        double max = .2;
-        double changeCon = .04;
-        double PIDchange;
-        double angleDiff = getDiff(angle);
-        double oldDiff = angleDiff;
-        int counter = 0;
-        double startAngle = gyroVal();
-        while ((Math.abs(angleDiff) <= Math.abs(oldDiff)) && opModeIsActive()) {
-            PIDchange = angleDiff * kP;
-
-            if (PIDchange < 0) {
-                motorFR.setPower(Range.clip(-PIDchange + changeCon, min, max));
-                motorBR.setPower(Range.clip(-PIDchange + changeCon, min, max));
-                motorFL.setPower(Range.clip(-PIDchange + changeCon, min, max));
-                motorBL.setPower(Range.clip(-PIDchange + changeCon, min, max));
-            } else {
-                motorFR.setPower(Range.clip(PIDchange - changeCon, min, max));
-                motorBR.setPower(Range.clip(PIDchange - changeCon, min, max));
-                motorFL.setPower(Range.clip(PIDchange - changeCon, min, max));
-                motorBL.setPower(Range.clip(PIDchange - changeCon, min, max));
-            }
-
-            sleep(250);
-            telemetry.addData("gyroStart", startAngle);
-            telemetry.addData("counter", counter++);
-            telemetry.addData("GyroVal", gyroVal());
-            telemetry.addData("GyroDiff", getDiff(angle));
-            telemetry.addData("Pow", -PIDchange - changeCon);
-            telemetry.update();
-
-            oldDiff = angleDiff;
-            angleDiff = getDiff(angle);
-        }
-        stopMotors();
-    }
-
-    public void turn(double pow, double deg) throws InterruptedException {
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-        if (deg > 0) {
-            while ((currPos > (deg + .25)) || (currPos < (deg - .25))) {
-                if (currPos > (deg + .25))
-                    setMotors(-pow, pow);
-                if (currPos < (deg - .25))
-                    setMotors(pow, -pow);
-
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                idle();
-            }
-            stopMotors();
-
-        }
-        if (deg < 0) {
-            while ((currPos > (deg + .25)) || (currPos < (deg - .25))) {
-                if (currPos > (deg + .25))
-                    setMotors(-pow, pow);
-                if (currPos < (deg - .25))
-                    setMotors(pow, -pow);
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                idle();
-            }
-            stopMotors();
-        }
     }
 
     public void turnCorr2(double pow, double deg, int timer) throws InterruptedException {
@@ -797,6 +476,149 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
+    public void slowDown(double reduction) {
+        //first reduction making power 0.5
+        while (motorFL.getPower() > 0.05 && motorBL.getPower() > 0.05 && motorFR.getPower() > 0.05 && motorFL.getPower() > 0.05) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            motorFL.setPower(motorFL.getPower() * reduction);
+            motorBL.setPower(motorBL.getPower() * reduction);
+            motorFR.setPower(motorFL.getPower() * reduction);
+            motorBR.setPower(motorBL.getPower() * reduction);
+        }
+
+        if (motorFL.getPower() < 0.05 && motorBL.getPower() < 0.05 && motorFR.getPower() < 0.05 && motorFL.getPower() < 0.05) {
+            motorFL.setPower(0);
+            motorBL.setPower(0);
+            motorFR.setPower(0);
+            motorBR.setPower(0);
+        }
+
+    }
+
+    public void jewelKnockerRed() {
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.4);
+        sleep(750);
+        jewelArm.setPosition(.15);
+        sleep(1000);
+        if (jewelColor.red() > jewelColor.blue()) {
+            jewelHand.setPosition((.3));
+        } else if (jewelColor.red() < jewelColor.blue()) {
+            jewelHand.setPosition((.6));
+        }
+        sleep(500);
+
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(1000);
+        jewelHand.setPosition(.3);
+        sleep(500);
+    }
+
+    public void jewelKnockerBlue() {
+        jewelArm.setPosition(.55);
+        jewelHand.setPosition(.4);
+        sleep(500);
+        jewelArm.setPosition(.15);
+        sleep(1000);
+        if (jewelColor.red() < jewelColor.blue()) {
+            jewelHand.setPosition((.3));
+        } else if (jewelColor.red() > jewelColor.blue()) {
+            jewelHand.setPosition((.6));
+        }
+        sleep(500);
+
+        jewelArm.setPosition(.55);
+        jewelHand.setPosition(.45);
+        sleep(500);
+        jewelHand.setPosition(.3);
+        sleep(500);
+    }
+
+//    public double getUltraDistance() {
+//        double value = ultra.cmUltrasonic();
+//        if (value != 255)
+//            ultraDistance = value;
+//        return ultraDistance;
+//    }
+//
+//    public void setManip(double pow) {
+//        if (!opModeIsActive())
+//            return;
+//
+//        manip.setPower(pow);
+//    }
+
+//    public void setServoSlow(Servo servo, double pos) throws InterruptedException {
+//        double currentPosition = servo.getPosition();
+//
+//        if (currentPosition - pos > 0) {
+//            for (; currentPosition > pos; currentPosition -= .005) {
+//                servo.setPosition(currentPosition);
+//                delay(1);
+//                idle();
+//            }
+//        } else for (; currentPosition < pos; currentPosition += .005) {
+//            servo.setPosition(currentPosition);
+//            delay(1);
+//            idle();
+//        }
+//    }
+
+//    public double getDiff(double angle) {
+//        imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+//        return currPos - angle;
+//    }
+//
+//    public Double gyroVal() {
+//        imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+//        return currPos;
+//    }
+//
+//    public void turnPID(double angle) throws InterruptedException {
+//        double kP = .20 / 90;
+//        double min = -.2;
+//        double max = .2;
+//        double changeCon = .04;
+//        double PIDchange;
+//        double angleDiff = getDiff(angle);
+//        double oldDiff = angleDiff;
+//        int counter = 0;
+//        double startAngle = gyroVal();
+//        while ((Math.abs(angleDiff) <= Math.abs(oldDiff)) && opModeIsActive()) {
+//            PIDchange = angleDiff * kP;
+//
+//            if (PIDchange < 0) {
+//                motorFR.setPower(Range.clip(-PIDchange + changeCon, min, max));
+//                motorBR.setPower(Range.clip(-PIDchange + changeCon, min, max));
+//                motorFL.setPower(Range.clip(-PIDchange + changeCon, min, max));
+//                motorBL.setPower(Range.clip(-PIDchange + changeCon, min, max));
+//            } else {
+//                motorFR.setPower(Range.clip(PIDchange - changeCon, min, max));
+//                motorBR.setPower(Range.clip(PIDchange - changeCon, min, max));
+//                motorFL.setPower(Range.clip(PIDchange - changeCon, min, max));
+//                motorBL.setPower(Range.clip(PIDchange - changeCon, min, max));
+//            }
+//
+//            sleep(250);
+//            telemetry.addData("gyroStart", startAngle);
+//            telemetry.addData("counter", counter++);
+//            telemetry.addData("GyroVal", gyroVal());
+//            telemetry.addData("GyroDiff", getDiff(angle));
+//            telemetry.addData("Pow", -PIDchange - changeCon);
+//            telemetry.update();
+//
+//            oldDiff = angleDiff;
+//            angleDiff = getDiff(angle);
+//        }
+//        stopMotors();
+//    }
 
 //    public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
 //        if (!opModeIsActive())
@@ -949,5 +771,4 @@ public abstract class MyOpMode extends LinearOpMode {
 //            telemetry.addData("status", "done");
 //            telemetry.update();
 //            stopMotors();
-
     }
