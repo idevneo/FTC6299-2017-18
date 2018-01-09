@@ -31,7 +31,7 @@ public class AutoRedRight extends MyOpMode {
         telemetry.update();
         hMap(hardwareMap);
         // Set up our telemetry dashboard
-        composeTelemetry();
+//        composeTelemetry();
         // Wait until we're told to go
 
         waitForStart();
