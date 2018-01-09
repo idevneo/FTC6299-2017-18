@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -51,7 +52,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 
 @Autonomous(name="StrafeTest", group="Linear Opmode")
-
+@Disabled
 public class Strafe extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();

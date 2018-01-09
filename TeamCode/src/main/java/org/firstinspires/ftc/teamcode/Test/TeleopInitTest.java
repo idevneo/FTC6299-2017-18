@@ -27,66 +27,29 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.Teleop;
+package org.firstinspires.ftc.teamcode.Test;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
-
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
+@TeleOp(name="Init Test Teleop", group="Linear Opmode")
 
-@TeleOp(name="TELEOP", group="Linear Opmode")
-public class Plz extends LinearOpMode {
-
-    // Declare OpMode members.
-    DcMotor motorFL;
-    DcMotor motorBL;
-    DcMotor motorFR;
-    DcMotor motorBR;
-    DcMotor manip;
-    DcMotor liftLeft;
-    DcMotor liftRight;
-
-    ColorSensor jewelColor;
-
-    Servo jewelHand;
-    Servo jewelArm;
-
-//    ModernRoboticsI2cRangeSensor rangeR;
-//    ModernRoboticsI2cRangeSensor rangeL;
-
+public class TeleopInitTest extends MyOpMode {
     float gamepad1_left;
     float gamepad1_right;
 
     double left = 1;
     double right = 1;
     double strafeMod = .25;
-    double jewelHandStart = 0.1;
-    double jewelHandDeploy = 0.9;
-    double jewelArmDeploy = .2;
+//    double jewelHandStart = 0.1;
+//    double jewelHandDeploy = 0.9;
+//    double jewelArmDeploy = .2;
 
     int lessenPow = 0;
 
@@ -95,37 +58,9 @@ public class Plz extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorFR = hardwareMap.dcMotor.get("motorFR");
-
-        liftLeft = hardwareMap.dcMotor.get("liftL");
-        liftRight = hardwareMap.dcMotor.get("liftR");
-        manip = hardwareMap.dcMotor.get("manip");
-
-        jewelColor = (ColorSensor) hardwareMap.get(ColorSensor.class, "jewelColor");
-
-        jewelArm = hardwareMap.servo.get("jewelArm");
-        jewelHand = hardwareMap.servo.get("jewelHand");
-
-
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-//        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
-//        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
-
+        hMap(hardwareMap);
         jewelArm.setPosition(.65);
         jewelHand.setPosition(.3);
-
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
