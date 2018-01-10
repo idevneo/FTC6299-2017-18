@@ -210,7 +210,6 @@ public abstract class MyOpMode extends LinearOpMode {
         Gparameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(Gparameters);
-        angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 //        relic = hardwareMap.dcMotor.get("relic");
 //        relicGrabber = hardwareMap.servo.get("relicGrabber");
 
@@ -474,6 +473,7 @@ public abstract class MyOpMode extends LinearOpMode {
                     setMotors(-newPow, newPow); //Turns left if we go past the pos/neg mark.
                 }
             }
+            angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
             currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
             telemetry.addData("Gyro", currPos);
             telemetry.update();

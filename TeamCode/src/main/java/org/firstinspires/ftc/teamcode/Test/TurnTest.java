@@ -65,7 +65,7 @@ public class TurnTest extends MyOpMode {
         hMap(hardwareMap);
 
         // Set up our telemetry dashboard
-        composeTelemetry();
+//        composeTelemetry();
         // Wait until we're told to go
 
         waitForStart();
