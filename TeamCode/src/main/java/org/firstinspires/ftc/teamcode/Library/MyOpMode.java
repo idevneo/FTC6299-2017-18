@@ -339,7 +339,7 @@ public abstract class MyOpMode extends LinearOpMode {
             stopMotors();
         } else if (column == 'R') {
             setMotorStrafe(.25);
-            sleep(750);
+            sleep(675);
             stopMotors();
         } else if (column == 'C') {
 
