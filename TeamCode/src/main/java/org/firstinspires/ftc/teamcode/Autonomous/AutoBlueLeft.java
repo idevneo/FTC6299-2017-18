@@ -62,7 +62,7 @@ public class AutoBlueLeft extends MyOpMode {
         }
         sleep(1000);
 
-        vfMovePerp('b',rangeL, 1);
+        vfMovePar('b',rangeL, 1);
 
         rangeMovePID(6, rangeF);
 

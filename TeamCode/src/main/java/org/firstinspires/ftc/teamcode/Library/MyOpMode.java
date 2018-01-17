@@ -312,7 +312,7 @@ public abstract class MyOpMode extends LinearOpMode {
         }
     }
 
-    public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {
+    public void vfMovePar(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {
         double centerDis = 26.75;
         double kC = 0;
         if (rb == 'r')
@@ -331,6 +331,24 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
 
+    public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {
+        double centerDis = 26.75; //needs to be tested
+        double kC = 0;
+        if (rb == 'r')
+            kC = 6; //needs to be tested
+        if (rb == 'b')
+            kC = -6; //needs to be tested
+        if (column == 'L') {
+            rangeMoveStrafe((centerDis + kC), sensorVar, bSwitch);
+        } else if (column == 'R') {
+            rangeMoveStrafe((centerDis - kC), sensorVar, bSwitch);
+        } else if (column == 'C') {
+
+        } else if (column == 'U') {
+
+        }
+    }
+
     public void vfMoveAlt() {
 
         if (column == 'L') {
@@ -342,9 +360,7 @@ public abstract class MyOpMode extends LinearOpMode {
             sleep(675);
             stopMotors();
         } else if (column == 'C') {
-
         } else if (column == 'U') {
-
         }
 
     }

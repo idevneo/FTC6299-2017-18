@@ -49,20 +49,27 @@ public class AltRedLeft extends MyOpMode {
         jewelHand.setPosition(.3);
         sleep(500);
 
-        setMotors(.25,.25);
-        sleep(1950);
+        setMotors(.4, .4);
+        sleep(1000);
         stopMotors();
-
+        sleep(100);
         try {
-            turnCorr2(.1, -70, 4000);
+            turnCorr2(0.1,-85, 7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         sleep(1000);
-        vfMoveAlt();
 
-        rangeMovePID(6.25, rangeF);
-        sleep(500);
+        setMotorStrafe(.4);
+        sleep(800);
+        stopMotors();
+
+        setMotorStrafe(-.4);
+        sleep(825);
+        stopMotors();
+
+        vfMoveAlt();
+        rangeMovePID(6, rangeF);
 
         manipAuto(-.75);
         sleep(500);
@@ -74,15 +81,14 @@ public class AltRedLeft extends MyOpMode {
         sleep(250);
         stopMotors();
 
+        manip.setPower(-1);
         setMotors(.3, .3);
         sleep(250);
         stopMotors();
 
-        manipAuto(-.75);
-        sleep(200);
-
         setMotors(-.2, -.2);
         sleep(250);
         stopMotors();
+        manip.setPower(0);
     }
 }

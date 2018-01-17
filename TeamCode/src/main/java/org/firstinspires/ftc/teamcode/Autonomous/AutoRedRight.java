@@ -77,7 +77,7 @@ public class AutoRedRight extends MyOpMode {
         rangeMoveStrafe(26.75, rangeR, 0);
         sleep(750);
 
-        vfMovePerp('r', rangeR,0);
+        vfMovePar('r', rangeR,0);
 
         manipAuto(-.75);
         sleep(500);

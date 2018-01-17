@@ -66,7 +66,7 @@ public class AutoRedLeft extends MyOpMode {
         sleep(825);
         stopMotors();
 
-        vfMoveAlt();
+        vfMovePerp('r', rangeL,1);
         rangeMovePID(6, rangeF);
 
         manipAuto(-.75);
