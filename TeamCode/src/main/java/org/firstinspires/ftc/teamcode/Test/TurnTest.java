@@ -30,6 +30,8 @@
 package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -51,7 +53,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 
 @Autonomous(name="TurnTest", group="Linear Opmode")
-
+@Disabled
 public class TurnTest extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -61,8 +63,9 @@ public class TurnTest extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         hMap(hardwareMap);
+
         // Set up our telemetry dashboard
-        composeTelemetry();
+//        composeTelemetry();
         // Wait until we're told to go
 
         waitForStart();
@@ -71,7 +74,10 @@ public class TurnTest extends MyOpMode {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         try {
-            turnCorr(.25, 90, 3000);
+//            setMotors(-.1, .1);
+//            delay(1000);
+//            stopMotors();
+            turnCorr2(.1, -90, 5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

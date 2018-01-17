@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -51,7 +52,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 
 @Autonomous(name="StrafeTest", group="Linear Opmode")
-
+@Disabled
 public class Strafe extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -70,6 +71,6 @@ public class Strafe extends MyOpMode {
         // run until the end of the match (driver presses STOP)
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        rangeMoveStrafe(10, rangeR);
+        rangeMoveStrafe(10, rangeL,1);
     }
 }

@@ -36,14 +36,9 @@ import java.util.Locale;
 
 public abstract class MyOpMode extends LinearOpMode {
 
-    private ElapsedTime runtime = new ElapsedTime();
     public static BNO055IMU imu;
 
     public VuforiaLocalizer vuforia;
-    public VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-    public VuforiaTrackable relicTemplate = relicTrackables.get(0);
-    public RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-
 
     public static DcMotor motorBL;
     public static DcMotor motorBR;
@@ -111,24 +106,26 @@ public abstract class MyOpMode extends LinearOpMode {
 //        telemetry.addLine()
 //                .addData("VumarkGoal", new Func<String>() {
 //                    @Override public String  value() {
-//                        return Character.toString(getVuMark());
+//                        return Character.toString(vfValue());
 //                    }
 //                });
-          telemetry.addLine()
-                  .addData("Left", new Func<String>() {
-                      @Override public String  value() {
-                          double localRange;
-                          double sensor = 0;
-                          localRange = rangeL.getDistance(DistanceUnit.INCH);
-                          if (!Double.isNaN(localRange) && (localRange < 1000)) {
-                              sensor = localRange;
-                          }
-                          return Double.toString(sensor);
-                      }
-                  });
+        telemetry.addLine()
+                .addData("Left", new Func<String>() {
+                    @Override
+                    public String value() {
+                        double localRange;
+                        double sensor = 0;
+                        localRange = rangeL.getDistance(DistanceUnit.INCH);
+                        if (!Double.isNaN(localRange) && (localRange < 1000)) {
+                            sensor = localRange;
+                        }
+                        return Double.toString(sensor);
+                    }
+                });
         telemetry.addLine()
                 .addData("Right", new Func<String>() {
-                    @Override public String  value() {
+                    @Override
+                    public String value() {
                         double localRange;
                         double sensor = 0;
                         localRange = rangeR.getDistance(DistanceUnit.INCH);
@@ -141,7 +138,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
         telemetry.addLine()
                 .addData("Front", new Func<String>() {
-                    @Override public String  value() {
+                    @Override
+                    public String value() {
                         double localRange;
                         double sensor = 0;
                         localRange = rangeF.getDistance(DistanceUnit.INCH);
@@ -197,30 +195,33 @@ public abstract class MyOpMode extends LinearOpMode {
         rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
         rangeF = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeC");
 
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        parameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        BNO055IMU.Parameters Gparameters = new BNO055IMU.Parameters();
+        Gparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        Gparameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        Gparameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        Gparameters.loggingEnabled = true;
+        Gparameters.loggingTag = "IMU";
+        Gparameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(Gparameters);
+//        relic = hardwareMap.dcMotor.get("relic");
+//        relicGrabber = hardwareMap.servo.get("relicGrabber");
+
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters Vparameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
-        Vparameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
-        Vparameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
-        this.vuforia = ClassFactory.createVuforiaLocalizer(Vparameters);
-        relicTrackables.activate();
-
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled = true;
-        parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-        angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-//        relic = hardwareMap.dcMotor.get("relic");
-//        relicGrabber = hardwareMap.servo.get("relicGrabber");
     }
 
     public void delay(long milliseconds) throws InterruptedException {
@@ -281,74 +282,82 @@ public abstract class MyOpMode extends LinearOpMode {
         }
 
     }
-    public char getVuMark() {
 
-        telemetry.addData("VuMark ", vuMark);
-        telemetry.update();
+    public void vfValue() {
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTrackables.activate();
+        telemetry.addData("Column ", column);
 
-        if (vuMark == RelicRecoveryVuMark.CENTER)
-            column = 'C';
-        else if (vuMark == RelicRecoveryVuMark.LEFT)
-            column = 'L';
-        else if (vuMark == RelicRecoveryVuMark.RIGHT)
-            column = 'R';
-        else if (vuMark == RelicRecoveryVuMark.UNKNOWN)
-            column = 'U';
-        return column;
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+        resetStartTime();
 
+        while ((time.milliseconds() < 4000) && opModeIsActive()) {
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+                telemetry.addData("VuMark", "%s visible", vuMark);
+                if (vuMark == RelicRecoveryVuMark.CENTER) {
+                    column = 'C';
+                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
+                    column = 'L';
+                } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                    column = 'R';
+                }
+            } else {
+                column = 'U';
+                telemetry.addData("VuMark", "%s visible", vuMark);
+            }
+            telemetry.update();
+        }
     }
 
-    public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar) {
-        double centerDis = 30;
+    public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {
+        double centerDis = 26.75;
         double kC = 0;
         if (rb == 'r')
-            kC = 8.5;
+            kC = 6;
         if (rb == 'b')
-            kC = -8.5;
+            kC = -6;
         if (column == 'L') {
-            rangeMoveStrafe((centerDis + kC) , sensorVar);
+            rangeMoveStrafe((centerDis + kC), sensorVar, bSwitch);
         } else if (column == 'R') {
-            rangeMoveStrafe((centerDis - kC), sensorVar);
+            rangeMoveStrafe((centerDis - kC), sensorVar, bSwitch);
         } else if (column == 'C') {
-            rangeMoveStrafe(centerDis, sensorVar);
-        } else if (column == 'U'){
-            rangeMoveStrafe(centerDis, sensorVar);
+
+        } else if (column == 'U') {
+
         }
 
     }
 
-//    public void rangeMove(double pow, double inAway, ModernRoboticsI2cRangeSensor sensorVar)    { //Set pow negative to move backward.
-//        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-//
-//        while ((sensor < inAway - .25) || (sensor > inAway + .25)) { //While sensor doesn't = tolerance, run.
-//            double localRange;
-//            localRange = sensorVar.getDistance(DistanceUnit.INCH);
-//            if (!Double.isNaN(localRange) && (localRange < 1000)) {
-//                sensor = localRange;
-//            }
-//
-//            telemetry.addData("SensorValue", sensor); //optional telemetry
-//            telemetry.update();
-//
-//            if (sensor > inAway) {
-//                setMotors(pow, pow);
-//            }
-//            if (sensor < inAway) {
-//                setMotors(-pow, -pow);
-//            }
-//        }
-//        stopMotors();
-//    }
+    public void vfMoveAlt() {
 
-    public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar)    {
+        if (column == 'L') {
+            setMotorStrafe(-.25);
+            sleep(750);
+            stopMotors();
+        } else if (column == 'R') {
+            setMotorStrafe(.25);
+            sleep(675);
+            stopMotors();
+        } else if (column == 'C') {
+
+        } else if (column == 'U') {
+
+        }
+
+    }
+
+    public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar) {
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
 //        double differenceDis;
 //        double kP = .025; //to be determined
         double pow;
         double localRange;
-        while (((sensor < inAway - .25) || (sensor > inAway + .25)) && opModeIsActive()) { //While sensor doesn't = tolerance, run.
+        while (((sensor < inAway - .35) || (sensor > inAway + .35)) && opModeIsActive()) { //While sensor doesn't = tolerance, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            while (Double.isNaN(localRange) || (localRange > 1000)) {
+            while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
             sensor = localRange;
@@ -374,112 +383,103 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-
-
-
-
-    public void rangeMoveStrafe(double inAway , ModernRoboticsI2cRangeSensor sensorVar) { //Set pow to negative if we want to move left.
+    public void rangeMoveStrafe(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet) { //Basing Switch | 1 = Left | 0 = Right
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-//        double differenceDis;
-//        double kP = .025; //to be determined
-        double pow;
+
+//        double range;
+        double pow = .15;
+//        double newPow;
         double localRange;
-          while (((sensor < inAway - .5) || (sensor > inAway + .5))&& opModeIsActive()) {
-              localRange = sensorVar.getDistance(DistanceUnit.INCH);
-              while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
-                  localRange = sensorVar.getDistance(DistanceUnit.INCH);
-              }
-              sensor = localRange;
-              //differenceDis = Math.abs(sensor - inAway);
-              //pow = differenceDis*kP;
 
-              pow = 0.25; //Try testing the power higher and lower to see why the robot moves foward/back and not strafe straight. Try running with no encoders.
-
-//              if (pow > .2) edit once working on single power
-//                  pow = .2;
-//              if (pow < .19)
-//                  pow = .19;
-
-            if (sensor > inAway) {
-                setMotorStrafe(pow);
+        while (((sensor < inAway - .5) || (sensor > inAway + .5)) && opModeIsActive()) {
+            localRange = sensorVar.getDistance(DistanceUnit.INCH);
+            while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
+                localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
-            if (sensor < inAway) {
-                setMotorStrafe(-pow);
+            sensor = localRange;
+//            range = Math.abs(inAway - sensor);
+
+
+
+            pow = .15;
+
+            //RED SIDE AUTOS
+            if (bSet == 0) {
+                if (sensor > inAway) {
+                    setMotorStrafe(pow);
+                }
+                if (sensor < inAway) {
+                    setMotorStrafe(-pow);
+                }
             }
-              telemetry.addData("rightwhile", sensor);
-              telemetry.update();
+
+
+            //BLUE SIDE AUTOS
+            if (bSet == 1) {
+                if (sensor > inAway) {
+                    setMotorStrafe(-pow);
+                }
+                if (sensor < inAway) {
+                    setMotorStrafe(pow);
+                }
+            }
+            telemetry.addData("rangeDis", sensor);
+            telemetry.update();
         }
         stopMotors();
     }
 
+    public void turnCorr2(double pow, double deg, int timer) throws InterruptedException {
+        if (!opModeIsActive())
+            return;
 
+        double newPow;
+        double error;
+        double errorMove;
 
+        ElapsedTime time = new ElapsedTime();
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // currPos is the current position
 
-//    public void setMotorsMec() {
-//        if (!opModeIsActive())
-//            return;
-//
-//        if (gamepad1.left_trigger > .1) {
-//            motorFL.setPower(-gamepad1.left_trigger);
-//            motorBL.setPower(gamepad1.left_trigger);
-//            motorFR.setPower(gamepad1.left_trigger);
-//            motorBR.setPower(-gamepad1.left_trigger);
-//        }
-//        else if (gamepad1.right_trigger > .1){
-//            motorFL.setPower(gamepad1.right_trigger);
-//            motorBL.setPower(-gamepad1.right_trigger);
-//            motorFR.setPower(-gamepad1.right_trigger);
-//            motorBR.setPower(gamepad1.right_trigger);
-//        }
-//        else {
-//            motorFL.setPower(0);
-//            motorBL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBR.setPower(0);
-//        }
-//    }
+        delay(100);
+        time.reset();
 
-    // code for strafing using the dpad on driver 1 controller
+        while (((currPos > (deg + 2.5)) || (currPos < (deg - 2.5))) && (time.milliseconds() < timer) && opModeIsActive()) {
+            error = deg - currPos;
+            errorMove = Math.abs(deg - currPos);
 
+            if (error > 180) {
+                error = error - 360;
+            } else if (error < -180) {
+                error = error + 360;
+            }
 
-    //Why do we have this method if we do the same thing in TeleOp ????
-//    public void setMotorsMecDPAD(double left, double right, double lessenPower, double increasePower) {
-//        if (!opModeIsActive())
-//            return;
-//        double less = lessenPower;
-//        double increase = increasePower;
-//
-//        if (gamepad1.dpad_up &&  left <= .75 && right <= .75) {
-//            left += increasePower;
-//            right += increasePower;
-//        }
-//
-//        else if (gamepad1.dpad_down && left >= 0.25 && right >= 0.25){
-//            left += lessenPower;
-//            right += lessenPower;
-//
-//        }
-//
-//        if (gamepad1.dpad_left) {
-//            motorFL.setPower(left);
-//            motorBL.setPower(-left);
-//            motorFR.setPower(-right);
-//            motorBR.setPower(right);
-//        }
-//        else if (gamepad1.dpad_right){
-//            motorFL.setPower(-left);
-//            motorBL.setPower(left);
-//            motorFR.setPower(right);
-//            motorBR.setPower(-right);
-//        }
-//        else {
-//            motorFL.setPower(0);
-//            motorBL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBR.setPower(0);
-//        }
-//
-//    }
+            newPow = pow * (Math.abs(error) / 70);
+            if (newPow < .15)
+                newPow = .1;
+
+            if (currPos < deg) {
+                if (errorMove < 180) {
+                    setMotors(-newPow, newPow); //Turns left
+                }
+                if (errorMove > 180) {
+                    setMotors(newPow, -newPow); //Turns right if we go past the pos/neg mark.
+                }
+            } else if (currPos > deg) {
+                if (errorMove < 180) {
+                    setMotors(newPow, -newPow); //Turns right
+                }
+                if (errorMove > 180) {
+                    setMotors(-newPow, newPow); //Turns left if we go past the pos/neg mark.
+                }
+            }
+            angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+            currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+            telemetry.addData("Gyro", currPos);
+            telemetry.update();
+        }
+        stopMotors();
+    }
 
     public void slowDown(double reduction) {
         //first reduction making power 0.5
@@ -504,104 +504,44 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
 
-//    public void mecAutoLeft(double left, double right, double distance ,int tim ) {
-//        if (!opModeIsActive())
-//            return;
-//        ElapsedTime time = new ElapsedTime();
-//
-//        time.reset();
-//        resetStartTime();
-//
-//
-//        if (distance > 0 && getRangeDistanceRight() < distance && time.milliseconds() < tim) {
-//            motorFL.setPower(-left);
-//            motorBL.setPower(left);
-//            motorFR.setPower(right);
-//            motorBR.setPower(-right);
-//        }
-//        else {
-//            motorFL.setPower(0);
-//            motorBL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBR.setPower(0);
-//        }
-//    }
-
-//    public void mecAutoRight(double left, double right, double distance ,int tim) {
-//        if (!opModeIsActive())
-//            return;
-//
-//        ElapsedTime time = new ElapsedTime();
-//
-//        time.reset();
-//        resetStartTime();
-//
-//        if (distance > 0 && getRangeDistanceRight() < distance && time.milliseconds() < tim) {
-//            motorFL.setPower(left);
-//            motorBL.setPower(-left);
-//            motorFR.setPower(-right);
-//            motorBR.setPower(right);
-//        }
-//        else {
-//            motorFL.setPower(0);
-//            motorBL.setPower(0);
-//            motorFR.setPower(0);
-//            motorBR.setPower(0);
-//        }
-//    }
-
-//    public double getRangeDistanceRight() {
-//        double value = rangeR.getDistance(DistanceUnit.CM);
-//        if (value != 255)
-//            rangeDistance = value;
-//        return rangeDistance;
-//    }
-
     public void jewelKnockerRed() {
         jewelArm.setPosition(.6);
-        jewelHand.setPosition(.45);
-        sleep(2000);
+        jewelHand.setPosition(.4);
+        sleep(750);
         jewelArm.setPosition(.15);
-        sleep(2000);
-
+        sleep(1000);
         if (jewelColor.red() > jewelColor.blue()) {
             jewelHand.setPosition((.3));
-
         } else if (jewelColor.red() < jewelColor.blue()) {
             jewelHand.setPosition((.6));
         }
+        sleep(500);
 
-        sleep(1000);
         jewelArm.setPosition(.6);
         jewelHand.setPosition(.45);
-        sleep(3000);
-
-        jewelHand.setPosition(.3);
         sleep(1000);
+        jewelHand.setPosition(.3);
+        sleep(500);
     }
-    // int colorDif = jewelColor.red() - jewelColor.blue();
 
     public void jewelKnockerBlue() {
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.45);
-        sleep(2000);
+        jewelArm.setPosition(.55);
+        jewelHand.setPosition(.4);
+        sleep(500);
         jewelArm.setPosition(.15);
-        sleep(2000);
-
+        sleep(1000);
         if (jewelColor.red() < jewelColor.blue()) {
             jewelHand.setPosition((.3));
-
         } else if (jewelColor.red() > jewelColor.blue()) {
             jewelHand.setPosition((.6));
         }
+        sleep(500);
 
-        sleep(1000);
-        jewelArm.setPosition(.6);
+        jewelArm.setPosition(.55);
         jewelHand.setPosition(.45);
-        sleep(1000);
-
+        sleep(500);
         jewelHand.setPosition(.3);
-        sleep(1000);
+        sleep(500);
     }
 
 //    public double getUltraDistance() {
@@ -618,191 +558,222 @@ public abstract class MyOpMode extends LinearOpMode {
 //        manip.setPower(pow);
 //    }
 
-    public void setServoSlow(Servo servo, double pos) throws InterruptedException {
-        double currentPosition = servo.getPosition();
+//    public void setServoSlow(Servo servo, double pos) throws InterruptedException {
+//        double currentPosition = servo.getPosition();
+//
+//        if (currentPosition - pos > 0) {
+//            for (; currentPosition > pos; currentPosition -= .005) {
+//                servo.setPosition(currentPosition);
+//                delay(1);
+//                idle();
+//            }
+//        } else for (; currentPosition < pos; currentPosition += .005) {
+//            servo.setPosition(currentPosition);
+//            delay(1);
+//            idle();
+//        }
+//    }
 
-        if (currentPosition - pos > 0) {
-            for (; currentPosition > pos; currentPosition -= .005) {
-                servo.setPosition(currentPosition);
-                delay(1);
-                idle();
-            }
-        } else for (; currentPosition < pos; currentPosition += .005) {
-            servo.setPosition(currentPosition);
-            delay(1);
-            idle();
-        }
+//    public double getDiff(double angle) {
+//        imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+//        return currPos - angle;
+//    }
+//
+//    public Double gyroVal() {
+//        imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+//        return currPos;
+//    }
+//
+//    public void turnPID(double angle) throws InterruptedException {
+//        double kP = .20 / 90;
+//        double min = -.2;
+//        double max = .2;
+//        double changeCon = .04;
+//        double PIDchange;
+//        double angleDiff = getDiff(angle);
+//        double oldDiff = angleDiff;
+//        int counter = 0;
+//        double startAngle = gyroVal();
+//        while ((Math.abs(angleDiff) <= Math.abs(oldDiff)) && opModeIsActive()) {
+//            PIDchange = angleDiff * kP;
+//
+//            if (PIDchange < 0) {
+//                motorFR.setPower(Range.clip(-PIDchange + changeCon, min, max));
+//                motorBR.setPower(Range.clip(-PIDchange + changeCon, min, max));
+//                motorFL.setPower(Range.clip(-PIDchange + changeCon, min, max));
+//                motorBL.setPower(Range.clip(-PIDchange + changeCon, min, max));
+//            } else {
+//                motorFR.setPower(Range.clip(PIDchange - changeCon, min, max));
+//                motorBR.setPower(Range.clip(PIDchange - changeCon, min, max));
+//                motorFL.setPower(Range.clip(PIDchange - changeCon, min, max));
+//                motorBL.setPower(Range.clip(PIDchange - changeCon, min, max));
+//            }
+//
+//            sleep(250);
+//            telemetry.addData("gyroStart", startAngle);
+//            telemetry.addData("counter", counter++);
+//            telemetry.addData("GyroVal", gyroVal());
+//            telemetry.addData("GyroDiff", getDiff(angle));
+//            telemetry.addData("Pow", -PIDchange - changeCon);
+//            telemetry.update();
+//
+//            oldDiff = angleDiff;
+//            angleDiff = getDiff(angle);
+//        }
+//        stopMotors();
+//    }
+
+//    public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
+//        if (!opModeIsActive())
+//            return;
+//
+//        double newPow = 0.0;
+//        double error;
+//        double timer = 0.0;
+//
+//        ElapsedTime time = new ElapsedTime();
+//        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+//        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // startP is the current position
+//
+//        delay(100);
+//        time.reset();
+//
+//        if (deg > 0) {
+//<<<<<<<HEAD
+//            while ((deg > currPos && time.milliseconds() < tim)) {
+//                error = deg - currPos;
+//
+//                if (error > 180) {
+//                    error = error - 360;
+//                } else if (error <= -180) {
+//                    error = error + 360;
+//                }
+//=======
+//                telemetry.addData("deg", "positive");
+//                while ((deg > currPos && time.milliseconds() < tim && opModeIsActive())) {
+////                error = deg - currPos;
+////
+////                if (error > 180){
+////                    error = error -360;
+////                } else if (error < -180){
+////                    error = error +360;
+////                }
+////
+////                newPow = pow * (Math.abs(error) / 80);
+////
+//////                if ((deg - currPos) - 360)
+////
+////                if (newPow < .15)
+////                    newPow = .1;
+////
+////                if (currPos > 0) {
+////                    setMotors(-newPow, newPow);
+////                } else if (currPos < 0) {
+////                    setMotors(-newPow, newPow);
+////
+////                }
+//                    //delay(100);
+////                if (Math.abs(time.milliseconds() - timer) > 100) {
+////                    if (currPos > 0) {
+////                        setMotors(-newPow, newPow);
+////                    } else if (currPos < 0) {
+////                        setMotors(-newPow, newPow);
+////
+////                    }
+////                    timer = time.milliseconds();
+////                }
+//                    if (Math.abs(time.milliseconds() - timer) > 100) {
+//                        error = deg - currPos;
+//
+//                        if (error > 180) {
+//                            error = error - 360;
+//                        } else if (error < -180) {
+//                            error = error + 360;
+//                        }
+//>>>>>>>3208f 66678255ed 1025e3 ab9fac5fa2ffba0980b
+//
+//                                newPow = pow * (Math.abs(error) / 80);
+//
+////                if ((deg - currPos) - 360)
+//
+//                        if (newPow < .15)
+//                            newPow = .1;
+//
+//                        if (currPos > 0) {
+//                            setMotors(-newPow, newPow);
+//                        } else if (currPos < 0) {
+//                            setMotors(-newPow, newPow);
+//
+//                        }
+//                        timer = time.milliseconds();
+//                    }
+//                    currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+//                    telemetry.addData("Gyro", currPos);
+//                    telemetry.addData("newpower", newPow);
+//                    telemetry.addData("Error", (Math.abs(deg - currPos)));
+//                    telemetry.update();
+//                }
+//            } else if (deg < 0) {
+//
+//                telemetry.addData("deg", "negative");
+//                telemetry.update();
+//                while (deg < currPos && time.milliseconds() < tim && opModeIsActive()) {
+//
+////                error = deg - currPos;
+////
+////                if (error > 180){
+////                    error = error - 360;
+////                } else if (error < -180){
+////                    error = error + 360;
+////                }
+////
+////                newPow = pow * (Math.abs(error) / 80);
+////
+////                if (newPow < .15)
+////                    newPow = .1;
+////
+////                if (currPos < 0) {
+////                    setMotors(newPow, -newPow);
+////                }else if (currPos > 0){
+////                    setMotors(newPow, -newPow);
+////
+////                }
+////                delay(100);
+//                    if (Math.abs(time.milliseconds() - timer) > 100) {
+//                        error = deg - currPos;
+//
+//                        if (error > 180) {
+//                            error = error - 360;
+//                        } else if (error < -180) {
+//                            error = error + 360;
+//                        }
+//
+//                        newPow = pow * (Math.abs(error) / 80);
+//
+//                        if (newPow < .15)
+//                            newPow = .1;
+//
+//                        if (currPos < 0) {
+//                            setMotors(newPow, -newPow);
+//                        } else if (currPos > 0) {
+//                            setMotors(newPow, -newPow);
+//                        }
+//                        timer = time.milliseconds();
+//                    }
+//                    currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+//                    telemetry.addData("Gyro", currPos);
+//                    telemetry.addData("newpower", newPow);
+//                    telemetry.addData("Error", (Math.abs(deg - currPos)));
+//                    telemetry.update();
+//                    // idle();
+//                }
+//            } else {
+//                telemetry.addData("nothing", "nothing");
+//                telemetry.update();
+//            }
+//            telemetry.addData("status", "done");
+//            telemetry.update();
+//            stopMotors();
     }
-
-    public double getDiff(double angle) {
-        imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-        return   currPos - angle;
-    }
-    public Double gyroVal() {
-        imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-        return currPos;
-    }
-    public void turnPID(double angle) throws InterruptedException {
-        double kP = .20/90;
-        double min = -.2;
-        double max = .2;
-        double changeCon = .04;
-        double PIDchange;
-        double angleDiff = getDiff(angle);
-        double oldDiff = angleDiff;
-        int counter = 0;
-        double startAngle = gyroVal();
-        while ((Math.abs(angleDiff) <= Math.abs(oldDiff)) && opModeIsActive()) {
-            PIDchange = angleDiff * kP;
-
-            if (PIDchange < 0) {
-                motorFR.setPower(Range.clip(-PIDchange + changeCon, min, max));
-                motorBR.setPower(Range.clip(-PIDchange + changeCon, min, max));
-                motorFL.setPower(Range.clip(-PIDchange + changeCon, min, max));
-                motorBL.setPower(Range.clip(-PIDchange + changeCon, min, max));
-            }
-            else {
-                motorFR.setPower(Range.clip(PIDchange - changeCon, min, max));
-                motorBR.setPower(Range.clip(PIDchange - changeCon, min, max));
-                motorFL.setPower(Range.clip(PIDchange - changeCon, min, max));
-                motorBL.setPower(Range.clip(PIDchange - changeCon, min, max));
-            }
-
-            sleep(250);
-            telemetry.addData("gyroStart", startAngle);
-            telemetry.addData("counter", counter++);
-            telemetry.addData("GyroVal", gyroVal());
-            telemetry.addData("GyroDiff",getDiff(angle));
-            telemetry.addData("Pow", -PIDchange - changeCon);
-            telemetry.update();
-
-            oldDiff = angleDiff;
-            angleDiff = getDiff(angle);
-        }
-        stopMotors();
-    }
-
-    public void turn(double pow, double deg) throws InterruptedException {
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-        if (deg > 0) {
-            while ((currPos > (deg + .25)) || (currPos < (deg-.25))){
-                if (currPos > (deg + .25))
-                    setMotors(-pow, pow);
-                if (currPos < (deg -.25))
-                    setMotors(pow, -pow);
-
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                idle();
-            }
-            stopMotors();
-
-        }
-        if (deg < 0) {
-            while ((currPos > (deg + .25)) || (currPos < (deg-.25))){
-                if (currPos > (deg + .25))
-                    setMotors(-pow, pow);
-                if (currPos < (deg -.25))
-                    setMotors(pow, -pow);
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                idle();
-            }
-            stopMotors();
-        }
-    }
-    public void turnCorr2point0(double pow, double deg) throws InterruptedException { //add in working turncorr pid
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-        if (deg > 0) {
-            while ((currPos > (deg + .25)) || (currPos < (deg-.25))) {
-                if (currPos > (deg + .25))
-                    setMotors(-pow, pow);
-                if (currPos < (deg -.25))
-                    setMotors(pow, -pow);
-            }
-        }
-        if (deg < 0) {
-            if (currPos > (deg + .25)) //need to review
-                setMotors(-pow, pow);
-            if (currPos < (deg -.25)) //need to review
-                setMotors(pow, -pow);
-        }
-    }
-
-    public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
-        if (!opModeIsActive())
-            return;
-
-        double newPow;
-
-        ElapsedTime time = new ElapsedTime();
-        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // startP is the current position
-
-        delay(100);
-        time.reset();
-
-        if (deg > 0) {
-            while ((deg > currPos && time.milliseconds() < tim)) {
-                newPow = pow * (Math.abs(deg - currPos) / 80);
-
-                if (newPow < .15)
-                    newPow = .1;
-
-                setMotors(-newPow, newPow);
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                telemetry.addData("Gyro", currPos);
-                telemetry.addData("newpower", newPow);
-                telemetry.update();
-                idle();
-            }
-        } else {
-            while (deg < currPos && time.milliseconds() < tim) {
-                newPow = pow * (Math.abs(deg - currPos) / 80);
-
-                if (newPow < .15)
-                    newPow = .1;
-                setMotors(newPow, -newPow);
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                telemetry.addData("Gyro", currPos);
-                telemetry.addData("newpower", newPow);
-                telemetry.update();
-                idle();
-            }
-        }
-
-        stopMotors();
-
-        if (currPos > deg) {
-            while (opModeIsActive() && deg < currPos) {
-                newPow = pow * (Math.abs(deg - currPos) / 80);
-
-                if (newPow < .15)
-                    newPow = .1;
-                setMotors(newPow, -newPow);
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                telemetry.addData("Gyro", currPos);
-                telemetry.addData("newpower", newPow);
-                telemetry.update();
-                idle();
-            }
-        } else {
-            while (opModeIsActive() && deg > currPos) {
-                newPow = pow * (Math.abs(deg - currPos) / 80);
-
-                if (newPow < .15)
-                    newPow = .1;
-
-                setMotors(-newPow, newPow);
-                currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-                telemetry.addData("Gyro", currPos);
-                telemetry.addData("newpower", newPow);
-                telemetry.update();
-                idle();
-            }
-        }
-        stopMotors();
-    }
-}
