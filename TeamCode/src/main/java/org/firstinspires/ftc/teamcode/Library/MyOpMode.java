@@ -292,8 +292,7 @@ public abstract class MyOpMode extends LinearOpMode {
         ElapsedTime time = new ElapsedTime();
         time.reset();
         resetStartTime();
-
-        while ((time.milliseconds() < 2000) && opModeIsActive()) {
+        while ((time.milliseconds() < 2000) && opModeIsActive() && (column == 'U')) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
                 telemetry.addData("VuMark", "%s visible", vuMark);
