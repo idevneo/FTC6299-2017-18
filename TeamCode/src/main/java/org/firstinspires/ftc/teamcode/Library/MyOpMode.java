@@ -200,8 +200,8 @@ public abstract class MyOpMode extends LinearOpMode {
         parameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
         BNO055IMU.Parameters Gparameters = new BNO055IMU.Parameters();
+        Gparameters.mode = BNO055IMU.SensorMode.IMU;
         Gparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         Gparameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         Gparameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
@@ -293,7 +293,7 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
         resetStartTime();
 
-        while ((time.milliseconds() < 4000) && opModeIsActive()) {
+        while ((time.milliseconds() < 2000) && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
                 telemetry.addData("VuMark", "%s visible", vuMark);

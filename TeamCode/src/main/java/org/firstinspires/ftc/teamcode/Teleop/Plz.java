@@ -59,34 +59,18 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 
 @TeleOp(name="TELEOP", group="Linear Opmode")
-public class Plz extends LinearOpMode {
+public class Plz extends MyOpMode {
 
     // Declare OpMode members.
-    DcMotor motorFL;
-    DcMotor motorBL;
-    DcMotor motorFR;
-    DcMotor motorBR;
-    DcMotor manip;
-    DcMotor liftLeft;
-    DcMotor liftRight;
-
-    ColorSensor jewelColor;
-
-    Servo jewelHand;
-    Servo jewelArm;
-
-//    ModernRoboticsI2cRangeSensor rangeR;
-//    ModernRoboticsI2cRangeSensor rangeL;
-
     float gamepad1_left;
     float gamepad1_right;
 
     double left = 1;
     double right = 1;
     double strafeMod = .25;
-    double jewelHandStart = 0.1;
-    double jewelHandDeploy = 0.9;
-    double jewelArmDeploy = .2;
+//    double jewelHandStart = 0.1;
+//    double jewelHandDeploy = 0.9;
+//    double jewelArmDeploy = .2;
 
     int lessenPow = 0;
 
@@ -95,34 +79,7 @@ public class Plz extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorFR = hardwareMap.dcMotor.get("motorFR");
-
-        liftLeft = hardwareMap.dcMotor.get("liftL");
-        liftRight = hardwareMap.dcMotor.get("liftR");
-        manip = hardwareMap.dcMotor.get("manip");
-
-        jewelColor = (ColorSensor) hardwareMap.get(ColorSensor.class, "jewelColor");
-
-        jewelArm = hardwareMap.servo.get("jewelArm");
-        jewelHand = hardwareMap.servo.get("jewelHand");
-
-
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-//        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
-//        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
-
+        hMap(hardwareMap);
         jewelArm.setPosition(.65);
         jewelHand.setPosition(.3);
 
