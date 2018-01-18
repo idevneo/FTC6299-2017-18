@@ -168,12 +168,12 @@ public class Plz extends LinearOpMode {
                 motorBL.setPower(.25);
                 motorFR.setPower(-.25);
                 motorBR.setPower(-.25);
-            } else if (gamepad1.dpad_left && gamepad1.a) {
+            } else if (gamepad1.dpad_left && (gamepad1.a = true)) {
                 motorFL.setPower(left * .5);
                 motorBL.setPower(-left * .5);
                 motorFR.setPower(right * .5);
                 motorBR.setPower(-right * .5);
-            } else if (gamepad1.dpad_right && gamepad1.a) {
+            } else if (gamepad1.dpad_right && (gamepad1.a = false)) {
                 motorFL.setPower(-left * .5);
                 motorBL.setPower(left * .5);
                 motorFR.setPower(-right * .5);
@@ -254,22 +254,26 @@ public class Plz extends LinearOpMode {
                     gamepad1_right *= -1;
                 }
                 //Half-speed of drive-train toggle
-                if (gamepad1.a && lessenPow == 0) {
-                    lessenPow = 1;
-                }
-                //Full speed of drive-train toggle
-                if (gamepad1.a && lessenPow == 1) {
-                    lessenPow = 0;
-                }
-                //Lesson Pow Parameters
-                if (lessenPow == 1) {
-                    gamepad1_left *= .5;
-                    gamepad1_right *= .5;
-                }
-                if (lessenPow == 0) {
-                    gamepad1_left = gamepad1.left_stick_y;
-                    gamepad1_right = gamepad1.right_stick_y;
-                }
+//                if (gamepad1.a && lessenPow == 0) {
+//                    lessenPow = 1;
+//                }
+//                //Full speed of drive-train toggle
+//                if (gamepad1.a && lessenPow == 1) {
+//                    lessenPow = 0;
+//                }
+//                //Lesson Pow Parameters
+//                if (lessenPow == 1) {
+//                    gamepad1_left *= .5;
+//                    gamepad1_right *= .5;
+//                    left = .5;
+//                    right = .5;
+//                }
+//                if (lessenPow == 0) {
+//                    gamepad1_left = gamepad1.left_stick_y;
+//                    gamepad1_right = gamepad1.right_stick_y;
+//                    left = 1;
+//                    right = 1;
+//                }
 
                 //Jewel Testing (Gamepad 2: x,a)
                 if (gamepad2.x) {
