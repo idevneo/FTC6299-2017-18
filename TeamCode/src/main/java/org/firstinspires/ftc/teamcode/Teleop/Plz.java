@@ -69,11 +69,14 @@ public class Plz extends LinearOpMode {
     DcMotor manip;
     DcMotor liftLeft;
     DcMotor liftRight;
+    DcMotor relicDrive;
 
     ColorSensor jewelColor;
 
     Servo jewelHand;
     Servo jewelArm;
+    Servo relicFlip;
+    Servo relicHand;
 
 //    ModernRoboticsI2cRangeSensor rangeR;
 //    ModernRoboticsI2cRangeSensor rangeL;
@@ -103,11 +106,14 @@ public class Plz extends LinearOpMode {
         liftLeft = hardwareMap.dcMotor.get("liftL");
         liftRight = hardwareMap.dcMotor.get("liftR");
         manip = hardwareMap.dcMotor.get("manip");
+        relicDrive = hardwareMap.dcMotor.get("relicDrive");
 
         jewelColor = (ColorSensor) hardwareMap.get(ColorSensor.class, "jewelColor");
 
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
+        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicHand = hardwareMap.servo.get("relicHand");
 
 //        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
 //        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
@@ -250,30 +256,7 @@ public class Plz extends LinearOpMode {
                     gamepad1_right = gamepad1.right_stick_y;
                 }
 
-                //Jewel Testing (Gamepad 2: x,a)
-                if (gamepad2.x) {
-                    jewelArm.setPosition(.2); //.2 = deploy
-                    telemetry.addData("position", jewelArm.getPosition());
-                    telemetry.update();
-                }
 
-                if (gamepad2.a) {
-                    jewelArm.setPosition(.65);
-                    telemetry.addData("position", jewelArm.getPosition());
-                    telemetry.update();
-                }
-
-                if (gamepad2.y) {
-                jewelHand.setPosition(.3);
-                telemetry.addData("position", jewelHand.getPosition());
-                telemetry.update();
-                }
-
-                if (gamepad2.b) {
-                jewelHand.setPosition(.6);
-                telemetry.addData("position", jewelHand.getPosition());
-                telemetry.update();
-                }
 
             if ((Math.abs(gamepad2.left_stick_y) > .05)) {
                     liftLeft.setPower(-gamepad2.left_stick_y * .5);
@@ -285,12 +268,54 @@ public class Plz extends LinearOpMode {
                     liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
 
-            telemetry.addData("MotorFL", motorFL.getCurrentPosition());
-            telemetry.addData("MotorFR", motorFR.getCurrentPosition());
-            telemetry.addData("MotorBL", motorBL.getCurrentPosition());
-            telemetry.addData("MotorBR", motorBR.getCurrentPosition());
+            if ((Math.abs(gamepad2.right_stick_y) > .05)) {
+                relicDrive.setPower(-gamepad2.right_stick_y * .5);
+                //stick up is out stick down is in (may have to change signs)
+            }   else {
+                relicDrive.setPower(0);
+            }
+            if (gamepad2.left_bumper) {
+                relicHand.setPosition(.75);
+                //open
+            }
+            if (gamepad2.right_bumper) {
+                relicHand.setPosition(.25);
+                //grab
+            }
+            if (gamepad2.a) {
+                relicFlip.setPosition(.25);
+            }
+            if (gamepad2.b) {
+                relicFlip.setPosition(.5);
+            }
+            if (gamepad2.y) {
+                relicFlip.setPosition(.75);
+            }
 
-
+            //Jewel Testing (Gamepad 2: x,a)
+//            if (gamepad2.x) {
+//                jewelArm.setPosition(.2); //.2 = deploy
+//                telemetry.addData("position", jewelArm.getPosition());
+//                telemetry.update();
+//            }
+//
+//            if (gamepad2.a) {
+//                jewelArm.setPosition(.65);
+//                telemetry.addData("position", jewelArm.getPosition());
+//                telemetry.update();
+//            }
+//
+//            if (gamepad2.y) {
+//                jewelHand.setPosition(.3);
+//                telemetry.addData("position", jewelHand.getPosition());
+//                telemetry.update();
+//            }
+//
+//            if (gamepad2.b) {
+//                jewelHand.setPosition(.6);
+//                telemetry.addData("position", jewelHand.getPosition());
+//                telemetry.update();
+//            }
         }
         }
     }
