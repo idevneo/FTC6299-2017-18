@@ -27,27 +27,43 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
+
+
 /**
- * {@link AutoTest} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
+ * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
+ * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
+ * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
+ * class is instantiated on the Robot Controller and executed.
  *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
+ * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
+ * It includes all the skeletal structure that all linear OpModes contain.
+ *
+ * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- *
- * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@Autonomous(name = "Test File", group = "Sensor")
-                            // Comment this out to add to the opmode list
-public class AutoTest extends MyOpMode {
+
+@Autonomous(name="VuforiaTest", group="Linear Opmode")
+@Disabled
+public class Vuforia extends MyOpMode {
+
     private ElapsedTime runtime = new ElapsedTime();
+    VuforiaLocalizer vuforia;
 
     @Override
     public void runOpMode() {
@@ -57,26 +73,17 @@ public class AutoTest extends MyOpMode {
         // Set up our telemetry dashboard
         composeTelemetry();
         // Wait until we're told to go
-
         waitForStart();
         runtime.reset();
-/**---------------------------------------------------------------------------------------------------------------*/
-        // Start the logging of measured acceleration
+        // run until the end of the match (driver presses STOP)
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        try {
-            turnPID(-80);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        telemetry.addData("Column ", column);
+
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+        resetStartTime();
+
+        vfValue();
         }
-        sleep(2000);
-
-        //Finish optimizing this Auto, then invert for the blue side.
-        // Loop and update the dashboard
-//        while (opModeIsActive()) {
-//
-//            telemetry.update();
-//        }
-
     }
-}

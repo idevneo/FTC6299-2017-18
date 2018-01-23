@@ -59,27 +59,9 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 
 @TeleOp(name="TELEOP", group="Linear Opmode")
-public class Plz extends LinearOpMode {
+public class Plz extends MyOpMode {
 
     // Declare OpMode members.
-    DcMotor motorFL;
-    DcMotor motorBL;
-    DcMotor motorFR;
-    DcMotor motorBR;
-    DcMotor manip;
-    DcMotor liftLeft;
-    DcMotor liftRight;
-    DcMotor relicDrive;
-
-    ColorSensor jewelColor;
-
-    Servo jewelHand;
-    Servo jewelArm;
-    Servo relicFlip;
-    Servo relicHand;
-
-//    ModernRoboticsI2cRangeSensor rangeR;
-//    ModernRoboticsI2cRangeSensor rangeL;
 
     float gamepad1_left;
     float gamepad1_right;
@@ -87,9 +69,9 @@ public class Plz extends LinearOpMode {
     double left = 1;
     double right = 1;
     double strafeMod = .25;
-    double jewelHandStart = 0.1;
-    double jewelHandDeploy = 0.9;
-    double jewelArmDeploy = .2;
+//    double jewelHandStart = 0.1;
+//    double jewelHandDeploy = 0.9;
+//    double jewelArmDeploy = .2;
 
     int lessenPow = 0;
 
@@ -98,25 +80,7 @@ public class Plz extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorFR = hardwareMap.dcMotor.get("motorFR");
-
-        liftLeft = hardwareMap.dcMotor.get("liftL");
-        liftRight = hardwareMap.dcMotor.get("liftR");
-        manip = hardwareMap.dcMotor.get("manip");
-        relicDrive = hardwareMap.dcMotor.get("relicDrive");
-
-        jewelColor = (ColorSensor) hardwareMap.get(ColorSensor.class, "jewelColor");
-
-        jewelArm = hardwareMap.servo.get("jewelArm");
-        jewelHand = hardwareMap.servo.get("jewelHand");
-        relicFlip = hardwareMap.servo.get("relicFlip");
-        relicHand = hardwareMap.servo.get("relicHand");
-
-//        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
-//        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
+        hMap(hardwareMap);
 
         jewelArm.setPosition(.65);
         jewelHand.setPosition(.3);
@@ -163,6 +127,16 @@ public class Plz extends LinearOpMode {
                 motorBL.setPower(.25);
                 motorFR.setPower(-.25);
                 motorBR.setPower(-.25);
+            } else if (gamepad1.dpad_left && (gamepad1.a = true)) {
+                motorFL.setPower(left * .5);
+                motorBL.setPower(-left * .5);
+                motorFR.setPower(right * .5);
+                motorBR.setPower(-right * .5);
+            } else if (gamepad1.dpad_right && (gamepad1.a = false)) {
+                motorFL.setPower(-left * .5);
+                motorBL.setPower(left * .5);
+                motorFR.setPower(-right * .5);
+                motorBR.setPower(right * .5);
             } else {
                 motorFL.setPower(0);
                 motorBL.setPower(0);
@@ -218,9 +192,9 @@ public class Plz extends LinearOpMode {
                 telemetry.update();
             }
 
-                if (gamepad1.left_trigger > .15){
+                if ((gamepad1.left_trigger > .15) || (gamepad2.left_trigger > .15)){
                 manip.setPower(-1);
-                } else if (gamepad1.right_trigger > .15 ) {
+                } else if ((gamepad1.right_trigger > .15 ) || (gamepad2.right_trigger > .15)) {
                     manip.setPower(1);
                 } else {
                     manip.setPower(0);
@@ -239,22 +213,26 @@ public class Plz extends LinearOpMode {
                     gamepad1_right *= -1;
                 }
                 //Half-speed of drive-train toggle
-                if (gamepad1.a && lessenPow == 0) {
-                    lessenPow = 1;
-                }
-                //Full speed of drive-train toggle
-                if (gamepad1.a && lessenPow == 1) {
-                    lessenPow = 0;
-                }
-                //Lesson Pow Parameters
-                if (lessenPow == 1) {
-                    gamepad1_left *= .5;
-                    gamepad1_right *= .5;
-                }
-                if (lessenPow == 0) {
-                    gamepad1_left = gamepad1.left_stick_y;
-                    gamepad1_right = gamepad1.right_stick_y;
-                }
+//                if (gamepad1.a && lessenPow == 0) {
+//                    lessenPow = 1;
+//                }
+//                //Full speed of drive-train toggle
+//                if (gamepad1.a && lessenPow == 1) {
+//                    lessenPow = 0;
+//                }
+//                //Lesson Pow Parameters
+//                if (lessenPow == 1) {
+//                    gamepad1_left *= .5;
+//                    gamepad1_right *= .5;
+//                    left = .5;
+//                    right = .5;
+//                }
+//                if (lessenPow == 0) {
+//                    gamepad1_left = gamepad1.left_stick_y;
+//                    gamepad1_right = gamepad1.right_stick_y;
+//                    left = 1;
+//                    right = 1;
+//                }
 
 
 

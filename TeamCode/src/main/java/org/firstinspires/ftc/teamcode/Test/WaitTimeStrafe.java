@@ -27,85 +27,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 
-@Autonomous(name="Jewel Blue", group="Linear Opmode")
+/**
+ * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
+ * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
+ * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
+ * class is instantiated on the Robot Controller and executed.
+ *
+ * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
+ * It includes all the skeletal structure that all linear OpModes contain.
+ *
+ * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ */
 
-public class aBlueLeft extends MyOpMode {
-
-
+@Autonomous(name="WaitStrafeTest", group="Linear Opmode")
+@Disabled
+public class WaitTimeStrafe extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
         hMap(hardwareMap);
+        // Set up our telemetry dashboard
+        composeTelemetry();
+        // Wait until we're told to go
+
         waitForStart();
         runtime.reset();
-
-//        while(opModeIsActive()) {
-//            telemetry.addData("Red  ", jewelColor.red());
-//            telemetry.addData("Green", jewelColor.green());
-//            telemetry.addData("Blue ", jewelColor.blue());
-//            telemetry.update();
-//        }
-
         // run until the end of the match (driver presses STOP)
-            jewelArm.setPosition(.6);
-            jewelHand.setPosition(.45);
-            sleep(2000);
-            jewelArm.setPosition(.15);
-            sleep(2000);
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-            if (jewelColor.red() < jewelColor.blue()) {
-                jewelHand.setPosition((.3));
-
-            } else if (jewelColor.red() > jewelColor.blue()) {
-                jewelHand.setPosition((.6));
-            }
-
-            sleep(1000);
-            jewelArm.setPosition(.6);
-            jewelHand.setPosition(.45);
-            sleep(1000);
-
-            jewelHand.setPosition(.3);
-            sleep(1000);
-
-        setMotors(-0.2,-0.2);
-        Thread.sleep(1750);
-        stopMotors();
-
-        turnCorr(0.2,-90,4000);
-
-
-
-
-        manipAuto(-.75);
-
-        stopMotors();
-
-
-
-
-
-//            jewelKnockerRed(.2,.6,0.3,0.6,0.45);
-//
-
-        }
-
+        setMotorStrafe(0.1);
+        sleep(650);
+    }
 }
-

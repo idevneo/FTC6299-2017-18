@@ -27,26 +27,34 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
+
 /**
- * {@link rangeTest} gives a short demo on how to use the BNO055 Inertial Motion Unit (IMU) from AdaFruit.
+ * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
+ * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
+ * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
+ * class is instantiated on the Robot Controller and executed.
  *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
+ * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
+ * It includes all the skeletal structure that all linear OpModes contain.
+ *
+ * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- *
- * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@Autonomous(name = "TelemTest", group = "Sensor")
-                            // Comment this out to add to the opmode list
-public class rangeTest extends MyOpMode {
+
+@Autonomous(name="StrafeTest", group="Linear Opmode")
+@Disabled
+public class Strafe extends MyOpMode {
+
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -57,24 +65,12 @@ public class rangeTest extends MyOpMode {
         // Set up our telemetry dashboard
         composeTelemetry();
         // Wait until we're told to go
+
         waitForStart();
         runtime.reset();
-/**---------------------------------------------------------------------------------------------------------------*/
-        // Start the logging of measured acceleration
+        // run until the end of the match (driver presses STOP)
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-
-        telemetry.addData("VuChar", getVuMark());
-        telemetry.update();
-
-        //Need to put the Auto together - Message Caleb for the details on how.
-
-        // Loop and update the dashboard
-        while (opModeIsActive()) {
-
-            telemetry.update();
-//        }
-        }
-
+        rangeMoveStrafe(10, rangeL,1);
     }
 }
