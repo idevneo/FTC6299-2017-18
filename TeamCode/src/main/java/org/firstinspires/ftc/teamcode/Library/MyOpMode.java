@@ -47,8 +47,11 @@ public abstract class MyOpMode extends LinearOpMode {
     public static DcMotor liftLeft;
     public static DcMotor liftRight;
     public static DcMotor manip;
+    public static DcMotor relicDrive;
     public static Servo jewelArm;
     public static Servo jewelHand;
+    public static Servo relicFlip;
+    public static Servo relicHand;
     public static ColorSensor jewelColor;
     //public static DcMotor relic;
 //    public static Servo relicGrabber;
@@ -177,10 +180,13 @@ public abstract class MyOpMode extends LinearOpMode {
         liftLeft = hardwareMap.dcMotor.get("liftL");
         liftRight = hardwareMap.dcMotor.get("liftR");
         manip = hardwareMap.dcMotor.get("manip");
+        relicDrive = hardwareMap.dcMotor.get("relicDrive");
 
         jewelColor = hardwareMap.get(ColorSensor.class, "jewelColor");
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
+        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicHand = hardwareMap.servo.get("relicHand");
 
         rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
         rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
