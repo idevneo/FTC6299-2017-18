@@ -83,32 +83,13 @@ public abstract class MyOpMode extends LinearOpMode {
 //            gravity  = imu.getGravity();
             }
         });
-//
-//        telemetry.addLine()
-//                .addData("status", new Func<String>() {
-//                    @Override public String value() {
-//                        return imu.getSystemStatus().toShortString();
-//                    }
-//                })
-//                .addData("calib", new Func<String>() {
-//                    @Override public String value() {
-//                        return imu.getCalibrationStatus().toString();
-//                    }
-//                });
-
         telemetry.addLine()
-                .addData("heading", new Func<String>() {
+                .addData("Angle", new Func<String>() {
                     @Override
                     public String value() {
                         return formatAngle(angles.angleUnit, angles.firstAngle); //Control Robot Pivot
                     }
                 });
-//        telemetry.addLine()
-//                .addData("VumarkGoal", new Func<String>() {
-//                    @Override public String  value() {
-//                        return Character.toString(vfValue());
-//                    }
-//                });
         telemetry.addLine()
                 .addData("Left", new Func<String>() {
                     @Override
@@ -140,16 +121,26 @@ public abstract class MyOpMode extends LinearOpMode {
                 .addData("Front", new Func<String>() {
                     @Override
                     public String value() {
-                        double localRange;
-                        double sensor = 0;
-                        localRange = rangeF.getDistance(DistanceUnit.INCH);
-                        if (!Double.isNaN(localRange) && (localRange < 1000)) {
-                            sensor = localRange;
+                            double localRange;
+                            double sensor = 0;
+                            localRange = rangeF.getDistance(DistanceUnit.INCH);
+                            if (!Double.isNaN(localRange) && (localRange < 1000)) {
+                                sensor = localRange;
+                            }
+                            return Double.toString(sensor);
                         }
-                        return Double.toString(sensor);
-                    }
                 });
-
+//        telemetry.addLine()
+//                .addData("status", new Func<String>() {
+//                    @Override public String value() {
+//                        return imu.getSystemStatus().toShortString();
+//                    }
+//                })
+//                .addData("calib", new Func<String>() {
+//                    @Override public String value() {
+//                        return imu.getCalibrationStatus().toString();
+//                    }
+//                });
 //                .addData("roll", new Func<String>() {
 //                    @Override public String value() {
 //                        return formatAngle(angles.angleUnit, angles.secondAngle);
