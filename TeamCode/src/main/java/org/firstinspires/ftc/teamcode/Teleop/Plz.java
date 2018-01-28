@@ -63,6 +63,19 @@ public class Plz extends MyOpMode {
 
     // Declare OpMode members.
 
+    DcMotor motorBL;
+    DcMotor motorBR;
+    DcMotor motorFL;
+    DcMotor motorFR;
+    DcMotor liftLeft;
+    DcMotor liftRight;
+    DcMotor manip;
+    DcMotor relicDrive;
+    Servo jewelArm;
+    Servo jewelHand;
+    Servo relicFlip;
+    Servo relicHand;
+        
     float gamepad1_left;
     float gamepad1_right;
 
@@ -80,10 +93,34 @@ public class Plz extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        hMap(hardwareMap);
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorFL = hardwareMap.dcMotor.get("motorFL");
+        motorFR = hardwareMap.dcMotor.get("motorFR");
+
+        liftLeft = hardwareMap.dcMotor.get("liftL");
+        liftRight = hardwareMap.dcMotor.get("liftR");
+        manip = hardwareMap.dcMotor.get("manip");
+        relicDrive = hardwareMap.dcMotor.get("relicDrive");
+
+        jewelColor = hardwareMap.get(ColorSensor.class, "jewelColor");
+        jewelArm = hardwareMap.servo.get("jewelArm");
+        jewelHand = hardwareMap.servo.get("jewelHand");
+        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicHand = hardwareMap.servo.get("relicHand");
+
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         jewelArm.setPosition(.65);
-        jewelHand.setPosition(.3);
+        jewelHand.setPosition(.4);
 
         waitForStart();
 
@@ -247,27 +284,27 @@ public class Plz extends MyOpMode {
             }
 
             if ((Math.abs(gamepad2.right_stick_y) > .05)) {
-                relicDrive.setPower(-gamepad2.right_stick_y * .5);
+                relicDrive.setPower(gamepad2.right_stick_y * .5);
                 //stick up is out stick down is in (may have to change signs)
             }   else {
                 relicDrive.setPower(0);
             }
             if (gamepad2.left_bumper) {
-                relicHand.setPosition(.75);
+                relicHand.setPosition(.45);
                 //open
             }
             if (gamepad2.right_bumper) {
-                relicHand.setPosition(.25);
+                relicHand.setPosition(.05);
                 //grab
             }
             if (gamepad2.a) {
-                relicFlip.setPosition(.25);
+                relicFlip.setPosition(.1);
             }
             if (gamepad2.b) {
-                relicFlip.setPosition(.5);
+                relicFlip.setPosition(.4);
             }
             if (gamepad2.y) {
-                relicFlip.setPosition(.75);
+                relicFlip.setPosition(.8);
             }
 
             //Jewel Testing (Gamepad 2: x,a)
