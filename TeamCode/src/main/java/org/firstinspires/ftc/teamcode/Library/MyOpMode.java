@@ -298,8 +298,9 @@ public abstract class MyOpMode extends LinearOpMode {
         ElapsedTime time = new ElapsedTime();
         time.reset();
         resetStartTime();
+
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
         while ((time.milliseconds() < 2000) && opModeIsActive() && (column == 'U')) {
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
                 telemetry.addData("VuMark", "%s visible", vuMark);
                 if (vuMark == RelicRecoveryVuMark.CENTER) {
@@ -315,6 +316,7 @@ public abstract class MyOpMode extends LinearOpMode {
             }
             telemetry.update();
         }
+        telemetry.addData("VuMark",  vuMark);
     }
 
     public void vfMovePar(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {

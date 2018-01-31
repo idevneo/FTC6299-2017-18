@@ -64,7 +64,7 @@ public class AutoRedRight extends MyOpMode {
         sleep(1000);
         stopMotors();
 
-        rangeMoveStrafe(3, rangeR, 0);
+        rangeMoveStrafe(4, rangeR, 0);
         sleep(1000);
         rangeMovePID(8, rangeF);
         sleep(500);

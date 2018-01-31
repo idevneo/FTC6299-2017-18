@@ -59,7 +59,6 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 
 @Autonomous(name="VuforiaTest", group="Linear Opmode")
-@Disabled
 public class Vuforia extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -80,10 +79,12 @@ public class Vuforia extends MyOpMode {
 
         telemetry.addData("Column ", column);
 
+
         ElapsedTime time = new ElapsedTime();
         time.reset();
         resetStartTime();
 
         vfValue();
+        telemetry.update();
         }
     }
