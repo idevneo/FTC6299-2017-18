@@ -161,15 +161,15 @@ public class Plz extends LinearOpMode {
                 motorFR.setPower(-right);
                 motorBR.setPower(right);
             } else if (gamepad1.left_bumper) {
-                motorFL.setPower(-.25);
-                motorBL.setPower(-.25);
-                motorFR.setPower(.25);
-                motorBR.setPower(.25);
+                motorFL.setPower(-.45);
+                motorBL.setPower(-.45);
+                motorFR.setPower(.45);
+                motorBR.setPower(.45);
             } else if (gamepad1.right_bumper) {
-                motorFL.setPower(.25);
-                motorBL.setPower(.25);
-                motorFR.setPower(-.25);
-                motorBR.setPower(-.25);
+                motorFL.setPower(.45);
+                motorBL.setPower(.45);
+                motorFR.setPower(-.45);
+                motorBR.setPower(-.45);
             } else {
                 motorFL.setPower(0);
                 motorBL.setPower(0);

@@ -44,7 +44,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
-@Autonomous(name = "Blue Right GYROWORK", group = "Sensor")
+@Autonomous(name = "Blue Right GYROWOrKo", group = "Sensor")
                             // Comment this out to add to the opmode list
 public class AutoBlueRightBTEST extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
