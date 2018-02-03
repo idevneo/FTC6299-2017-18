@@ -187,7 +187,7 @@ public abstract class MyOpMode extends LinearOpMode {
         rangeF = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeC");
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
@@ -278,7 +278,7 @@ public abstract class MyOpMode extends LinearOpMode {
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTrackables.activate();
-        telemetry.addData("Column ", column);
+        column = 'U';
 
         ElapsedTime time = new ElapsedTime();
         time.reset();
@@ -298,8 +298,9 @@ public abstract class MyOpMode extends LinearOpMode {
                 column = 'U';
                 telemetry.addData("VuMark", "%s visible", vuMark);
             }
-            telemetry.update();
         }
+        telemetry.addData("column", column);
+        telemetry.update();
     }
 
     public void vfMovePar(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {

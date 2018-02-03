@@ -8,8 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@Autonomous(name = "AltBlueRight", group = "Sensor")
-@Disabled                            // Comment this out to add to the opmode list
+@Autonomous(name = "AltBlueRight", group = "Sensor") // Comment this out to add to the opmode list
 public class AltBlueRight extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -60,6 +59,7 @@ public class AltBlueRight extends MyOpMode {
         }
         sleep(1000);
 
+
         setMotorStrafe(-.4);
         sleep(800);
         stopMotors();
@@ -91,7 +91,42 @@ public class AltBlueRight extends MyOpMode {
         sleep(250);
         stopMotors();
         manip.setPower(0);
+        // Turn for second block
+
+        try {
+            turnCorr2(0.1,85, 7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        sleep(1000);
+
+        manip.setPower(1);
+        rangeMovePID(3, rangeF);
+        sleep(250);
+        manip.setPower(0);
+
+        try {
+            turnCorr2(0.1,-85, 7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        sleep(1000);
+
+        rangeMovePID(6, rangeF);
+        manipAuto(-.75);
+
+        setMotors(-.2, -.2); //back up, push forward, back up
+        sleep(250);
+        stopMotors();
+
+        manip.setPower(-1);
+        setMotors(.3, .3);
+        sleep(250);
+        stopMotors();
+
+        setMotors(-.2, -.2);
+        sleep(250);
+        stopMotors();
+        manip.setPower(0);
     }
-
-
+}
