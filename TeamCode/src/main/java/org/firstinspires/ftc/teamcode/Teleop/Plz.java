@@ -68,6 +68,8 @@ public class Plz extends MyOpMode {
     double left = 1;
     double right = 1;
     double strafeMod = .25;
+
+    boolean slow = false;
 //    double jewelHandStart = 0.1;
 //    double jewelHandDeploy = 0.9;
 //    double jewelArmDeploy = .2;
@@ -81,9 +83,12 @@ public class Plz extends MyOpMode {
 
         hMap(hardwareMap);
         jewelArm.setPosition(.65);
-        jewelHand.setPosition(.3);
+        jewelHand.setPosition(.4);
 
         waitForStart();
+        ElapsedTime delay = new ElapsedTime();
+        delay.reset();
+        resetStartTime();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -97,9 +102,32 @@ public class Plz extends MyOpMode {
 
             gamepad1_left = gamepad1.left_stick_y;
             gamepad1_right = gamepad1.right_stick_y;
-
+            telemetry.addData("delayTime", delay.time());
+            telemetry.addData("slow", slow);
+            telemetry.addData("abutton", gamepad1.a);
+            telemetry.update();
             //Movement (Gamepad 1: Left Stick, Right Stick, DPAD)
             //Driving forward/backwards
+            if ((gamepad1.a) && (slow == false) && (delay.time() > .5)) {
+                delay.reset();
+                resetStartTime();
+                left = .25;
+                right = .25;
+                slow = true;
+            } else if (gamepad1.a && slow == true && (delay.time() > .5)) {
+                delay.reset();
+                resetStartTime();
+                left = 1;
+                right = 1;
+                slow = false;
+            } else if (gamepad1.y && slow == true && (delay.time() > .5)) {
+                delay.reset();
+                resetStartTime();
+                left = 1;
+                right = 1;
+                slow = false;
+            }
+
             if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
                 motorFL.setPower(gamepad1_left);
                 motorBL.setPower(gamepad1_left);
@@ -125,16 +153,6 @@ public class Plz extends MyOpMode {
                 motorBL.setPower(.25);
                 motorFR.setPower(-.25);
                 motorBR.setPower(-.25);
-            } else if (gamepad1.dpad_left && (gamepad1.a = true)) {
-                motorFL.setPower(left * .5);
-                motorBL.setPower(-left * .5);
-                motorFR.setPower(right * .5);
-                motorBR.setPower(-right * .5);
-            } else if (gamepad1.dpad_right && (gamepad1.a = false)) {
-                motorFL.setPower(-left * .5);
-                motorBL.setPower(left * .5);
-                motorFR.setPower(-right * .5);
-                motorBR.setPower(right * .5);
             } else {
                 motorFL.setPower(0);
                 motorBL.setPower(0);
@@ -200,16 +218,16 @@ public class Plz extends MyOpMode {
 
                 //End of Movement
                 //Movement Modifiers (Gamepad 1: ga,b,x,y)
-                if (gamepad1.y) {
-                    gamepad1_left = gamepad1.left_stick_y;
-                    gamepad1_right = gamepad1.right_stick_y;
-                    lessenPow = 0;
-                }
+//                if (gamepad1.y) {
+//                    gamepad1_left = gamepad1.left_stick_y;
+//                    gamepad1_right = gamepad1.right_stick_y;
+//                    lessenPow = 0;
+//                }
                 //Inversion of movement
-                if (gamepad1.x) {
-                    gamepad1_left *= -1;
-                    gamepad1_right *= -1;
-                }
+//                if (gamepad1.x) {
+//                    gamepad1_left *= -1;
+//                    gamepad1_right *= -1;
+//                }
                 //Half-speed of drive-train toggle
 //                if (gamepad1.a && lessenPow == 0) {
 //                    lessenPow = 1;
@@ -232,30 +250,7 @@ public class Plz extends MyOpMode {
 //                    right = 1;
 //                }
 
-                //Jewel Testing (Gamepad 2: x,a)
-                if (gamepad2.x) {
-                    jewelArm.setPosition(.2); //.2 = deploy
-                    telemetry.addData("position", jewelArm.getPosition());
-                    telemetry.update();
-                }
 
-                if (gamepad2.a) {
-                    jewelArm.setPosition(.65);
-                    telemetry.addData("position", jewelArm.getPosition());
-                    telemetry.update();
-                }
-
-                if (gamepad2.y) {
-                jewelHand.setPosition(.3);
-                telemetry.addData("position", jewelHand.getPosition());
-                telemetry.update();
-                }
-
-                if (gamepad2.b) {
-                jewelHand.setPosition(.6);
-                telemetry.addData("position", jewelHand.getPosition());
-                telemetry.update();
-                }
 
             if ((Math.abs(gamepad2.left_stick_y) > .05)) {
                     liftLeft.setPower(-gamepad2.left_stick_y * .5);
@@ -267,10 +262,29 @@ public class Plz extends MyOpMode {
                     liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
 
-            telemetry.addData("MotorFL", motorFL.getCurrentPosition());
-            telemetry.addData("MotorFR", motorFR.getCurrentPosition());
-            telemetry.addData("MotorBL", motorBL.getCurrentPosition());
-            telemetry.addData("MotorBR", motorBR.getCurrentPosition());
+//            if ((Math.abs(gamepad2.right_stick_y) > .05)) {
+//                relicDrive.setPower(gamepad2.right_stick_y * .5);
+//                //stick up is out stick down is in (may have to change signs)
+//            }   else {
+//                relicDrive.setPower(0);
+//            }
+//            if (gamepad2.left_bumper) {
+//                relicHand.setPosition(.45);
+//                //open
+//            }
+//            if (gamepad2.right_bumper) {
+//                relicHand.setPosition(.05);
+//                //grab
+//            }
+//            if (gamepad2.a) {
+//                relicFlip.setPosition(0);
+//            }
+//            if (gamepad2.b) {
+//                relicFlip.setPosition(.5);
+//            }
+//            if (gamepad2.y) {
+//                relicFlip.setPosition(1);
+//            }
 
 
         }
