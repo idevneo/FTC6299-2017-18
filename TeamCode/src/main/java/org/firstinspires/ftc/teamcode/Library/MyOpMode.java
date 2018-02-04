@@ -47,8 +47,11 @@ public abstract class MyOpMode extends LinearOpMode {
     public static DcMotor liftLeft;
     public static DcMotor liftRight;
     public static DcMotor manip;
+    public static DcMotor relicDrive;
     public static Servo jewelArm;
     public static Servo jewelHand;
+    public static Servo relicFlip;
+    public static Servo relicHand;
     public static ColorSensor jewelColor;
     //public static DcMotor relic;
 //    public static Servo relicGrabber;
@@ -83,32 +86,13 @@ public abstract class MyOpMode extends LinearOpMode {
 //            gravity  = imu.getGravity();
             }
         });
-//
-//        telemetry.addLine()
-//                .addData("status", new Func<String>() {
-//                    @Override public String value() {
-//                        return imu.getSystemStatus().toShortString();
-//                    }
-//                })
-//                .addData("calib", new Func<String>() {
-//                    @Override public String value() {
-//                        return imu.getCalibrationStatus().toString();
-//                    }
-//                });
-
         telemetry.addLine()
-                .addData("heading", new Func<String>() {
+                .addData("Angle", new Func<String>() {
                     @Override
                     public String value() {
                         return formatAngle(angles.angleUnit, angles.firstAngle); //Control Robot Pivot
                     }
                 });
-//        telemetry.addLine()
-//                .addData("VumarkGoal", new Func<String>() {
-//                    @Override public String  value() {
-//                        return Character.toString(vfValue());
-//                    }
-//                });
         telemetry.addLine()
                 .addData("Left", new Func<String>() {
                     @Override
@@ -140,16 +124,26 @@ public abstract class MyOpMode extends LinearOpMode {
                 .addData("Front", new Func<String>() {
                     @Override
                     public String value() {
-                        double localRange;
-                        double sensor = 0;
-                        localRange = rangeF.getDistance(DistanceUnit.INCH);
-                        if (!Double.isNaN(localRange) && (localRange < 1000)) {
-                            sensor = localRange;
+                            double localRange;
+                            double sensor = 0;
+                            localRange = rangeF.getDistance(DistanceUnit.INCH);
+                            if (!Double.isNaN(localRange) && (localRange < 1000)) {
+                                sensor = localRange;
+                            }
+                            return Double.toString(sensor);
                         }
-                        return Double.toString(sensor);
-                    }
                 });
-
+//        telemetry.addLine()
+//                .addData("status", new Func<String>() {
+//                    @Override public String value() {
+//                        return imu.getSystemStatus().toShortString();
+//                    }
+//                })
+//                .addData("calib", new Func<String>() {
+//                    @Override public String value() {
+//                        return imu.getCalibrationStatus().toString();
+//                    }
+//                });
 //                .addData("roll", new Func<String>() {
 //                    @Override public String value() {
 //                        return formatAngle(angles.angleUnit, angles.secondAngle);
@@ -186,22 +180,25 @@ public abstract class MyOpMode extends LinearOpMode {
         liftLeft = hardwareMap.dcMotor.get("liftL");
         liftRight = hardwareMap.dcMotor.get("liftR");
         manip = hardwareMap.dcMotor.get("manip");
+        relicDrive = hardwareMap.dcMotor.get("relicDrive");
 
         jewelColor = hardwareMap.get(ColorSensor.class, "jewelColor");
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
+        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicHand = hardwareMap.servo.get("relicHand");
 
         rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
         rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
         rangeF = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeC");
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+        //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
         this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
-
         BNO055IMU.Parameters Gparameters = new BNO055IMU.Parameters();
+        Gparameters.mode = BNO055IMU.SensorMode.IMU;
         Gparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         Gparameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         Gparameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
@@ -287,16 +284,18 @@ public abstract class MyOpMode extends LinearOpMode {
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTrackables.activate();
-        telemetry.addData("Column ", column);
+        column = 'U';
 
         ElapsedTime time = new ElapsedTime();
         time.reset();
         resetStartTime();
 
-        while ((time.milliseconds() < 4000) && opModeIsActive()) {
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        while ((time.milliseconds() < 2000) && opModeIsActive() && (column == 'U')) {
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
                 telemetry.addData("VuMark", "%s visible", vuMark);
+                telemetry.update();
                 if (vuMark == RelicRecoveryVuMark.CENTER) {
                     column = 'C';
                 } else if (vuMark == RelicRecoveryVuMark.LEFT) {
@@ -308,11 +307,10 @@ public abstract class MyOpMode extends LinearOpMode {
                 column = 'U';
                 telemetry.addData("VuMark", "%s visible", vuMark);
             }
-            telemetry.update();
         }
     }
 
-    public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {
+    public void vfMovePar(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {
         double centerDis = 26.75;
         double kC = 0;
         if (rb == 'r')
@@ -331,6 +329,24 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
 
+    public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {
+        double centerDis = 26.75; //needs to be tested
+        double kC = 0;
+        if (rb == 'r')
+            kC = 6; //needs to be tested
+        if (rb == 'b')
+            kC = -6; //needs to be tested
+        if (column == 'L') {
+            rangeMoveStrafe((centerDis + kC), sensorVar, bSwitch);
+        } else if (column == 'R') {
+            rangeMoveStrafe((centerDis - kC), sensorVar, bSwitch);
+        } else if (column == 'C') {
+
+        } else if (column == 'U') {
+
+        }
+    }
+
     public void vfMoveAlt() {
 
         if (column == 'L') {
@@ -342,9 +358,7 @@ public abstract class MyOpMode extends LinearOpMode {
             sleep(675);
             stopMotors();
         } else if (column == 'C') {
-
         } else if (column == 'U') {
-
         }
 
     }
