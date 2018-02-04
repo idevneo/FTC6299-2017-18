@@ -82,6 +82,8 @@ public class Plz extends MyOpMode {
     double left = 1;
     double right = 1;
     double strafeMod = .25;
+
+    boolean slow = false;
 //    double jewelHandStart = 0.1;
 //    double jewelHandDeploy = 0.9;
 //    double jewelArmDeploy = .2;
@@ -123,6 +125,9 @@ public class Plz extends MyOpMode {
         jewelHand.setPosition(.4);
 
         waitForStart();
+        ElapsedTime delay = new ElapsedTime();
+        delay.reset();
+        resetStartTime();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -136,9 +141,32 @@ public class Plz extends MyOpMode {
 
             gamepad1_left = gamepad1.left_stick_y;
             gamepad1_right = gamepad1.right_stick_y;
-
+            telemetry.addData("delayTime", delay.time());
+            telemetry.addData("slow", slow);
+            telemetry.addData("abutton", gamepad1.a);
+            telemetry.update();
             //Movement (Gamepad 1: Left Stick, Right Stick, DPAD)
             //Driving forward/backwards
+            if ((gamepad1.a) && (slow == false) && (delay.time() > .5)) {
+                delay.reset();
+                resetStartTime();
+                left = .25;
+                right = .25;
+                slow = true;
+            } else if (gamepad1.a && slow == true && (delay.time() > .5)) {
+                delay.reset();
+                resetStartTime();
+                left = 1;
+                right = 1;
+                slow = false;
+            } else if (gamepad1.y && slow == true && (delay.time() > .5)) {
+                delay.reset();
+                resetStartTime();
+                left = 1;
+                right = 1;
+                slow = false;
+            }
+
             if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
                 motorFL.setPower(gamepad1_left);
                 motorBL.setPower(gamepad1_left);

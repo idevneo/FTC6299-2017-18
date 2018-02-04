@@ -62,7 +62,6 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 public class Vuforia extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-    VuforiaLocalizer vuforia;
 
     @Override
     public void runOpMode() {
