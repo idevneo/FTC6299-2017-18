@@ -1,15 +1,16 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@Autonomous(name = "AutoBlueRight", group = "Sensor")
-                            // Comment this out to add to the opmode list
-public class AutoBlueRight extends MyOpMode {
+@Autonomous(name = "AltBlueRight", group = "Sensor")
+@Disabled                            // Comment this out to add to the opmode list
+public class AltBlueRight extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -18,7 +19,7 @@ public class AutoBlueRight extends MyOpMode {
         telemetry.update();
         hMap(hardwareMap);
         // Set up our telemetry dashboard
-//        composeTelemetry();
+        composeTelemetry();
         // Wait until we're told to go
 
         waitForStart();
@@ -52,13 +53,12 @@ public class AutoBlueRight extends MyOpMode {
         stopMotors();
         sleep(100);
 
-       try {
-           turnCorr2(0.1,-85, 7000);
-       } catch (InterruptedException e) {
-           e.printStackTrace();
-       }
+        try {
+            turnCorr2(0.1,-85, 7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         sleep(1000);
-
 
         setMotorStrafe(-.4);
         sleep(800);
@@ -93,3 +93,5 @@ public class AutoBlueRight extends MyOpMode {
         manip.setPower(0);
         }
     }
+
+

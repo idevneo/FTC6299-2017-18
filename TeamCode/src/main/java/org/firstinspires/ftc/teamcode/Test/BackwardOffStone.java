@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -51,7 +52,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 
 @Autonomous(name="BackwardOffStone", group="Linear Opmode")
-
+@Disabled
 public class BackwardOffStone extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -73,8 +74,6 @@ public class BackwardOffStone extends MyOpMode {
         setMotors(-.4,-.4);
         sleep(1000);
         stopMotors();
-
-
 
         try {
             turnCorr2(.1, -70, 4000);

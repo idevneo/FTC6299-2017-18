@@ -59,24 +59,9 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 
 @TeleOp(name="TELEOP", group="Linear Opmode")
-public class Plz extends LinearOpMode {
+public class Plz extends MyOpMode {
 
     // Declare OpMode members.
-    DcMotor motorFL;
-    DcMotor motorBL;
-    DcMotor motorFR;
-    DcMotor motorBR;
-    DcMotor manip;
-    DcMotor liftLeft;
-    DcMotor liftRight;
-
-    ColorSensor jewelColor;
-
-    Servo jewelHand;
-    Servo jewelArm;
-
-//    ModernRoboticsI2cRangeSensor rangeR;
-//    ModernRoboticsI2cRangeSensor rangeL;
 
     float gamepad1_left;
     float gamepad1_right;
@@ -84,9 +69,9 @@ public class Plz extends LinearOpMode {
     double left = 1;
     double right = 1;
     double strafeMod = .25;
-    double jewelHandStart = 0.1;
-    double jewelHandDeploy = 0.9;
-    double jewelArmDeploy = .2;
+//    double jewelHandStart = 0.1;
+//    double jewelHandDeploy = 0.9;
+//    double jewelArmDeploy = .2;
 
     int lessenPow = 0;
 
@@ -95,35 +80,7 @@ public class Plz extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorFR = hardwareMap.dcMotor.get("motorFR");
-
-        liftLeft = hardwareMap.dcMotor.get("liftL");
-        liftRight = hardwareMap.dcMotor.get("liftR");
-        manip = hardwareMap.dcMotor.get("manip");
-
-        jewelColor = (ColorSensor) hardwareMap.get(ColorSensor.class, "jewelColor");
-
-        jewelArm = hardwareMap.servo.get("jewelArm");
-        jewelHand = hardwareMap.servo.get("jewelHand");
-
-
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-
-//        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
-//        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
+        hMap(hardwareMap);
 
         jewelArm.setPosition(.65);
         jewelHand.setPosition(.3);
@@ -161,15 +118,25 @@ public class Plz extends LinearOpMode {
                 motorFR.setPower(-right);
                 motorBR.setPower(right);
             } else if (gamepad1.left_bumper) {
-                motorFL.setPower(-.45);
-                motorBL.setPower(-.45);
-                motorFR.setPower(.45);
-                motorBR.setPower(.45);
+                motorFL.setPower(-.25);
+                motorBL.setPower(-.25);
+                motorFR.setPower(.25);
+                motorBR.setPower(.25);
             } else if (gamepad1.right_bumper) {
-                motorFL.setPower(.45);
-                motorBL.setPower(.45);
-                motorFR.setPower(-.45);
-                motorBR.setPower(-.45);
+                motorFL.setPower(.25);
+                motorBL.setPower(.25);
+                motorFR.setPower(-.25);
+                motorBR.setPower(-.25);
+            } else if (gamepad1.dpad_left && (gamepad1.a = true)) {
+                motorFL.setPower(left * .5);
+                motorBL.setPower(-left * .5);
+                motorFR.setPower(right * .5);
+                motorBR.setPower(-right * .5);
+            } else if (gamepad1.dpad_right && (gamepad1.a = false)) {
+                motorFL.setPower(-left * .5);
+                motorBL.setPower(left * .5);
+                motorFR.setPower(-right * .5);
+                motorBR.setPower(right * .5);
             } else {
                 motorFL.setPower(0);
                 motorBL.setPower(0);
@@ -246,47 +213,28 @@ public class Plz extends LinearOpMode {
                     gamepad1_right *= -1;
                 }
                 //Half-speed of drive-train toggle
-                if (gamepad1.a && lessenPow == 0) {
-                    lessenPow = 1;
-                }
-                //Full speed of drive-train toggle
-                if (gamepad1.a && lessenPow == 1) {
-                    lessenPow = 0;
-                }
-                //Lesson Pow Parameters
-                if (lessenPow == 1) {
-                    gamepad1_left *= .5;
-                    gamepad1_right *= .5;
-                }
-                if (lessenPow == 0) {
-                    gamepad1_left = gamepad1.left_stick_y;
-                    gamepad1_right = gamepad1.right_stick_y;
-                }
+//                if (gamepad1.a && lessenPow == 0) {
+//                    lessenPow = 1;
+//                }
+//                //Full speed of drive-train toggle
+//                if (gamepad1.a && lessenPow == 1) {
+//                    lessenPow = 0;
+//                }
+//                //Lesson Pow Parameters
+//                if (lessenPow == 1) {
+//                    gamepad1_left *= .5;
+//                    gamepad1_right *= .5;
+//                    left = .5;
+//                    right = .5;
+//                }
+//                if (lessenPow == 0) {
+//                    gamepad1_left = gamepad1.left_stick_y;
+//                    gamepad1_right = gamepad1.right_stick_y;
+//                    left = 1;
+//                    right = 1;
+//                }
 
-                //Jewel Testing (Gamepad 2: x,a)
-                if (gamepad2.x) {
-                    jewelArm.setPosition(.2); //.2 = deploy
-                    telemetry.addData("position", jewelArm.getPosition());
-                    telemetry.update();
-                }
 
-                if (gamepad2.a) {
-                    jewelArm.setPosition(.65);
-                    telemetry.addData("position", jewelArm.getPosition());
-                    telemetry.update();
-                }
-
-                if (gamepad2.y) {
-                jewelHand.setPosition(.3);
-                telemetry.addData("position", jewelHand.getPosition());
-                telemetry.update();
-                }
-
-                if (gamepad2.b) {
-                jewelHand.setPosition(.6);
-                telemetry.addData("position", jewelHand.getPosition());
-                telemetry.update();
-                }
 
             if ((Math.abs(gamepad2.left_stick_y) > .05)) {
                     liftLeft.setPower(-gamepad2.left_stick_y * .5);
@@ -298,12 +246,54 @@ public class Plz extends LinearOpMode {
                     liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
 
-            telemetry.addData("MotorFL", motorFL.getCurrentPosition());
-            telemetry.addData("MotorFR", motorFR.getCurrentPosition());
-            telemetry.addData("MotorBL", motorBL.getCurrentPosition());
-            telemetry.addData("MotorBR", motorBR.getCurrentPosition());
+            if ((Math.abs(gamepad2.right_stick_y) > .05)) {
+                relicDrive.setPower(-gamepad2.right_stick_y * .5);
+                //stick up is out stick down is in (may have to change signs)
+            }   else {
+                relicDrive.setPower(0);
+            }
+            if (gamepad2.left_bumper) {
+                relicHand.setPosition(.75);
+                //open
+            }
+            if (gamepad2.right_bumper) {
+                relicHand.setPosition(.25);
+                //grab
+            }
+            if (gamepad2.a) {
+                relicFlip.setPosition(.25);
+            }
+            if (gamepad2.b) {
+                relicFlip.setPosition(.5);
+            }
+            if (gamepad2.y) {
+                relicFlip.setPosition(.75);
+            }
 
-
+            //Jewel Testing (Gamepad 2: x,a)
+//            if (gamepad2.x) {
+//                jewelArm.setPosition(.2); //.2 = deploy
+//                telemetry.addData("position", jewelArm.getPosition());
+//                telemetry.update();
+//            }
+//
+//            if (gamepad2.a) {
+//                jewelArm.setPosition(.65);
+//                telemetry.addData("position", jewelArm.getPosition());
+//                telemetry.update();
+//            }
+//
+//            if (gamepad2.y) {
+//                jewelHand.setPosition(.3);
+//                telemetry.addData("position", jewelHand.getPosition());
+//                telemetry.update();
+//            }
+//
+//            if (gamepad2.b) {
+//                jewelHand.setPosition(.6);
+//                telemetry.addData("position", jewelHand.getPosition());
+//                telemetry.update();
+//            }
         }
         }
     }

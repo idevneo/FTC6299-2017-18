@@ -1,15 +1,17 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@Autonomous(name = "AutoBlueRight", group = "Sensor")
-                            // Comment this out to add to the opmode list
-public class AutoBlueRight extends MyOpMode {
+@Autonomous(name = "AltRedLeft", group = "Sensor")
+@Disabled
+
+public class AltRedLeft extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -18,7 +20,7 @@ public class AutoBlueRight extends MyOpMode {
         telemetry.update();
         hMap(hardwareMap);
         // Set up our telemetry dashboard
-//        composeTelemetry();
+        composeTelemetry();
         // Wait until we're told to go
 
         waitForStart();
@@ -29,47 +31,44 @@ public class AutoBlueRight extends MyOpMode {
 
         vfValue();
 
-        jewelArm.setPosition(.55);
+        jewelArm.setPosition(.6);
         jewelHand.setPosition(.4);
-        sleep(500);
+        sleep(750);
         jewelArm.setPosition(.15);
         sleep(1000);
-        if (jewelColor.red() < jewelColor.blue()) {
+        if (jewelColor.red() > jewelColor.blue()) {
             jewelHand.setPosition((.3));
-        } else if (jewelColor.red() > jewelColor.blue()) {
+        } else if (jewelColor.red() < jewelColor.blue()) {
             jewelHand.setPosition((.6));
         }
         sleep(500);
 
-        jewelArm.setPosition(.55);
+        jewelArm.setPosition(.6);
         jewelHand.setPosition(.45);
-        sleep(500);
+        sleep(1000);
         jewelHand.setPosition(.3);
         sleep(500);
-//
-        setMotors(-.4, -.4);
+
+        setMotors(.4, .4);
         sleep(1000);
         stopMotors();
         sleep(100);
-
-       try {
-           turnCorr2(0.1,-85, 7000);
-       } catch (InterruptedException e) {
-           e.printStackTrace();
-       }
+        try {
+            turnCorr2(0.1,-85, 7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         sleep(1000);
 
-
-        setMotorStrafe(-.4);
+        setMotorStrafe(.4);
         sleep(800);
         stopMotors();
 
-        setMotorStrafe(.4);
+        setMotorStrafe(-.4);
         sleep(825);
         stopMotors();
 
         vfMoveAlt();
-
         rangeMovePID(6, rangeF);
 
         manipAuto(-.75);
@@ -91,5 +90,5 @@ public class AutoBlueRight extends MyOpMode {
         sleep(250);
         stopMotors();
         manip.setPower(0);
-        }
     }
+}
