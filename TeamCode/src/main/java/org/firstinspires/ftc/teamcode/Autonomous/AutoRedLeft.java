@@ -24,69 +24,69 @@ public class AutoRedLeft extends MyOpMode {
         waitForStart();
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
-        // Start the logging of measured acceleration
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+            // Start the logging of measured acceleration
+            imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        vfValue();
+            vfValue();
 
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.4);
-        sleep(750);
-        jewelArm.setPosition(.15);
-        sleep(1000);
-        if (jewelColor.red() > jewelColor.blue()) {
-            jewelHand.setPosition((.3));
-        } else if (jewelColor.red() < jewelColor.blue()) {
-            jewelHand.setPosition((.6));
-        }
-        sleep(500);
+            jewelArm.setPosition(.6);
+            jewelHand.setPosition(.4);
+            sleep(750);
+            jewelArm.setPosition(.15);
+            sleep(1000);
+            if (jewelColor.red() > jewelColor.blue()) {
+                    jewelHand.setPosition((.3));
+            } else if (jewelColor.red() < jewelColor.blue()) {
+                    jewelHand.setPosition((.6));
+            }
+            sleep(500);
 
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.45);
-        sleep(1000);
-        jewelHand.setPosition(.3);
-        sleep(500);
+            jewelArm.setPosition(.6);
+            jewelHand.setPosition(.45);
+            sleep(1000);
+            jewelHand.setPosition(.3);
+            sleep(500);
 
-        setMotors(.4, .4);
-        sleep(1000);
-        stopMotors();
-        sleep(100);
-       try {
-           turnCorr2(0.1,-85, 7000);
-       } catch (InterruptedException e) {
-           e.printStackTrace();
-       }
-        sleep(1000);
+            setMotors(.4, .4);
+            sleep(1000);
+            stopMotors();
+            sleep(100);
+            try {
+                    turnCorr2(0.1,-85, 7000);
+            } catch (InterruptedException e) {
+                    e.printStackTrace();
+            }
+            sleep(1000);
 
-        setMotorStrafe(.4);
-        sleep(800);
-        stopMotors();
+            setMotorStrafe(.4);
+            sleep(800);
+            stopMotors();
 
-        setMotorStrafe(-.4);
-        sleep(825);
-        stopMotors();
+            setMotorStrafe(-.4);
+            sleep(825);
+            stopMotors();
 
-        vfMovePerp('r', rangeL,1);
-        rangeMovePID(6, rangeF);
+            vfMoveAlt();
+            rangeMovePID(6, rangeF);
 
-        manipAuto(-.75);
-        sleep(500);
+            manipAuto(-.75);
+            sleep(500);
 
-        manipAuto(-.75);
+            manipAuto(-.75);
 
 //back up, push forward, back up
-        setMotors(-.2, -.2);
-        sleep(250);
-        stopMotors();
+            setMotors(-.2, -.2);
+            sleep(250);
+            stopMotors();
 
-        manip.setPower(-1);
-        setMotors(.3, .3);
-        sleep(250);
-        stopMotors();
+            manip.setPower(-1);
+            setMotors(.3, .3);
+            sleep(250);
+            stopMotors();
 
-        setMotors(-.2, -.2);
-        sleep(250);
-        stopMotors();
-        manip.setPower(0);
-        }
+            setMotors(-.2, -.2);
+            sleep(250);
+            stopMotors();
+            manip.setPower(0);
     }
+}
