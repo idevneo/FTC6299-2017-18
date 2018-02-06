@@ -185,14 +185,14 @@ public abstract class MyOpMode extends LinearOpMode {
         jewelColor = hardwareMap.get(ColorSensor.class, "jewelColor");
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
-//        relicFlip = hardwareMap.servo.get("relicFlip");
-//        relicHand = hardwareMap.servo.get("relicHand");
+        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicHand = hardwareMap.servo.get("relicHand");
 
         rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
         rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
         rangeF = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeC");
 
-//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        //int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
         parameters.vuforiaLicenseKey = "AXb/g5n/////AAAAGSUed2rh5Us1jESA1cUn5r5KDUqTfwO2woh7MxjiLKSUyDslqBAgwCi0Qmc6lVczErnF5TIw7vG5R4TJ2igvrDVp+dP+3i2o7UUCRRj/PtyVgb4ZfNrDzHE80/6TUHifpKu4QCM04eRWYZocWNWhuRfytVeWy6NSTWefM9xadqG8FFrFk3XnvqDvk/6ZAgerNBdq5SsJ90eDdoAhgYEee40WxasoUUM9YVMvkWOqZgHSuraV2IyIUjkW/u0O+EkFtTNRUWP+aZwn1qO1H4Lk07AJYe21eqioBLMdzY7A8YqR1TeQ//0WJg8SFdXjuGbF6uHykBe2FF5UeyaehA0iTqfPS+59FLm8y1TuUt57eImq";
         parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
@@ -378,7 +378,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
 //            differenceDis = Math.abs(sensor - inAway);
 //            pow = differenceDis*kP;
-            pow = .3;
+            pow = .125;
 
 //            if (pow > .2)
 //                pow = .2;
