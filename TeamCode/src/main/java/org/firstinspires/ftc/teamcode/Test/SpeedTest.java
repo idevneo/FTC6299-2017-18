@@ -20,12 +20,11 @@ public class SpeedTest extends MyOpMode {
         composeTelemetry();
         // Wait until we're told to go
 
+        // Start the logging of measured acceleration
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
         waitForStart();
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
-        // Start the logging of measured acceleration
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-
         vfValue();
 
         jewelArm.setPosition(.55);
@@ -53,7 +52,7 @@ public class SpeedTest extends MyOpMode {
         sleep(100);
 
         try {
-            turnCorr2(.5,-85, 7000); //pow upped
+            turnCorr2(.6,-85, 7000); //pow upped
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -69,8 +68,9 @@ public class SpeedTest extends MyOpMode {
         stopMotors();
 
         vfMoveAlt();
+        sleep(300);
 
-        rangeMovePID(6, rangeF);
+        rangeMovePID(6.25, rangeF);
 
         manipAuto(-.75);
         sleep(500);
@@ -89,48 +89,47 @@ public class SpeedTest extends MyOpMode {
         sleep(250);
         stopMotors();
         manip.setPower(0);
+
+        setMotors(-.2, -.2);
+        sleep(100);
+        stopMotors();
         // Turn for second block
 
         try {
-            turnCorr2(0.3,85, 7000); //changed power
+            turnCorr2(0.3,87.5, 7000); //changed power
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         sleep(500);
 //.5s
         manip.setPower(1);
-        rangeMovePID(4, rangeF);
-        sleep(100);
 
+        rangeMovePID(4.5, rangeF);
         setMotors(.5,.5);
-        sleep(200);
+        sleep( 350);
         stopMotors();
 
         //fishing - tc2 = .25
         try {
-            turnCorr2(0.2,105, 1000);
+            turnCorr2(0.4,105, 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         sleep(250);
 
-        setMotors(.5,.5);
+        setMotors(.2, .2);
         sleep(200);
         stopMotors();
 
         try {
-            turnCorr2(0.2,65, 1000);
+            turnCorr2(0.4,65, 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         sleep(250);
 
-        setMotors(.5,.5);
-        sleep(200);
-        stopMotors();
-
         try {
-            turnCorr2(0.2,85, 1000);
+            turnCorr2(0.4,85, 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -141,13 +140,19 @@ public class SpeedTest extends MyOpMode {
         manip.setPower(0);
 
         try {
-            turnCorr2(0.1,-85, 7000);
+            turnCorr2(0.5,-85, 7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         sleep(500);
 //.5s
         rangeMovePID(6, rangeF);
+        
+        liftLeft.setPower(-.5);
+        liftRight.setPower(.5);
+        sleep(500);
+        liftLeft.setPower(0);
+        liftRight.setPower(0);
         manipAuto(-.75);
 
         setMotors(-.2, -.2); //back up, push forward, back up
