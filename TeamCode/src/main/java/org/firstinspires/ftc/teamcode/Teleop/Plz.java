@@ -102,47 +102,47 @@ public class Plz extends MyOpMode {
 
             gamepad1_left = gamepad1.left_stick_y;
             gamepad1_right = gamepad1.right_stick_y;
-//            telemetry.addData("delayTime", delay.time());
-//            telemetry.addData("slow", slow);
-//            telemetry.addData("abutton", gamepad1.a);
-//            telemetry.update();
+            telemetry.addData("delayTime", delay.time());
+            telemetry.addData("slow", slow);
+            telemetry.addData("abutton", gamepad1.a);
+            telemetry.update();
             //Movement (Gamepad 1: Left Stick, Right Stick, DPAD)
             //Driving forward/backwards
-//            if ((gamepad1.a) && (slow == false) && (delay.time() > .5)) {
-//                delay.reset();
-//                resetStartTime();
-//                left = .25;
-//                right = .25;
-//                slow = true;
-//            } else if (gamepad1.a && slow == true && (delay.time() > .5)) {
-//                delay.reset();
-//                resetStartTime();
-//                left = 1;
-//                right = 1;
-//                slow = false;
-//            } else if (gamepad1.y && slow == true && (delay.time() > .5)) {
-//                delay.reset();
-//                resetStartTime();
-//                left = 1;
-//                right = 1;
-//                slow = false;
-//            }
+            if ((gamepad1.a) && (slow == false) && (delay.time() > .5)) {
+                delay.reset();
+                resetStartTime();
+                left = .25;
+                right = .25;
+                slow = true;
+            } else if (gamepad1.a && slow == true && (delay.time() > .5)) {
+                delay.reset();
+                resetStartTime();
+                left = 1;
+                right = 1;
+                slow = false;
+            } else if (gamepad1.y && slow == true && (delay.time() > .5)) {
+                delay.reset();
+                resetStartTime();
+                left = 1;
+                right = 1;
+                slow = false;
+            }
 
             if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
                 motorFL.setPower(gamepad1_left);
                 motorBL.setPower(gamepad1_left);
                 motorFR.setPower(-gamepad1_right);
                 motorBR.setPower(-gamepad1_right);
-            }   else if (gamepad1.left_trigger > .05) {
-                motorFL.setPower(gamepad1.left_trigger / 2);
-                motorBL.setPower(-gamepad1.left_trigger / 2);
-                motorFR.setPower(gamepad1.left_trigger / 2);
-                motorBR.setPower(-gamepad1.left_trigger / 2);
-            } else if (gamepad1.right_trigger > .05) {
-                motorFL.setPower(-gamepad1.right_trigger / 2);
-                motorBL.setPower(gamepad1.right_trigger / 2);
-                motorFR.setPower(-gamepad1.right_trigger / 2);
-                motorBR.setPower(gamepad1.right_trigger / 2);
+            }   else if (gamepad1.dpad_left) {
+                motorFL.setPower(left);
+                motorBL.setPower(-left);
+                motorFR.setPower(right);
+                motorBR.setPower(-right);
+            } else if (gamepad1.dpad_right) {
+                motorFL.setPower(-left);
+                motorBL.setPower(left);
+                motorFR.setPower(-right);
+                motorBR.setPower(right);
             } else if (gamepad1.left_bumper) {
                 motorFL.setPower(-.25);
                 motorBL.setPower(-.25);
@@ -159,19 +159,6 @@ public class Plz extends MyOpMode {
                 motorFR.setPower(0);
                 motorBR.setPower(0);
             }
-
-//            else if (gamepad1.dpad_left) {
-//                motorFL.setPower(left);
-//                motorBL.setPower(-left);
-//                motorFR.setPower(right);
-//                motorBR.setPower(-right);
-//            } else if (gamepad1.dpad_right) {
-//                motorFL.setPower(-left);
-//                motorBL.setPower(left);
-//                motorFR.setPower(-right);
-//                motorBR.setPower(right);
-//            }
-
 // Alternate Drive Train
 //            if (Math.abs(gamepad1.left_stick_y) > .05 ) {
 //                motorFL.setPower(gamepad1.left_stick_y);
@@ -221,21 +208,13 @@ public class Plz extends MyOpMode {
                 telemetry.update();
             }
 
-            if (gamepad1.b) {
+                if ((gamepad1.left_trigger > .15) || (gamepad2.left_trigger > .15)){
                 manip.setPower(-1);
-            } else if (gamepad1.a) {
-                manip.setPower(1);
-            } else {
-                manip.setPower(0);
-            }
-
-//                if ((gamepad1.left_trigger > .15) || (gamepad2.left_trigger > .15)){
-//                manip.setPower(-1);
-//                } else if ((gamepad1.right_trigger > .15 ) || (gamepad2.right_trigger > .15)) {
-//                    manip.setPower(1);
-//                } else {
-//                    manip.setPower(0);
-//                }
+                } else if ((gamepad1.right_trigger > .15 ) || (gamepad2.right_trigger > .15)) {
+                    manip.setPower(1);
+                } else {
+                    manip.setPower(0);
+                }
 
                 //End of Movement
                 //Movement Modifiers (Gamepad 1: ga,b,x,y)
