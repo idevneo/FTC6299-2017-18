@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@Autonomous(name = "Speed Test aut", group = "Sensor") // Comment this out to add to the opmode list
+@Autonomous(name = "Speed Test aut", group = "Linear Opmode") // Comment this out to add to the opmode list
 public class SpeedTest extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -17,34 +17,17 @@ public class SpeedTest extends MyOpMode {
         telemetry.update();
         hMap(hardwareMap);
         // Set up our telemetry dashboard
-        composeTelemetry();
+//        composeTelemetry();
         // Wait until we're told to go
 
         // Start the logging of measured acceleration
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000); //TEST COMMENTED OUT
         waitForStart();
-        runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
+        runtime.reset();
         vfValue();
 
-        jewelArm.setPosition(.55);
-        jewelHand.setPosition(.4);
-        sleep(500);
-        jewelArm.setPosition(.15);
-        sleep(850);
-        if (jewelColor.red() < jewelColor.blue()) {
-            jewelHand.setPosition((.3));
-        } else if (jewelColor.red() > jewelColor.blue()) {
-            jewelHand.setPosition((.6));
-        }
-        sleep(750);
-
-        jewelArm.setPosition(.55);
-        jewelHand.setPosition(.45);
-        sleep(300);
-        jewelHand.setPosition(.3);
-        sleep(300);
-//.6s off
+        jewelKnockerBlue();
 
         setMotors(-.4, -.4);
         sleep(1000);
@@ -57,7 +40,6 @@ public class SpeedTest extends MyOpMode {
             e.printStackTrace();
         }
         sleep(500);
-//.5s
 
         setMotorStrafe(-.5); //.5
         sleep(800);
@@ -96,7 +78,7 @@ public class SpeedTest extends MyOpMode {
         // Turn for second block
 
         try {
-            turnCorr2(0.3,87.5, 7000); //changed power
+            turnCorr2(0.4,87.5, 7000); //changed power
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

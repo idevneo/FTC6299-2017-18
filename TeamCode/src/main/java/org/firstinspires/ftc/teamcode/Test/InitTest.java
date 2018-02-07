@@ -37,52 +37,31 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
-
-@Autonomous(name="BackwardOffStone", group="Linear Opmode")
-@Disabled
-public class BackwardOffStone extends MyOpMode {
+@Autonomous(name="initTest", group="Linear Opmode")
+public class InitTest extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
-
+    ElapsedTime composeTime = new ElapsedTime();
+    ElapsedTime hmapTime = new ElapsedTime();
     @Override
     public void runOpMode() {
+        runtime.reset();
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        hmapTime.reset();
         hMap(hardwareMap);
+        telemetry.addData("hmap Init Time", hmapTime);
         // Set up our telemetry dashboard
+        composeTime.reset();
         composeTelemetry();
+        telemetry.addData("ComposeTel Init Time", composeTime + "seconds");
         // Wait until we're told to go
-
+//        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+        telemetry.addData("Total Init. Time", runtime +"seconds");
         waitForStart();
-        runtime.reset();
-        // run until the end of the match (driver presses STOP)
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        setMotors(-.4,-.4);
-        sleep(1000);
-        stopMotors();
-
-        try {
-            turnCorr2(.1, -70, 4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        sleep(1000);
-
-
+        telemetry.addData("test", "Program has run");
 
     }
 }
