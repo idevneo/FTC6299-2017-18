@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
@@ -53,10 +54,11 @@ public class AutoBlueLeft extends MyOpMode {
         sleep(350);
 
         try {
-            turnCorr2(.1, 170, 5000);
+            turnCorr2(.2, -178, 5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        telemetry.addData(formatAngle(angles.angleUnit, angles.firstAngle),"Angle");
         sleep(1000);
 
         vfMovePar('b',rangeL, 1);

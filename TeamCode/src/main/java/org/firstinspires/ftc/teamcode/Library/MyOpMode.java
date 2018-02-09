@@ -179,11 +179,11 @@ public abstract class MyOpMode extends LinearOpMode {
         liftLeft = hardwareMap.dcMotor.get("liftL");
         liftRight = hardwareMap.dcMotor.get("liftR");
         manip = hardwareMap.dcMotor.get("manip");
-        relicDrive = hardwareMap.dcMotor.get("relicDrive");
 
         jewelColor = hardwareMap.get(ColorSensor.class, "jewelColor");
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
+//        relicDrive = hardwareMap.dcMotor.get("relicDrive");
 //        relicFlip = hardwareMap.servo.get("relicFlip");
 //        relicHand = hardwareMap.servo.get("relicHand");
 
@@ -403,13 +403,19 @@ public abstract class MyOpMode extends LinearOpMode {
         double pow = .15;
 //        double newPow;
         double localRange;
+        ElapsedTime stopTime = new ElapsedTime();
 
         while (((sensor < inAway - .5) || (sensor > inAway + .5)) && opModeIsActive()) {
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
             while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
+                stopTime.reset();
+                if (stopTime.milliseconds() > 300 && stopTime.milliseconds() < 750) {
+                    stopMotors();
+                }
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
             sensor = localRange;
+            stopTime.reset();
 //            range = Math.abs(inAway - sensor);
 
 
@@ -457,7 +463,7 @@ public abstract class MyOpMode extends LinearOpMode {
         delay(100);
         time.reset();
 
-        while (((currPos > (deg + 2.5)) || (currPos < (deg - 2.5))) && (time.milliseconds() < timer) && opModeIsActive()) {
+        while (((currPos > (deg)) || (currPos < (deg))) && (time.milliseconds() < timer) && opModeIsActive()) {
             error = deg - currPos;
             errorMove = Math.abs(deg - currPos);
 
