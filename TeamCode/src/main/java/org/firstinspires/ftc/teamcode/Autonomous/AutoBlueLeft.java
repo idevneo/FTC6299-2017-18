@@ -24,9 +24,6 @@ public class AutoBlueLeft extends MyOpMode {
         waitForStart();
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
-        // Start the logging of measured acceleration
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-
         vfValue();
 
         jewelArm.setPosition(.55);

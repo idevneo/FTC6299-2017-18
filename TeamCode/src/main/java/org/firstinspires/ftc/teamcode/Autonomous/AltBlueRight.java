@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 @Autonomous(name = "AltBlueRight", group = "Sensor") // Comment this out to add to the opmode list
+@Disabled
 public class AltBlueRight extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 

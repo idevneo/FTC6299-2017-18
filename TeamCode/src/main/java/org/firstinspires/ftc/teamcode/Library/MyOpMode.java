@@ -377,7 +377,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
 //            differenceDis = Math.abs(sensor - inAway);
 //            pow = differenceDis*kP;
-            pow = .3;
+            pow = .15;
 
 //            if (pow > .2)
 //                pow = .2;

@@ -21,7 +21,7 @@ public class SpeedTest extends MyOpMode {
         // Wait until we're told to go
 
         // Start the logging of measured acceleration
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000); //TEST COMMENTED OUT
+//        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000); //TEST COMMENTED OUT
         waitForStart();
 /**---------------------------------------------------------------------------------------------------------------*/
         runtime.reset();

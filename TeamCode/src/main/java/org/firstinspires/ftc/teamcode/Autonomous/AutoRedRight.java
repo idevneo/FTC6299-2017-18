@@ -37,9 +37,6 @@ public class AutoRedRight extends MyOpMode {
         waitForStart();
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
-        // Start the logging of measured acceleration
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-
         vfValue();
 
         jewelArm.setPosition(.6);
@@ -66,7 +63,7 @@ public class AutoRedRight extends MyOpMode {
 
         rangeMoveStrafe(3.5, rangeR, 0);
         sleep(1000);
-        rangeMovePID(8, rangeF);
+        rangeMovePID(10, rangeF);
         sleep(500);
 //        try {
 //            turn(.25, 0.1);
