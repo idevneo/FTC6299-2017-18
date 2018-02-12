@@ -216,7 +216,7 @@ public abstract class MyOpMode extends LinearOpMode {
         Gparameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(Gparameters);
-//        relic = hardwareMap.dcMotor.get("relic");
+//               relic = hardwareMap.dcMotor.get("relic");
 //        relicGrabber = hardwareMap.servo.get("relicGrabber");
 
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -267,6 +267,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public void manipAuto(double pow) {
         if (!opModeIsActive())
             return;
+        //Glyph intake
         if (pow > 0) {
             manip.setPower(pow);
             try {
@@ -276,6 +277,7 @@ public abstract class MyOpMode extends LinearOpMode {
             }
             manip.setPower(0);
         } else if (pow < 0) {
+            //Glyph deposit
             manip.setPower(pow);
             try {
                 Thread.sleep(1000);
@@ -284,6 +286,7 @@ public abstract class MyOpMode extends LinearOpMode {
             }
             manip.setPower(0);
         } else {
+            //Turn off manipulator
             manip.setPower(0);
         }
 
