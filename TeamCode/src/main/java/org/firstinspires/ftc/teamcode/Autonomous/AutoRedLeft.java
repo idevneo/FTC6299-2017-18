@@ -25,24 +25,7 @@ public class AutoRedLeft extends MyOpMode {
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
             vfValue();
-
-            jewelArm.setPosition(.6);
-            jewelHand.setPosition(.4);
-            sleep(750);
-            jewelArm.setPosition(.15);
-            sleep(1000);
-            if (jewelColor.red() > jewelColor.blue()) {
-                    jewelHand.setPosition((.3));
-            } else if (jewelColor.red() < jewelColor.blue()) {
-                    jewelHand.setPosition((.6));
-            }
-            sleep(500);
-
-            jewelArm.setPosition(.6);
-            jewelHand.setPosition(.45);
-            sleep(1000);
-            jewelHand.setPosition(.3);
-            sleep(500);
+            jewelKnockerRed();
 
             setMotors(.4, .4);
             sleep(1000);

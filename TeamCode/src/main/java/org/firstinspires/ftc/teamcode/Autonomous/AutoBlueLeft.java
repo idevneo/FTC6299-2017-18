@@ -26,41 +26,22 @@ public class AutoBlueLeft extends MyOpMode {
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
         vfValue();
-
-        jewelArm.setPosition(.55);
-        jewelHand.setPosition(.4);
-        sleep(500);
-        jewelArm.setPosition(.15);
-        sleep(1000);
-        if (jewelColor.red() < jewelColor.blue()) {
-            jewelHand.setPosition((.3));
-        } else if (jewelColor.red() > jewelColor.blue()) {
-            jewelHand.setPosition((.6));
-        }
-        sleep(500);
-
-        jewelArm.setPosition(.55);
-        jewelHand.setPosition(.45);
-        sleep(500);
-        jewelHand.setPosition(.3);
-        sleep(500);
+        jewelKnockerBlue();
 
         setMotors(-.25, -.25);
         sleep(1550);
         stopMotors();
 
-
         rangeMoveStrafe(26.25, rangeR,0);
         sleep(350);
 
         try {
-            turnCorr2(.2, -178, 5000);
+            turnCorr2(.25, -178, 5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        telemetry.addData(formatAngle(angles.angleUnit, angles.firstAngle),"Angle");
         sleep(1000);
-
+        telemetry.addData(formatAngle(angles.angleUnit, angles.firstAngle),"Angle");
         vfMovePar('b',rangeL, 1);
 
         rangeMovePID(6, rangeF);

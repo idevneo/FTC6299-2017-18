@@ -46,6 +46,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static DcMotor liftLeft;
     public static DcMotor liftRight;
     public static DcMotor manip;
+    public static Servo manipWall;
     public static DcMotor relicDrive;
     public static Servo jewelArm;
     public static Servo jewelHand;
@@ -179,7 +180,7 @@ public abstract class MyOpMode extends LinearOpMode {
         liftLeft = hardwareMap.dcMotor.get("liftL");
         liftRight = hardwareMap.dcMotor.get("liftR");
         manip = hardwareMap.dcMotor.get("manip");
-
+        manipWall = hardwareMap.servo.get("manipWall");
         jewelColor = hardwareMap.get(ColorSensor.class, "jewelColor");
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
@@ -309,6 +310,37 @@ public abstract class MyOpMode extends LinearOpMode {
         }
     }
 
+    public void vfValueS() {
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTrackables.activate();
+        column = 'U';
+
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+        resetStartTime();
+
+        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+        while ((time.milliseconds() < 2000) && opModeIsActive() && (column == 'U')) {
+            vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            switch (vuMark) {
+                case UNKNOWN:
+                    column = 'U';
+                    break;
+                case CENTER:
+                    column= 'C';
+                    break;
+                case LEFT:
+                    column= 'L';
+                    break;
+                case RIGHT:
+                    column = 'R';
+                    break;
+            }
+        }
+        telemetry.addData("VuMark", "%s visible", vuMark);
+    }
+
     public void vfMovePar(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {
         double centerDis = 26.75;
         double kC = 0;
@@ -409,7 +441,7 @@ public abstract class MyOpMode extends LinearOpMode {
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
             while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
                 stopTime.reset();
-                if (stopTime.milliseconds() > 300 && stopTime.milliseconds() < 750) {
+                if (stopTime.milliseconds() > 300 && stopTime.milliseconds() < 750) { //figure out the best times
                     stopMotors();
                 }
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
@@ -417,8 +449,6 @@ public abstract class MyOpMode extends LinearOpMode {
             sensor = localRange;
             stopTime.reset();
 //            range = Math.abs(inAway - sensor);
-
-
 
             pow = .15;
 
@@ -431,7 +461,6 @@ public abstract class MyOpMode extends LinearOpMode {
                     setMotorStrafe(-pow);
                 }
             }
-
 
             //BLUE SIDE AUTOS
             if (bSet == 1) {
@@ -463,7 +492,7 @@ public abstract class MyOpMode extends LinearOpMode {
         delay(100);
         time.reset();
 
-        while (((currPos > (deg)) || (currPos < (deg))) && (time.milliseconds() < timer) && opModeIsActive()) {
+        while ((currPos > deg + 1 || currPos < deg - 1) && (time.milliseconds() < timer) && opModeIsActive()) {
             error = deg - currPos;
             errorMove = Math.abs(deg - currPos);
 
@@ -526,21 +555,21 @@ public abstract class MyOpMode extends LinearOpMode {
     public void jewelKnockerRed() {
         jewelArm.setPosition(.6);
         jewelHand.setPosition(.4);
-        sleep(750);
+        sleep(500);
         jewelArm.setPosition(.15);
-        sleep(1000);
+        sleep(850);
         if (jewelColor.red() > jewelColor.blue()) {
             jewelHand.setPosition((.3));
         } else if (jewelColor.red() < jewelColor.blue()) {
             jewelHand.setPosition((.6));
         }
-        sleep(500);
+        sleep(750);
 
         jewelArm.setPosition(.6);
         jewelHand.setPosition(.45);
-        sleep(1000);
+        sleep(300);
         jewelHand.setPosition(.3);
-        sleep(500);
+        sleep(300);
     }
 
     public void jewelKnockerBlue() {

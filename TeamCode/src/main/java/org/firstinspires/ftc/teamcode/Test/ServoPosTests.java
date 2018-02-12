@@ -37,6 +37,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.Library.MyOpMode;
+
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -51,40 +53,36 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @TeleOp(name="ServoPosTests", group="Linear Opmode")
-@Disabled
-public class ServoPosTests extends LinearOpMode {
+public class ServoPosTests extends MyOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-
-    Servo jewelHand;
-    Servo jewelArm;
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        jewelArm = hardwareMap.servo.get("jewelArm");
-        jewelHand = hardwareMap.servo.get("jewelHand");
-
-
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-
-
-        // Wait for the game to start (driver presses PLAY)
+        hMap(hardwareMap);
+        telemetry.addData("Servo Position", manipWall.getPosition());
         waitForStart();
         runtime.reset();
-
         // run until the end of the match (driver presses STOP)
+        double mWS = 0;
         while (opModeIsActive()) {
 
+            if(gamepad1.right_stick_y < 0) {
+                mWS += .05;
+                manipWall.setPosition(mWS);
+                sleep(500);
+            }
+            else if (gamepad1.right_stick_y > 0) {
+                mWS -= .05;
+                manipWall.setPosition(mWS);
+                sleep(500);
+            }
 
-            telemetry.addData("Arm Position", jewelArm.getPosition());
-            telemetry.addData("Hand Position", jewelHand.getPosition());
+            telemetry.addData("Servo Position", manipWall.getPosition());
+            telemetry.addData("Variable", mWS);
             telemetry.update();
         }
     }

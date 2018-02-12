@@ -84,11 +84,13 @@ public class Plz extends MyOpMode {
         hMap(hardwareMap);
         jewelArm.setPosition(.65);
         jewelHand.setPosition(.4);
+        manipWall.setPosition(.75);
 
-        waitForStart();
         ElapsedTime delay = new ElapsedTime();
         delay.reset();
         resetStartTime();
+
+        waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -108,24 +110,26 @@ public class Plz extends MyOpMode {
             telemetry.update();
             //Movement (Gamepad 1: Left Stick, Right Stick, DPAD)
             //Driving forward/backwards
-            if ((gamepad1.a) && (slow == false) && (delay.time() > .5)) {
-                delay.reset();
-                resetStartTime();
-                left = .25;
-                right = .25;
-                slow = true;
-            } else if (gamepad1.a && slow == true && (delay.time() > .5)) {
-                delay.reset();
-                resetStartTime();
-                left = 1;
-                right = 1;
-                slow = false;
-            } else if (gamepad1.y && slow == true && (delay.time() > .5)) {
-                delay.reset();
-                resetStartTime();
-                left = 1;
-                right = 1;
-                slow = false;
+            if (delay.time() > .5) {
+                if (gamepad1.a && slow == false) {
+                    delay.reset();
+                    resetStartTime();
+                    left = .25;
+                    right = .25;
+                    slow = true;
+                } else if (gamepad1.a && slow == true) {
+                    delay.reset();
+                    resetStartTime();
+                    left = 1;
+                    right = 1;
+                    slow = false;
+                } else if (gamepad1.y && slow == true) {
+                    delay.reset();
+                    resetStartTime();
+                    left = 1;
+                    right = 1;
+                    slow = false;
+                }
             }
 
             if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
@@ -260,6 +264,13 @@ public class Plz extends MyOpMode {
                     liftRight.setPower(0);
                     liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                     liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            }
+
+            if (gamepad2.a){
+                manipWall.setPosition(.035);
+            }
+            if (gamepad2.b){
+                manipWall.setPosition(.75);
             }
 
 //            if ((Math.abs(gamepad2.right_stick_y) > .05)) {

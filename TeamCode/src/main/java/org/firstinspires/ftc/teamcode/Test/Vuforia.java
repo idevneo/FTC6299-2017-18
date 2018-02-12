@@ -74,16 +74,7 @@ public class Vuforia extends MyOpMode {
         waitForStart();
         runtime.reset();
         // run until the end of the match (driver presses STOP)
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
+        vfValueS();
 
-        telemetry.addData("Column ", column);
-
-
-        ElapsedTime time = new ElapsedTime();
-        time.reset();
-        resetStartTime();
-
-        vfValue();
-        telemetry.update();
         }
     }
