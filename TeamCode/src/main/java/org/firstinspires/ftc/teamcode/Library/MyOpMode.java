@@ -146,9 +146,9 @@ public abstract class MyOpMode extends LinearOpMode {
         jewelColor = hardwareMap.get(ColorSensor.class, "jewelColor");
         jewelArm = hardwareMap.servo.get("jewelArm");
         jewelHand = hardwareMap.servo.get("jewelHand");
-//        relicDrive = hardwareMap.dcMotor.get("relicDrive");
-//        relicFlip = hardwareMap.servo.get("relicFlip");
-//        relicHand = hardwareMap.servo.get("relicHand");
+        relicDrive = hardwareMap.dcMotor.get("relicDrive");
+        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicHand = hardwareMap.servo.get("relicHand");
 
         rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
         rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
@@ -532,7 +532,6 @@ public abstract class MyOpMode extends LinearOpMode {
             motorFR.setPower(0);
             motorBR.setPower(0);
         }
-
     }
 
 }
