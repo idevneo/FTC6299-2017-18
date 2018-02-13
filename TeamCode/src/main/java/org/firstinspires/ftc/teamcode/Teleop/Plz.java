@@ -240,8 +240,6 @@ public class Plz extends MyOpMode {
 //                    right = 1;
 //                }
 
-
-
             if ((Math.abs(gamepad2.left_stick_y) > .05)) {
                     liftLeft.setPower(-gamepad2.left_stick_y * .5);
                     liftRight.setPower(gamepad2.left_stick_y * .5);
@@ -252,41 +250,11 @@ public class Plz extends MyOpMode {
                     liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
 
-            if (gamepad2.a){
+            if (gamepad2.x){
                 manipWall.setPosition(.035);
             }
-            if (gamepad2.b){
+            if (gamepad2.y){
                 manipWall.setPosition(.75);
-            }
-
-//            if ((Math.abs(gamepad2.right_stick_y) > .05)) {
-//                relicDrive.setPower(gamepad2.right_stick_y * .5);
-//                //stick up is out stick down is in (may have to change signs)
-//            }   else {
-//                relicDrive.setPower(0);
-//            }
-//            if (gamepad2.left_bumper) {
-//                relicHand.setPosition(.45);
-//                //open
-//            }
-//            if (gamepad2.right_bumper) {
-//                relicHand.setPosition(.05);
-//                //grab
-//            }
-//            if (gamepad2.a) {
-//                relicFlip.setPosition(0);
-//            }
-//            if (gamepad2.b) {
-//                relicFlip.setPosition(.5);
-//            }
-//            if (gamepad2.y) {
-//                relicFlip.setPosition(1);
-//            }
-            if ((Math.abs(gamepad2.right_stick_y) > .05)) {
-                relicDrive.setPower(gamepad2.right_stick_y * .5);
-                //stick up is out stick down is in (may have to change signs)
-            }   else {
-                relicDrive.setPower(0);
             }
             if (gamepad2.left_bumper) {
                 relicHand.setPosition(.45);
@@ -302,10 +270,15 @@ public class Plz extends MyOpMode {
             if (gamepad2.b) {
                 relicFlip.setPosition(.5);
             }
-            if (gamepad2.y) {
-                relicFlip.setPosition(1);
+//            if (gamepad2.y) {
+//                relicFlip.setPosition(1);
+//            }
+            if ((Math.abs(gamepad2.right_stick_y) > .05)) {
+                relicDrive.setPower(gamepad2.right_stick_y * .5);
+                //stick up is out stick down is in (may have to change signs)
+            }   else {
+                relicDrive.setPower(0);
             }
-
          }
         }
     }

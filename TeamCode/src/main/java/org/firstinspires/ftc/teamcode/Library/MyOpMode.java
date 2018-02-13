@@ -51,8 +51,6 @@ public abstract class MyOpMode extends LinearOpMode {
     public static Servo relicFlip;
     public static Servo relicHand;
     public static ColorSensor jewelColor;
-    //public static DcMotor relic;
-//    public static Servo relicGrabber;
 
     public static Orientation angles;
     public static Acceleration gravity;
