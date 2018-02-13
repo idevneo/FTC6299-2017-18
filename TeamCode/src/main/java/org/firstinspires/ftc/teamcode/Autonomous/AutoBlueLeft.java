@@ -8,8 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@Autonomous(name = "AutoBlueLeft", group = "Sensor")
-                            // Comment this out to add to the opmode list
+@Autonomous(name = "AutoBlueLeft", group = "Linear Opmode")
 public class AutoBlueLeft extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -20,8 +19,8 @@ public class AutoBlueLeft extends MyOpMode {
         hMap(hardwareMap);
         // Set up our telemetry dashboard
 //        composeTelemetry();
-        // Wait until we're told to go
 
+        // Wait until we're told to go
         waitForStart();
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
@@ -36,7 +35,7 @@ public class AutoBlueLeft extends MyOpMode {
         sleep(350);
 
         try {
-            turnCorr2(.25, -178, 5000);
+            turnCorr(.25, -178, 5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

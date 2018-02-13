@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Library;
 
-import android.util.Log;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
@@ -11,12 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
 import org.firstinspires.ftc.robotcore.external.Func;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -30,6 +24,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
+import android.util.Log;
+import com.qualcomm.robotcore.util.Range;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
 
 import java.util.Locale;
 
@@ -65,15 +63,15 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public char column;
 
-    public String formatAngle(AngleUnit angleUnit, double angle) {
+    public String formatAngle(AngleUnit angleUnit, double angle) { //Formats the IMU Angle data into strings that can pass into telemetry.
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }
 
-    public String formatDegrees(double degrees) {
+    public String formatDegrees(double degrees) { //Formats the IMU Degree data into strings that can pass into telemetry.
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 
-    public void composeTelemetry() {
+    public void composeTelemetry() { //Method that holds a majority of sensor telemetry for testing.
         // At the beginning of each telemetry update, grab a bunch of data
         // from the IMU that we will then display in separate lines.
         telemetry.addAction(new Runnable() {
@@ -87,14 +85,14 @@ public abstract class MyOpMode extends LinearOpMode {
             }
         });
         telemetry.addLine()
-                .addData("Angle", new Func<String>() {
+                .addData("Angle", new Func<String>() { //Position of the robots angle.
                     @Override
                     public String value() {
                         return formatAngle(angles.angleUnit, angles.firstAngle); //Control Robot Pivot
                     }
                 });
         telemetry.addLine()
-                .addData("Left", new Func<String>() {
+                .addData("Left", new Func<String>() { //Left Range Sensor Telemetry.
                     @Override
                     public String value() {
                         double localRange;
@@ -107,7 +105,7 @@ public abstract class MyOpMode extends LinearOpMode {
                     }
                 });
         telemetry.addLine()
-                .addData("Right", new Func<String>() {
+                .addData("Right", new Func<String>() { //Right Range Sensor Telemetry.
                     @Override
                     public String value() {
                         double localRange;
@@ -121,7 +119,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 });
 
         telemetry.addLine()
-                .addData("Front", new Func<String>() {
+                .addData("Front", new Func<String>() { //Front Range Sensor Telemetry.
                     @Override
                     public String value() {
                             double localRange;
@@ -133,45 +131,9 @@ public abstract class MyOpMode extends LinearOpMode {
                             return Double.toString(sensor);
                         }
                 });
-//        telemetry.addLine()
-//                .addData("status", new Func<String>() {
-//                    @Override public String value() {
-//                        return imu.getSystemStatus().toShortString();
-//                    }
-//                })
-//                .addData("calib", new Func<String>() {
-//                    @Override public String value() {
-//                        return imu.getCalibrationStatus().toString();
-//                    }
-//                });
-//                .addData("roll", new Func<String>() {
-//                    @Override public String value() {
-//                        return formatAngle(angles.angleUnit, angles.secondAngle);
-//                    }
-//                })
-//                .addData("pitch", new Func<String>() {
-//                    @Override public String value() {
-//                        return formatAngle(angles.angleUnit, angles.thirdAngle);
-//                    }
-//                });
-//
-//        telemetry.addLine()
-//                .addData("gravity", new Func<String>() {
-//                    @Override public String value() {
-//                        return gravity.toString();
-//                    }
-//                })
-//                .addData("mag", new Func<String>() {
-//                    @Override public String value() {
-//                        return String.format(Locale.getDefault(), "%.3f",
-//                                Math.sqrt(gravity.xAccel*gravity.xAccel
-//                                        + gravity.yAccel*gravity.yAccel
-//                                        + gravity.zAccel*gravity.zAccel));
-//                    }
-//                });
     }
 
-    public void hMap(HardwareMap type) {
+    public void hMap(HardwareMap type) { //Initialization of the Robot's hardware map.
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
@@ -207,8 +169,6 @@ public abstract class MyOpMode extends LinearOpMode {
         Gparameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(Gparameters);
-//        relic = hardwareMap.dcMotor.get("relic");
-//        relicGrabber = hardwareMap.servo.get("relicGrabber");
 
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -221,13 +181,13 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void delay(long milliseconds) throws InterruptedException {
+    public void delay(long milliseconds) throws InterruptedException { //Delays the code via a sleep time.
         if (milliseconds < 0)
             milliseconds = 0;
         Thread.sleep(milliseconds);
     }
 
-    public void setMotors(double left, double right) {
+    public void setMotors(double left, double right) { //Moves forward when both values are positive.
         if (!opModeIsActive())
             return;
 
@@ -245,7 +205,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
 
-    public void stopMotors() {
+    public void stopMotors() { //Stops the motors.
         if (!opModeIsActive())
             return;
 
@@ -255,32 +215,24 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setPower(0);
     }
 
-    public void manipAuto(double pow) {
-        if (!opModeIsActive())
+    public void manipAuto(double pow) { //Runs the manipulator for a certain time in auto at a selected power.
+        if (!opModeIsActive()) //Doesn't run if the OpMode isn't active.
             return;
-        if (pow > 0) {
+        if (pow > 0 || pow < 0) { //Runs the manipulator at the given power if it is not 0.
             manip.setPower(pow);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            manip.setPower(0);
-        } else if (pow < 0) {
-            manip.setPower(pow);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            manip.setPower(0);
-        } else {
             manip.setPower(0);
         }
-
+        else { //If the power is 0, don't run the manipulator..
+            manip.setPower(0);
+            }
     }
 
-    public void vfValue() {
+    public void vfValue() { //Finds the column we need to place the glyph in using Vuforia.
         VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
         VuforiaTrackable relicTemplate = relicTrackables.get(0);
         relicTrackables.activate();
@@ -290,40 +242,9 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
         resetStartTime();
 
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-        while ((time.milliseconds() < 2000) && opModeIsActive() && (column == 'U')) {
-            vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                telemetry.addData("VuMark", "%s visible", vuMark);
-                telemetry.update();
-                if (vuMark == RelicRecoveryVuMark.CENTER) {
-                    column = 'C';
-                } else if (vuMark == RelicRecoveryVuMark.LEFT) {
-                    column = 'L';
-                } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                    column = 'R';
-                }
-            } else {
-                column = 'U';
-                telemetry.addData("VuMark", "%s visible", vuMark);
-            }
-        }
-    }
-
-    public void vfValueS() {
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTrackables.activate();
-        column = 'U';
-
-        ElapsedTime time = new ElapsedTime();
-        time.reset();
-        resetStartTime();
-
-        RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-        while ((time.milliseconds() < 2000) && opModeIsActive() && (column == 'U')) {
-            vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            switch (vuMark) {
+        while ((time.milliseconds() < 2000) && opModeIsActive() && (column == 'U')) { //Finding the Cryptokey
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            switch (vuMark) { //Assigns the Cryptokey Image to a value we can use later.
                 case UNKNOWN:
                     column = 'U';
                     break;
@@ -338,121 +259,139 @@ public abstract class MyOpMode extends LinearOpMode {
                     break;
             }
         }
-        telemetry.addData("VuMark", "%s visible", vuMark);
+        telemetry.addData("Column", column);
+        telemetry.update();
     }
 
-    public void vfMovePar(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {
-        double centerDis = 26.75;
+    public void vfMovePar(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) { //For Parralel Cryptobox movement;
+        // strafes to the correct column using range sensors via our vfValue.
+        double centerDis = 26.75; //Distance to the center of the cryptobox.
         double kC = 0;
-        if (rb == 'r')
-            kC = 6;
-        if (rb == 'b')
-            kC = -6;
-        if (column == 'L') {
-            rangeMoveStrafe((centerDis + kC), sensorVar, bSwitch);
-        } else if (column == 'R') {
-            rangeMoveStrafe((centerDis - kC), sensorVar, bSwitch);
-        } else if (column == 'C') {
-
-        } else if (column == 'U') {
-
+        switch (rb) { //Determines whether our calculations need to calculate for the red side or blue side.
+            case 'r':
+                kC = 6;
+                break;
+            case 'b':
+                kC = -6;
+                break;
         }
-
+        switch (column) { //Moves accordingly to the variable column.
+            case 'L':
+                rangeMoveStrafe((centerDis + kC), sensorVar, bSwitch);
+                break;
+            case 'R':
+                rangeMoveStrafe((centerDis - kC), sensorVar, bSwitch);
+                break;
+            case 'C':case 'U':
+                break;
+        }
     }
 
-    public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) {
+    public void vfMovePerp(char rb, ModernRoboticsI2cRangeSensor sensorVar, double bSwitch) { //For Perpendicular Cryptobox movement;
+        // strafes to the correct column using range sensors via our vfValue.
         double centerDis = 26.75; //needs to be tested
         double kC = 0;
-        if (rb == 'r')
-            kC = 6; //needs to be tested
-        if (rb == 'b')
-            kC = -6; //needs to be tested
-        if (column == 'L') {
-            rangeMoveStrafe((centerDis + kC), sensorVar, bSwitch);
-        } else if (column == 'R') {
-            rangeMoveStrafe((centerDis - kC), sensorVar, bSwitch);
-        } else if (column == 'C') {
-
-        } else if (column == 'U') {
-
+        switch (rb) { //Determines whether our calculations need to calculate for the red side or blue side.
+            case 'r':
+                kC = 6; //need to be adjusted
+                break;
+            case 'b':
+                kC = -6; //need to be adjusted.
+                break;
+        }
+        switch (column) { //Moves accordingly to the variable column.
+            case 'L':
+                rangeMoveStrafe((centerDis + kC), sensorVar, bSwitch);
+                break;
+            case 'R':
+                rangeMoveStrafe((centerDis - kC), sensorVar, bSwitch);
+                break;
+            case 'C':case 'U':
+                break;
         }
     }
 
-    public void vfMoveAlt() {
-
-        if (column == 'L') {
-            setMotorStrafe(-.25);
-            sleep(750);
-            stopMotors();
-        } else if (column == 'R') {
-            setMotorStrafe(.25);
-            sleep(675);
-            stopMotors();
-        } else if (column == 'C') {
-        } else if (column == 'U') {
+    public void vfMoveAlt() { //For Cryptobox movement; strafes to the correct column using wait times via our vfValue.
+        switch (column) { //Moves accordingly to the variable column.
+            case 'L':
+                setMotorStrafe(-.25);
+                sleep(750);
+                stopMotors();
+                break;
+            case 'R':
+                setMotorStrafe(.25);
+                sleep(675);
+                stopMotors();
+                break;
+            case 'C':case 'U':
+                break;
         }
-
     }
 
-    public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar) {
+    public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar) { //Moving forward/backwards using a Range Sensor.
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-//        double differenceDis;
-//        double kP = .025; //to be determined
+//      double differenceDis;
+//      double kP = .025; //to be determined
         double pow;
+
         double localRange;
-        while (((sensor < inAway - .35) || (sensor > inAway + .35)) && opModeIsActive()) { //While sensor doesn't = tolerance, run.
+        while (((sensor < inAway - .35) || (sensor > inAway + .35)) && opModeIsActive()) { //While sensor isn't in the desired position, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
             while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
+                //If a faulty value is detected, don't update our used variable till a good one is found.
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
-            sensor = localRange;
+            sensor = localRange; //Sets all working and usable values into a variable we can utilize.
 
-//            differenceDis = Math.abs(sensor - inAway);
-//            pow = differenceDis*kP;
+//          differenceDis = Math.abs(sensor - inAway);
+//          pow = differenceDis*kP;
             pow = .15;
-
 //            if (pow > .2)
 //                pow = .2;
 //            if (pow < .1)
 //                pow = .1;
-            telemetry.addData("SensorValue", sensor); //optional telemetry
-            telemetry.update();
 
-            if (sensor > inAway) {
+            if (sensor > inAway) { //If the sensor value is greater than the target, move forward.
                 setMotors(pow, pow);
             }
-            if (sensor < inAway) {
+            if (sensor < inAway) { //If the sensor value is lower than than the target, move backwards.
                 setMotors(-pow, -pow);
             }
+
+            telemetry.addData("SensorValue", sensor); //Optional Telemetry
+            telemetry.update();
         }
         stopMotors();
     }
 
-    public void rangeMoveStrafe(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet) { //Basing Switch | 1 = Left | 0 = Right
+    public void rangeMoveStrafe(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet) { //Moving left/right using a Range Sensor.
+        //bSet = Basing Switch | 1 = Left Range Sensor | 0 = Right Range Sensor
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
 
-//        double range;
+//      double range;
         double pow = .15;
-//        double newPow;
-        double localRange;
-        ElapsedTime stopTime = new ElapsedTime();
+//      double newPow;
 
-        while (((sensor < inAway - .5) || (sensor > inAway + .5)) && opModeIsActive()) {
+        double localRange;
+        ElapsedTime stopTime = new ElapsedTime(); //Time used to stop the robot from moving too far based on outdated values.
+
+        while (((sensor < inAway - .5) || (sensor > inAway + .5)) && opModeIsActive()) { //While sensor isn't in the desired position, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
             while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
+                //If a faulty value is detected, don't update our used variable till a good one is found.
                 stopTime.reset();
-                if (stopTime.milliseconds() > 300 && stopTime.milliseconds() < 750) { //figure out the best times
+                if (stopTime.milliseconds() > 300 && stopTime.milliseconds() < 750) { //Stops the robot from running off of outdated values for too long.
                     stopMotors();
                 }
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
-            sensor = localRange;
+            sensor = localRange; //Sets all working and usable values into a variable we can utilize.
             stopTime.reset();
-//            range = Math.abs(inAway - sensor);
 
+//          range = Math.abs(inAway - sensor);
             pow = .15;
 
-            //RED SIDE AUTOS
+            //RED SIDE AUTOS - Basing Switch
             if (bSet == 0) {
                 if (sensor > inAway) {
                     setMotorStrafe(pow);
@@ -462,7 +401,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 }
             }
 
-            //BLUE SIDE AUTOS
+            //BLUE SIDE AUTOS - Basing Switch
             if (bSet == 1) {
                 if (sensor > inAway) {
                     setMotorStrafe(-pow);
@@ -477,8 +416,8 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void turnCorr2(double pow, double deg, int timer) throws InterruptedException {
-        if (!opModeIsActive())
+    public void turnCorr(double pow, double deg, int timer) throws InterruptedException { //Turns to a desired angle using the IMU.
+        if (!opModeIsActive()) //if the OpMode is not active, don't run.
             return;
 
         double newPow;
@@ -492,20 +431,22 @@ public abstract class MyOpMode extends LinearOpMode {
         delay(100);
         time.reset();
 
-        while ((currPos > deg + 1 || currPos < deg - 1) && (time.milliseconds() < timer) && opModeIsActive()) {
-            error = deg - currPos;
+        while ((currPos > deg + 1 || currPos < deg - 1) && (time.milliseconds() < timer) && opModeIsActive()) { //While sensor isn't in the desired angle position, run.
+            error = deg - currPos; //Finding how far away we are from the target position.
             errorMove = Math.abs(deg - currPos);
-
             if (error > 180) {
                 error = error - 360;
             } else if (error < -180) {
                 error = error + 360;
             }
 
-            newPow = pow * (Math.abs(error) / 70);
+            newPow = pow * (Math.abs(error) / 70); //Using the error to calculate our power.
             if (newPow < .15)
                 newPow = .1;
 
+            //The following code allows us to turn in the direction we need, and if we cross the axis
+            //at which 180 degrees becomes -180, our robot can turn back in the direction which is closest
+            //to the position we wish to be at (We won't make a full rotation to get to -175, if we hit 180).
             if (currPos < deg) {
                 if (errorMove < 180) {
                     setMotors(-newPow, newPow); //Turns left
@@ -529,8 +470,50 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void slowDown(double reduction) {
-        //first reduction making power 0.5
+    public void jewelKnockerRed() { //Jewel Knocker code for the autonomous on the red side.
+        //Hits the blue jewel.
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.4);
+        sleep(500);
+        jewelArm.setPosition(.15);
+        sleep(850);
+        if (jewelColor.red() > jewelColor.blue()) { //Compares the blue and red RGB Color sensor value and hits accordingly.
+            jewelHand.setPosition((.3));
+        } else if (jewelColor.red() < jewelColor.blue()) {
+            jewelHand.setPosition((.6));
+        }
+        sleep(750);
+
+        jewelArm.setPosition(.6);
+        jewelHand.setPosition(.45);
+        sleep(300);
+        jewelHand.setPosition(.3);
+        sleep(300);
+    }
+
+    public void jewelKnockerBlue() { //Jewel Knocker code for the autonomous on the blue side.
+        //Hits the red jewel.
+        jewelArm.setPosition(.55);
+        jewelHand.setPosition(.4);
+        sleep(500);
+        jewelArm.setPosition(.15);
+        sleep(850);
+        if (jewelColor.red() < jewelColor.blue()) { //Compares the blue and red RGB Color sensor value and hits accordingly.
+            jewelHand.setPosition((.3));
+        } else if (jewelColor.red() > jewelColor.blue()) {
+            jewelHand.setPosition((.6));
+        }
+        sleep(750);
+
+        jewelArm.setPosition(.55);
+        jewelHand.setPosition(.45);
+        sleep(300);
+        jewelHand.setPosition(.3);
+        sleep(300);
+    }
+
+    public void slowDown(double reduction) { //Method which reduces the power in our code when called.
+        //First Reduction which makes power .5
         while (motorFL.getPower() > 0.05 && motorBL.getPower() > 0.05 && motorFR.getPower() > 0.05 && motorFL.getPower() > 0.05) {
             try {
                 Thread.sleep(100);
@@ -552,85 +535,4 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
 
-    public void jewelKnockerRed() {
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.4);
-        sleep(500);
-        jewelArm.setPosition(.15);
-        sleep(850);
-        if (jewelColor.red() > jewelColor.blue()) {
-            jewelHand.setPosition((.3));
-        } else if (jewelColor.red() < jewelColor.blue()) {
-            jewelHand.setPosition((.6));
-        }
-        sleep(750);
-
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.45);
-        sleep(300);
-        jewelHand.setPosition(.3);
-        sleep(300);
-    }
-
-    public void jewelKnockerBlue() {
-        jewelArm.setPosition(.55);
-        jewelHand.setPosition(.4);
-        sleep(500);
-        jewelArm.setPosition(.15);
-        sleep(850);
-        if (jewelColor.red() < jewelColor.blue()) {
-            jewelHand.setPosition((.3));
-        } else if (jewelColor.red() > jewelColor.blue()) {
-            jewelHand.setPosition((.6));
-        }
-        sleep(750);
-
-        jewelArm.setPosition(.55);
-        jewelHand.setPosition(.45);
-        sleep(300);
-        jewelHand.setPosition(.3);
-        sleep(300);
-    }
-
-//    public double getUltraDistance() {
-//        double value = ultra.cmUltrasonic();
-//        if (value != 255)
-//            ultraDistance = value;
-//        return ultraDistance;
-//    }
-//
-//    public void setManip(double pow) {
-//        if (!opModeIsActive())
-//            return;
-//
-//        manip.setPower(pow);
-//    }
-
-//    public void setServoSlow(Servo servo, double pos) throws InterruptedException {
-//        double currentPosition = servo.getPosition();
-//
-//        if (currentPosition - pos > 0) {
-//            for (; currentPosition > pos; currentPosition -= .005) {
-//                servo.setPosition(currentPosition);
-//                delay(1);
-//                idle();
-//            }
-//        } else for (; currentPosition < pos; currentPosition += .005) {
-//            servo.setPosition(currentPosition);
-//            delay(1);
-//            idle();
-//        }
-//    }
-
-//    public double getDiff(double angle) {
-//        imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-//        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-//        return currPos - angle;
-//    }
-//
-//    public Double gyroVal() {
-//        imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-//        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
-//        return currPos;
-//    }
-    }
+}

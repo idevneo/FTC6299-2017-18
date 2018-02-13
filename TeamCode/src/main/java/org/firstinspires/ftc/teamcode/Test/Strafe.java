@@ -51,7 +51,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="StrafeTest", group="Linear Opmode")
+@Autonomous(name="StrafeTest", group="Test")
 @Disabled
 public class Strafe extends MyOpMode {
 

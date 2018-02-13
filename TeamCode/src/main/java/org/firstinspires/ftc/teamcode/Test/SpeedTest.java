@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@Autonomous(name = "Speed Test aut", group = "Linear Opmode") // Comment this out to add to the opmode list
+@Autonomous(name = "Speed Test aut", group = "Test") // Comment this out to add to the opmode list
 public class SpeedTest extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -34,7 +34,7 @@ public class SpeedTest extends MyOpMode {
         sleep(100);
 
         try {
-            turnCorr2(.6,-85, 7000); //pow upped
+            turnCorr(.6,-85, 7000); //pow upped
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -77,7 +77,7 @@ public class SpeedTest extends MyOpMode {
         // Turn for second block
 
         try {
-            turnCorr2(0.4,87.5, 7000); //changed power
+            turnCorr(0.4,87.5, 7000); //changed power
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -92,7 +92,7 @@ public class SpeedTest extends MyOpMode {
 
         //fishing - tc2 = .25
         try {
-            turnCorr2(0.4,105, 1000);
+            turnCorr(0.4,105, 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -103,14 +103,14 @@ public class SpeedTest extends MyOpMode {
         stopMotors();
 
         try {
-            turnCorr2(0.4,65, 1000);
+            turnCorr(0.4,65, 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         sleep(250);
 
         try {
-            turnCorr2(0.4,85, 1000);
+            turnCorr(0.4,85, 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -121,7 +121,7 @@ public class SpeedTest extends MyOpMode {
         manip.setPower(0);
 
         try {
-            turnCorr2(0.5,-85, 7000);
+            turnCorr(0.5,-85, 7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

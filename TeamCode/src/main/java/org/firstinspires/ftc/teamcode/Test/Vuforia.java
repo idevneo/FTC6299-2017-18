@@ -58,7 +58,8 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="VuforiaTest", group="Linear Opmode")
+@Autonomous(name="VuforiaTest", group="Test")
+@Disabled
 public class Vuforia extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -74,7 +75,7 @@ public class Vuforia extends MyOpMode {
         waitForStart();
         runtime.reset();
         // run until the end of the match (driver presses STOP)
-        vfValueS();
-
+        vfValue();
+        sleep(25000);
         }
     }

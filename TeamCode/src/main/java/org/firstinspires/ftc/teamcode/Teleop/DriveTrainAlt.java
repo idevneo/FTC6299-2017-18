@@ -27,15 +27,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode.Test;
+package org.firstinspires.ftc.teamcode.Teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-import org.firstinspires.ftc.teamcode.Library.MyOpMode;
+import com.qualcomm.robotcore.util.Range;
 
 
 /**
@@ -50,28 +49,67 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-
-@Autonomous(name="WaitStrafeTest", group="Linear Opmode")
+@TeleOp(name="DriveTrainAlt", group="Linear Opmode")
 @Disabled
-public class WaitTimeStrafe extends MyOpMode {
+public class DriveTrainAlt extends LinearOpMode {
 
-    private ElapsedTime runtime = new ElapsedTime();
 
+    DcMotor motorFL;
+    DcMotor motorBL;
+    DcMotor motorFR;
+    DcMotor motorBR;
+
+    double gamepad1_left = 0.0;
+    double gamepad1_right = 0.0;
+    double left = 0.0;
+    double right = 0.0;
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        hMap(hardwareMap);
-        // Set up our telemetry dashboard
-        composeTelemetry();
-        // Wait until we're told to go
+
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorFL = hardwareMap.dcMotor.get("motorFL");
+        motorFR = hardwareMap.dcMotor.get("motorFR");
 
         waitForStart();
-        runtime.reset();
-        // run until the end of the match (driver presses STOP)
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        setMotorStrafe(0.1);
-        sleep(650);
+        gamepad1_left = gamepad1.left_stick_y;
+        gamepad1_right = gamepad1.right_stick_y;
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
+            if (Math.abs(gamepad1.left_stick_y) > .05 ) {
+                motorFL.setPower(gamepad1.left_stick_y);
+                motorBL.setPower(gamepad1.left_stick_y);
+                motorFR.setPower(-gamepad1.left_stick_y);
+                motorBR.setPower(-gamepad1.left_stick_y);
+            } else if (gamepad1.left_stick_x < -.05) {
+                motorFL.setPower(.8 + gamepad1.left_stick_x * -.2);
+                motorBL.setPower(-.8 + gamepad1.left_stick_x * .2);
+                motorFR.setPower(.8 + gamepad1.left_stick_x * -.2);
+                motorBR.setPower(-.8 + gamepad1.left_stick_x * .2);
+            } else if (gamepad1.left_stick_x > .05) {
+                motorFL.setPower(-.8 + gamepad1.left_stick_x * -.2);
+                motorBL.setPower(.8 + gamepad1.left_stick_x * .2);
+                motorFR.setPower(-.8 + gamepad1.left_stick_x * -.2);
+                motorBR.setPower(.8 + gamepad1.left_stick_x * .2);
+            } else if (gamepad1.right_stick_x < -.05) {
+                motorFL.setPower(-gamepad1.right_stick_x);
+                motorBL.setPower(-gamepad1.right_stick_x);
+                motorFR.setPower(-gamepad1.right_stick_x);
+                motorBR.setPower(-gamepad1.right_stick_x);
+            } else if (gamepad1.right_stick_x > .05) {
+                motorFL.setPower(-gamepad1.right_stick_x);
+                motorBL.setPower(-gamepad1.right_stick_x);
+                motorFR.setPower(-gamepad1.right_stick_x);
+                motorBR.setPower(-gamepad1.right_stick_x);
+            } else {
+                motorFL.setPower(0);
+                motorBL.setPower(0);
+                motorFR.setPower(0);
+                motorBR.setPower(0);
+            }
+        }
     }
 }

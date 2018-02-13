@@ -20,8 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@Autonomous(name = "AutoRedRight", group = "Sensor")
-                            // Comment this out to add to the opmode list
+@Autonomous(name = "AutoRedRight", group = "Linear Opmode")
 public class AutoRedRight extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -32,8 +31,8 @@ public class AutoRedRight extends MyOpMode {
         hMap(hardwareMap);
         // Set up our telemetry dashboard
 //        composeTelemetry();
-        // Wait until we're told to go
 
+        // Wait until we're told to go
         waitForStart();
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
@@ -48,12 +47,7 @@ public class AutoRedRight extends MyOpMode {
         sleep(1000);
         rangeMovePID(10, rangeF);
         sleep(500);
-//        try {
-//            turn(.25, 0.1);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        sleep(1000);
+
         rangeMoveStrafe(26.75, rangeR, 0);
         sleep(750);
 
