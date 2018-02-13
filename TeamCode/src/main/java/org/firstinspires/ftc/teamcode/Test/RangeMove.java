@@ -51,7 +51,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="RangeMoveTest", group="Linear Opmode")
+@Autonomous(name="RangeMoveTest", group="Test")
 @Disabled
 public class RangeMove extends MyOpMode {
 

@@ -52,8 +52,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="TurnTest", group="Linear Opmode")
-@Disabled
+@Autonomous(name="TurnTest", group="Test")
 public class TurnTest extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -77,7 +76,7 @@ public class TurnTest extends MyOpMode {
 //            setMotors(-.1, .1);
 //            delay(1000);
 //            stopMotors();
-            turnCorr2(.1, -90, 5000);
+            turnCorr(.5, -90, 5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
