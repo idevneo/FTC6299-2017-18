@@ -48,13 +48,13 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 public class Plz extends MyOpMode {
 
     // Declare OpMode members.
-    float gamepad1_left;
-    float gamepad1_right;
+    double gamepad1_left;
+    double gamepad1_right;
 
     double left = 1;
     double right = 1;
     double strafeMod = .25;
-
+    double mWS = 0;
     boolean slow = false;
 //    double jewelHandStart = 0.1;
 //    double jewelHandDeploy = 0.9;
@@ -67,63 +67,42 @@ public class Plz extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        hMap(hardwareMap);
+        hMapT(hardwareMap);
         jewelArm.setPosition(.65);
         jewelHand.setPosition(.4);
         manipWall.setPosition(.75);
 
         ElapsedTime delay = new ElapsedTime();
         delay.reset();
+
+        ElapsedTime relicDelay = new ElapsedTime();
+        relicDelay.reset();
+
         resetStartTime();
-
         waitForStart();
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-//            telemetry.addData("Red  ", jewelColor.red());
-//            telemetry.addData("Green", jewelColor.green());
-//            telemetry.addData("Blue ", jewelColor.blue());
-//            telemetry.addData("leftRange", rangeL.getDistance(DistanceUnit.CM));
-//            telemetry.addData("rightRange", rangeR.getDistance(DistanceUnit.CM));
             telemetry.update();
 
-            gamepad1_left = gamepad1.left_stick_y;
-            gamepad1_right = gamepad1.right_stick_y;
-            telemetry.addData("delayTime", delay.time());
-            telemetry.addData("slow", slow);
-            telemetry.addData("abutton", gamepad1.a);
-            telemetry.update();
-            //Movement (Gamepad 1: Left Stick, Right Stick, DPAD)
-            //Driving forward/backwards
-            if (delay.time() > .5) {
-                if (gamepad1.a && slow == false) {
-                    delay.reset();
-                    resetStartTime();
-                    left = .25;
-                    right = .25;
-                    slow = true;
-                } else if (gamepad1.a && slow == true) {
-                    delay.reset();
-                    resetStartTime();
-                    left = 1;
-                    right = 1;
-                    slow = false;
-                } else if (gamepad1.y && slow == true) {
-                    delay.reset();
-                    resetStartTime();
-                    left = 1;
-                    right = 1;
-                    slow = false;
-                }
+            if (!slow) {
+                gamepad1_left = gamepad1.left_stick_y;
+                gamepad1_right = gamepad1.right_stick_y;
+            } else {
+                gamepad1_left = gamepad1.left_stick_y * .35;
+                gamepad1_right = gamepad1.right_stick_y* .35;
             }
 
+            telemetry.addData("slow", slow);
+            telemetry.addData("Power", gamepad1_left);
+
+            //Movement (Gamepad 1: Left Stick, Right Stick, DPAD, b)
+            //Driving forward/backwards
             if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
                 motorFL.setPower(gamepad1_left);
                 motorBL.setPower(gamepad1_left);
                 motorFR.setPower(-gamepad1_right);
                 motorBR.setPower(-gamepad1_right);
-            }   else if (gamepad1.dpad_left) {
+            } else if (gamepad1.dpad_left) {
                 motorFL.setPower(left);
                 motorBL.setPower(-left);
                 motorFR.setPower(right);
@@ -143,7 +122,12 @@ public class Plz extends MyOpMode {
                 motorBL.setPower(.25);
                 motorFR.setPower(-.25);
                 motorBR.setPower(-.25);
-            } else {
+            } else if (gamepad1.b) {
+                setMotors(.15, -.15); //Turns right
+            } else if (gamepad1.x) {
+                setMotors(-.15, .15); //Turns left
+            }
+            else {
                 motorFL.setPower(0);
                 motorBL.setPower(0);
                 motorFR.setPower(0);
@@ -198,48 +182,58 @@ public class Plz extends MyOpMode {
                 telemetry.update();
             }
 
-                if ((gamepad1.left_trigger > .15) || (gamepad2.left_trigger > .15)){
-                manip.setPower(-1);
-                } else if ((gamepad1.right_trigger > .15 ) || (gamepad2.right_trigger > .15)) {
-                    manip.setPower(1);
-                } else {
-                    manip.setPower(0);
+            //End of Movement
+            //Movement Modifiers (Gamepad 1: a,b,x,y)
+            // Toggles to switch between slow mode for strafe and normal drive
+            if (delay.time() > .5) {
+                if (gamepad1.a && slow == false) {
+                    delay.reset();
+                    resetStartTime();
+                    left = .25;
+                    right = .25;
+                    slow = true;
+                } else if (gamepad1.a && slow == true) {
+                    delay.reset();
+                    resetStartTime();
+                    left = 1;
+                    right = 1;
+                    slow = false;
+                } else if (gamepad1.y && slow == true) {
+                    delay.reset();
+                    resetStartTime();
+                    left = 1;
+                    right = 1;
+                    slow = false;
                 }
+            }
+            //Inversion of movement
+//          if (gamepad1.x) {
+//              gamepad1_left *= -1;
+//              gamepad1_right *= -1;
+//        }
+              //End of Movement Modifiers
 
-                //End of Movement
-                //Movement Modifiers (Gamepad 1: ga,b,x,y)
-//                if (gamepad1.y) {
-//                    gamepad1_left = gamepad1.left_stick_y;
-//                    gamepad1_right = gamepad1.right_stick_y;
-//                    lessenPow = 0;
-//                }
-                //Inversion of movement
-//                if (gamepad1.x) {
-//                    gamepad1_left *= -1;
-//                    gamepad1_right *= -1;
-//                }
-                //Half-speed of drive-train toggle
-//                if (gamepad1.a && lessenPow == 0) {
-//                    lessenPow = 1;
-//                }
-//                //Full speed of drive-train toggle
-//                if (gamepad1.a && lessenPow == 1) {
-//                    lessenPow = 0;
-//                }
-//                //Lesson Pow Parameters
-//                if (lessenPow == 1) {
-//                    gamepad1_left *= .5;
-//                    gamepad1_right *= .5;
-//                    left = .5;
-//                    right = .5;
-//                }
-//                if (lessenPow == 0) {
-//                    gamepad1_left = gamepad1.left_stick_y;
-//                    gamepad1_right = gamepad1.right_stick_y;
-//                    left = 1;
-//                    right = 1;
-//                }
+            //Manipulator (Gamepad 1,2: Right Trigger, Left Trigger)
+            if ((gamepad1.left_trigger > .15) || (gamepad2.left_trigger > .15)) {
+                manip.setPower(-1);
+            } else if ((gamepad1.right_trigger > .15) || (gamepad2.right_trigger > .15)) {
+                manip.setPower(1);
+            } else {
+                manip.setPower(0);
+            }
 
+            //Manipulator Wall (Gamepad 2: x,y)
+            //Deploy position for manipulator wall
+            if (gamepad2.x){
+                manipWall.setPosition(.035);
+            }
+            //Retract position for manipulator wall (init position)
+            if (gamepad2.y){
+                manipWall.setPosition(.75);
+            }
+
+            //Lift Movement (Gamepad 2: Left Stick)
+            // Set's lift motor power to driver 2's left stick value
             if ((Math.abs(gamepad2.left_stick_y) > .05)) {
                     liftLeft.setPower(-gamepad2.left_stick_y * .5);
                     liftRight.setPower(gamepad2.left_stick_y * .5);
@@ -250,32 +244,40 @@ public class Plz extends MyOpMode {
                     liftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             }
 
-            if (gamepad2.x){
-                manipWall.setPosition(.035);
-            }
-            if (gamepad2.y){
-                manipWall.setPosition(.75);
-            }
+            //Relic (Gamepad 2: Right Bumper, Left Bumper, Right Stick, a, b)
+            //Open position for relic hand(with 3D printed part)
             if (gamepad2.left_bumper) {
-                relicHand.setPosition(.45);
-                //open
+                relicHand.setPosition(.4);
             }
+            //Position for collecting the relic using the hand (with 3D print part)
             if (gamepad2.right_bumper) {
-                relicHand.setPosition(.05);
-                //grab
+                relicHand.setPosition(0);
             }
-            if (gamepad2.a) {
-                relicFlip.setPosition(0);
+
+            //Position for moving the relic wrist up or down
+            if (relicDelay.milliseconds() > 75) {
+                if (gamepad2.b) {
+                    mWS += .05;
+                    if (mWS > 1) {
+                        mWS = 1;
+                    }
+                    relicFlip.setPosition(mWS);
+                    relicDelay.reset();
+                } else if (gamepad2.a) {
+                    mWS -= .05;
+                    if (mWS <= 0) {
+                        mWS = 0;
+                    }
+                    relicFlip.setPosition(mWS);
+                    relicDelay.reset();
+                }
             }
-            if (gamepad2.b) {
-                relicFlip.setPosition(.5);
-            }
-//            if (gamepad2.y) {
-//                relicFlip.setPosition(1);
-//            }
+
+            //When stick is pushed up the relic arm extends out
+            //When stick is pushed down, the relic arm comes back in
             if ((Math.abs(gamepad2.right_stick_y) > .05)) {
-                relicDrive.setPower(gamepad2.right_stick_y * .5);
-                //stick up is out stick down is in (may have to change signs)
+                relicDrive.setPower(gamepad2.right_stick_y);
+
             }   else {
                 relicDrive.setPower(0);
             }

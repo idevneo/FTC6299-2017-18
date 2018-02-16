@@ -53,6 +53,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @TeleOp(name="ServoPosTests", group="Test")
+@Disabled
 public class ServoPosTests extends MyOpMode {
 
     // Declare OpMode members.
@@ -70,18 +71,24 @@ public class ServoPosTests extends MyOpMode {
         double mWS = 0;
         while (opModeIsActive()) {
 
-            if(gamepad1.right_stick_y < 0) {
+            if(gamepad2.b) {
                 mWS += .05;
-                manipWall.setPosition(mWS);
-                sleep(500);
+                if(mWS > 1){
+                    mWS = 1;
+                }
+                relicFlip.setPosition(mWS);
+                sleep(350);
             }
-            else if (gamepad1.right_stick_y > 0) {
+            else if (gamepad2.a) {
                 mWS -= .05;
-                manipWall.setPosition(mWS);
-                sleep(500);
+                if(mWS <= 0){
+                    mWS = 0;
+                }
+                relicFlip.setPosition(mWS);
+                sleep(350);
             }
 
-            telemetry.addData("Servo Position", manipWall.getPosition());
+            telemetry.addData("Servo Position", relicHand.getPosition());
             telemetry.addData("Variable", mWS);
             telemetry.update();
         }

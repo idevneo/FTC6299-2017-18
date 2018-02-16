@@ -131,7 +131,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 });
     }
 
-    public void hMap(HardwareMap type) { //Initialization of the Robot's hardware map.
+    public void hMap(HardwareMap type) { //Initialization of the Robot's hardware map in autonomous.
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
@@ -167,6 +167,38 @@ public abstract class MyOpMode extends LinearOpMode {
         Gparameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(Gparameters);
+
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void hMapT(HardwareMap type) { //Initialization of the Robot's hardware map in TeleOp.
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorFL = hardwareMap.dcMotor.get("motorFL");
+        motorFR = hardwareMap.dcMotor.get("motorFR");
+
+        liftLeft = hardwareMap.dcMotor.get("liftL");
+        liftRight = hardwareMap.dcMotor.get("liftR");
+        manip = hardwareMap.dcMotor.get("manip");
+        manipWall = hardwareMap.servo.get("manipWall");
+        jewelColor = hardwareMap.get(ColorSensor.class, "jewelColor");
+        jewelArm = hardwareMap.servo.get("jewelArm");
+        jewelHand = hardwareMap.servo.get("jewelHand");
+        relicDrive = hardwareMap.dcMotor.get("relicDrive");
+        relicFlip = hardwareMap.servo.get("relicFlip");
+        relicHand = hardwareMap.servo.get("relicHand");
+
+        rangeR = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeR");
+        rangeL = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeL");
+        rangeF = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "rangeC");
 
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -378,7 +410,7 @@ public abstract class MyOpMode extends LinearOpMode {
             while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
                 //If a faulty value is detected, don't update our used variable till a good one is found.
                 stopTime.reset();
-                if (stopTime.milliseconds() > 300 && stopTime.milliseconds() < 750) { //Stops the robot from running off of outdated values for too long.
+                if (stopTime.milliseconds() > 300 && stopTime.milliseconds() < 600) { //Stops the robot from running off of outdated values for too long.
                     stopMotors();
                 }
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
