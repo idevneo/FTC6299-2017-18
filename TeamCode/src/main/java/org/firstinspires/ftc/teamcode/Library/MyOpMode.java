@@ -526,7 +526,7 @@ public abstract class MyOpMode extends LinearOpMode {
         jewelArm.setPosition(.55);
         jewelHand.setPosition(.4);
         sleep(500);
-        jewelArm.setPosition(.15);
+        jewelArm.setPosition(.1);
         sleep(850);
         if (jewelColor.red() < jewelColor.blue()) { //Compares the blue and red RGB Color sensor value and hits accordingly.
             jewelHand.setPosition((.3));
@@ -563,5 +563,46 @@ public abstract class MyOpMode extends LinearOpMode {
             motorBR.setPower(0);
         }
     }
+//    public double gyroVal() {
+//
+//    }
+
+//    public void turnPID(double angle) throws InterruptedException {
+//        double kP = .20 / 90;
+//        double min = -.2;
+//        double max = .2;
+//        double changeCon = .04;
+//        double PIDchange;
+//        double angleDiff = (angle);
+//        double oldDiff = angleDiff;
+//        int counter = 0;
+//        double startAngle = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+//        while ((Math.abs(angleDiff) <= Math.abs(oldDiff)) && opModeIsActive()) {
+//            PIDchange = angleDiff * kP;
+//
+//            if (PIDchange < 0) {
+//                motorFR.setPower(Range.clip(-PIDchange + changeCon, min, max));
+//                motorBR.setPower(Range.clip(-PIDchange + changeCon, min, max));
+//                motorFL.setPower(Range.clip(-PIDchange + changeCon, min, max));
+//                motorBL.setPower(Range.clip(-PIDchange + changeCon, min, max));
+//            } else {
+//                motorFR.setPower(Range.clip(PIDchange - changeCon, min, max));
+//                motorBR.setPower(Range.clip(PIDchange - changeCon, min, max));
+//                motorFL.setPower(Range.clip(PIDchange - changeCon, min, max));
+//                motorBL.setPower(Range.clip(PIDchange - changeCon, min, max));
+//            }
+//            sleep(250);
+//            telemetry.addData("gyroStart", startAngle);
+//            telemetry.addData("counter", counter++);
+//            telemetry.addData("GyroVal", gyroVal());
+//            telemetry.addData("GyroDiff", getDiff(angle));
+//            telemetry.addData("Pow", -PIDchange - changeCon);
+//            telemetry.update();
+//
+//            oldDiff = angleDiff;
+//            angleDiff = getDiff(angle);
+//        }
+//        stopMotors();
+//    }
 
 }

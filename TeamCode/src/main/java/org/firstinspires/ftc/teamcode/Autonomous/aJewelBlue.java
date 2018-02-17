@@ -58,7 +58,7 @@ public class aJewelBlue extends MyOpMode {
         jewelArm.setPosition(.55);
         jewelHand.setPosition(.4);
         sleep(500);
-        jewelArm.setPosition(.15);
+        jewelArm.setPosition(.1);
         sleep(1000);
         if (jewelColor.red() < jewelColor.blue()) {
             jewelHand.setPosition((.3));
