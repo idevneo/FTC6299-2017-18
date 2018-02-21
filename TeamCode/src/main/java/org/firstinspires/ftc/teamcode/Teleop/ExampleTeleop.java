@@ -53,7 +53,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 @TeleOp(name="manip and lift", group="Linear Opmode")
 public class ExampleTeleop extends MyOpMode {
 
-    float gamepad1_left;
+    float gamepadLeft;
     float gamepad1_right;
     double left = 1.0;
     double right = 1.0;

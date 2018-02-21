@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 @TeleOp(name="PSTeleop", group="Linear Opmode")
 public class Post extends MyOpMode {
     // Declare OpMode members.
-    double gamepad1_left;
+    double gamepadLeft;
     double gamepad1_right;
     double strafeSpeed = 1;
     double strafeMod = .25;
@@ -40,40 +40,56 @@ public class Post extends MyOpMode {
             telemetry.update();
 
             if (!slow) {
-                gamepad1_left = gamepad1.left_stick_y;
+                gamepadLeft = gamepad1.left_stick_y;
                 gamepad1_right = gamepad1.right_stick_y;
             } else {
-                gamepad1_left = gamepad1.left_stick_y * .35;
+                gamepadLeft = gamepad1.left_stick_y * .35;
                 gamepad1_right = gamepad1.right_stick_y* .35;
                 turnSpeed = .15;
             }
 
             telemetry.addData("slow", slow);
-            telemetry.addData("Power", gamepad1_left);
+            telemetry.addData("Power", gamepadLeft);
 
             /**Movement (Gamepad 1: Left Stick, Right Stick, DPAD, b) */
             if (Math.abs(gamepad1.left_stick_y) > .05) { //Driving forward/backwards
-                motorFL.setPower(gamepad1_left);
-                motorBL.setPower(gamepad1_left);
-                motorFR.setPower(-gamepad1_right);
-                motorBR.setPower(-gamepad1_right);
-            } else if (gamepad1.right_stick_y < .05) {  //Strafing
-                if (gamepad1.right_stick_x < .05) {     //Turns Right when the stick is on right side. //TEST THE X STICK VALUES CAUSE IF NOT INVERTED THIS NEED TO BE X > 0
+                motorFL.setPower(gamepadLeft);
+                motorBL.setPower(gamepadLeft);
+                motorFR.setPower(-gamepadLeft);
+                motorBR.setPower(-gamepadLeft);
+            }
+
+            else if (gamepad1.right_stick_y < -.05) { //Turning
+                double AngleTR = Math.atan((gamepad1.right_stick_x/Math.abs(gamepad1.right_stick_y)));
+                telemetry.addData("AngleRS", AngleTR);
+                telemetry.update();
+                double AngleSpeed = AngleTR/90;
+                telemetry.addData("SpeedRS", AngleSpeed);
+                telemetry.update();
+
+                if (gamepad1.right_stick_x > .05) {            //Turns Right when the stick is on right side.
+                    setMotors(AngleSpeed, -AngleSpeed);
+                }
+                else if (gamepad1.right_stick_x < -.05) {      //Turns Left when the stick is on right side.
+                    setMotors(-AngleSpeed, AngleSpeed);
+                }
+            }
+            else if (gamepad1.right_stick_y > .05) {  //Strafing - CHANGE FOR LEFT STICK, left/right
+                if (gamepad1.right_stick_x > .05) {     //Strafes Right when the stick is on right side.
                     if (Math.abs(gamepad1.right_stick_x) < .4)
                         setMotorStrafe(strafeMod);
                     else if (Math.abs(gamepad1.right_stick_x) >= .4)
                         setMotorStrafe(strafeSpeed);
+                } else if (gamepad1.right_stick_x > .05) {  //Strafes left when the stick is on left side.
+                    if (gamepad1.right_stick_x < -.05) {
+                        if (Math.abs(gamepad1.right_stick_x) < .4)
+                            setMotorStrafe(-strafeMod);
+                        else if (Math.abs(gamepad1.right_stick_x) >= .4)
+                            setMotorStrafe(-strafeSpeed);
+                    }
                 }
-            } else if (gamepad1.right_stick_x > .05) {  //Turns left when the stick is on left side.
-                if (gamepad1.right_stick_x > .05) {     //TEST THE X STICK VALUES CAUSE IF NOT INVERTED THIS NEED TO BE X < 0
-                    if (Math.abs(gamepad1.right_stick_x) < .4)
-                        setMotorStrafe(-strafeMod);
-                    else if (Math.abs(gamepad1.right_stick_x) >= .4)
-                        setMotorStrafe(-strafeSpeed);
-              }
-              //right stick turning angles go here.
-                
-            } else if (gamepad1.left_bumper) { //Moves forwards/backwards slowly
+            }
+            else if (gamepad1.left_bumper) { //Moves forwards/backwards slowly
                 motorFL.setPower(-.25);
                 motorBL.setPower(-.25);
                 motorFR.setPower(.25);
@@ -131,7 +147,7 @@ public class Post extends MyOpMode {
             }
             //Inversion of movement
 //          if (gamepad1.x) {
-//              gamepad1_left *= -1;
+//              gamepadLeft *= -1;
 //              gamepad1_right *= -1;
 //        }
               //End of Movement Modifiers
