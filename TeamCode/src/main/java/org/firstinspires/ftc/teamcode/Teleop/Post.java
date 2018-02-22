@@ -9,7 +9,8 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 @TeleOp(name="PSTeleop", group="Linear Opmode")
 public class Post extends MyOpMode {
     // Declare OpMode members.
-    double gamepadLeft;
+    double gamepadLeftY; //Forwards/Backwards Movement
+    double gamepadLeftX; //Strafing Movement
     double gamepad1_right;
     double strafeSpeed = 1;
     double strafeMod = .25;
@@ -40,55 +41,42 @@ public class Post extends MyOpMode {
             telemetry.update();
 
             if (!slow) {
-                gamepadLeft = gamepad1.left_stick_y;
+                gamepadLeftY = gamepad1.left_stick_y;
+                gamepadLeftX = gamepad1.left_stick_x;
                 gamepad1_right = gamepad1.right_stick_y;
             } else {
-                gamepadLeft = gamepad1.left_stick_y * .35;
+                gamepadLeftY = gamepad1.left_stick_y * .35;
+                gamepadLeftX = gamepad1.left_stick_x * .35;
                 gamepad1_right = gamepad1.right_stick_y* .35;
                 turnSpeed = .15;
             }
+            double AngleLStick = Math.atan(gamepad1.left_stick_y/gamepad1.left_stick_x);
+            if (AngleLStick < 0) {
+                AngleLStick += 360;
+            }
 
+            telemetry.addData("AngleRS", AngleLStick);
             telemetry.addData("slow", slow);
-            telemetry.addData("Power", gamepadLeft);
+            telemetry.addData("Power", gamepadLeftY);
+            telemetry.update();
 
             /**Movement (Gamepad 1: Left Stick, Right Stick, DPAD, b) */
-            if (Math.abs(gamepad1.left_stick_y) > .05) { //Driving forward/backwards
-                motorFL.setPower(gamepadLeft);
-                motorBL.setPower(gamepadLeft);
-                motorFR.setPower(-gamepadLeft);
-                motorBR.setPower(-gamepadLeft);
+            if ((45 <= AngleLStick && AngleLStick <= 135) || (225 <= AngleLStick && AngleLStick <= 315)) { //DRIVING FORWARDS/BACKWARDS
+                motorFL.setPower(gamepadLeftY); //In the future make a method which can set powers automatically.
+                motorBL.setPower(gamepadLeftY);
+                motorFR.setPower(-gamepadLeftY);
+                motorBR.setPower(-gamepadLeftY);
+            }
+            else if ((315 < AngleLStick && AngleLStick < 360) || (0<= AngleLStick && AngleLStick < 45) || (135 < AngleLStick && AngleLStick < 225)) { //STRAFING LEFT/RIGHT
+                if (0 < gamepadLeftX && gamepadLeftX <= .2) { //Make sure the motors don't run at too low a speed.
+                    gamepadLeftX = .25;
+                }
+                else if ( -.2 < gamepadLeftX && gamepadLeftX < 0) { //Make sure the motors don't run at too low a speed.
+                    gamepadLeftX = -.25;
+                }
+                setMotorStrafe(gamepadLeftX);
             }
 
-            else if (gamepad1.right_stick_y < -.05) { //Turning
-                double AngleTR = Math.atan((gamepad1.right_stick_x/Math.abs(gamepad1.right_stick_y)));
-                telemetry.addData("AngleRS", AngleTR);
-                telemetry.update();
-                double AngleSpeed = AngleTR/90;
-                telemetry.addData("SpeedRS", AngleSpeed);
-                telemetry.update();
-
-                if (gamepad1.right_stick_x > .05) {            //Turns Right when the stick is on right side.
-                    setMotors(AngleSpeed, -AngleSpeed);
-                }
-                else if (gamepad1.right_stick_x < -.05) {      //Turns Left when the stick is on right side.
-                    setMotors(-AngleSpeed, AngleSpeed);
-                }
-            }
-            else if (gamepad1.right_stick_y > .05) {  //Strafing - CHANGE FOR LEFT STICK, left/right
-                if (gamepad1.right_stick_x > .05) {     //Strafes Right when the stick is on right side.
-                    if (Math.abs(gamepad1.right_stick_x) < .4)
-                        setMotorStrafe(strafeMod);
-                    else if (Math.abs(gamepad1.right_stick_x) >= .4)
-                        setMotorStrafe(strafeSpeed);
-                } else if (gamepad1.right_stick_x > .05) {  //Strafes left when the stick is on left side.
-                    if (gamepad1.right_stick_x < -.05) {
-                        if (Math.abs(gamepad1.right_stick_x) < .4)
-                            setMotorStrafe(-strafeMod);
-                        else if (Math.abs(gamepad1.right_stick_x) >= .4)
-                            setMotorStrafe(-strafeSpeed);
-                    }
-                }
-            }
             else if (gamepad1.left_bumper) { //Moves forwards/backwards slowly
                 motorFL.setPower(-.25);
                 motorBL.setPower(-.25);

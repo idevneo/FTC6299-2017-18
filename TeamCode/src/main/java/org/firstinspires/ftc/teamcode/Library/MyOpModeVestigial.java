@@ -1297,3 +1297,18 @@
 //    public void moveToSlow(double pow, double deg, double threshold, double red) throws InterruptedException {
 //        moveToSlow(pow, deg, threshold, red, 15000, true);
 //    }
+//        else if (gamepad1.right_stick_y > .05) {  //Strafing - CHANGE FOR LEFT STICK, left/right
+//                if (gamepad1.right_stick_x > .05) {     //Strafes Right when the stick is on right side.
+//                    if (Math.abs(gamepad1.right_stick_x) < .4)
+//                        setMotorStrafe(strafeMod);
+//                    else if (Math.abs(gamepad1.right_stick_x) >= .4)
+//                        setMotorStrafe(strafeSpeed);
+//                } else if (gamepad1.right_stick_x > .05) {  //Strafes left when the stick is on left side.
+//                    if (gamepad1.right_stick_x < -.05) {
+//                        if (Math.abs(gamepad1.right_stick_x) < .4)
+//                            setMotorStrafe(-strafeMod);
+//                        else if (Math.abs(gamepad1.right_stick_x) >= .4)
+//                            setMotorStrafe(-strafeSpeed);
+//                    }
+//                }
+//            }
