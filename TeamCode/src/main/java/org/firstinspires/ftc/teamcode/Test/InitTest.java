@@ -62,7 +62,6 @@ public class InitTest extends MyOpMode {
         waitForStart();
 
         telemetry.addData("test", "Program has run");
-        telemetry.update();
 
     }
 }
