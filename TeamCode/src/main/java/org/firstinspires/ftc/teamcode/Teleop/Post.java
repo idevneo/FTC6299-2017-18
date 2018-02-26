@@ -11,7 +11,12 @@ public class Post extends MyOpMode {
     // Declare OpMode members.
     double gamepadLeftY; //Forwards/Backwards Movement
     double gamepadLeftX; //Strafing Movement
-    double gamepad1_right;
+    double gamepadRightX; //Turning Movement
+    double gamepadRightY;
+
+    double AngleLStick; //Left Stick Movement Control
+    double AngleRStick; //Right Stick Movement Control
+
     double strafeSpeed = 1;
     double strafeMod = .25;
     double turnSpeed = .5;
@@ -43,38 +48,47 @@ public class Post extends MyOpMode {
             if (!slow) {
                 gamepadLeftY = gamepad1.left_stick_y;
                 gamepadLeftX = gamepad1.left_stick_x;
-                gamepad1_right = gamepad1.right_stick_y;
+                gamepadRightX = gamepad1.right_stick_x;
+                gamepadRightY = gamepad1.right_stick_y;
             } else {
                 gamepadLeftY = gamepad1.left_stick_y * .35;
                 gamepadLeftX = gamepad1.left_stick_x * .35;
-                gamepad1_right = gamepad1.right_stick_y* .35;
+                gamepadRightY = gamepad1.right_stick_y * .35;
                 turnSpeed = .15;
             }
-            double AngleLStick = Math.atan(gamepad1.left_stick_y/gamepad1.left_stick_x);
+
+            AngleLStick = Math.toDegrees(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x));
             if (AngleLStick < 0) {
                 AngleLStick += 360;
             }
+            AngleRStick = Math.toDegrees(Math.atan2(gamepad1.right_stick_y, gamepad1.right_stick_x));
+            if (AngleRStick < 0) {
+                AngleRStick += 360;
+            }
 
-            telemetry.addData("AngleRS", AngleLStick);
             telemetry.addData("slow", slow);
             telemetry.addData("Power", gamepadLeftY);
             telemetry.update();
 
             /**Movement (Gamepad 1: Left Stick, Right Stick, DPAD, b) */
-            if ((45 <= AngleLStick && AngleLStick <= 135) || (225 <= AngleLStick && AngleLStick <= 315)) { //DRIVING FORWARDS/BACKWARDS
+            if (45 <= AngleLStick && AngleLStick <= 135 || 225 <= AngleLStick && AngleLStick <= 315) { //DRIVING FORWARDS/BACKWARDS
                 motorFL.setPower(gamepadLeftY); //In the future make a method which can set powers automatically.
                 motorBL.setPower(gamepadLeftY);
                 motorFR.setPower(-gamepadLeftY);
                 motorBR.setPower(-gamepadLeftY);
-            }
-            else if ((315 < AngleLStick && AngleLStick < 360) || (0<= AngleLStick && AngleLStick < 45) || (135 < AngleLStick && AngleLStick < 225)) { //STRAFING LEFT/RIGHT
+            } else if (315 < AngleLStick && AngleLStick < 360 || 0 <= AngleLStick && AngleLStick < 45 || 135 < AngleLStick && AngleLStick < 225) { //STRAFING LEFT/RIGHT
                 if (0 < gamepadLeftX && gamepadLeftX <= .2) { //Make sure the motors don't run at too low a speed.
                     gamepadLeftX = .25;
-                }
-                else if ( -.2 < gamepadLeftX && gamepadLeftX < 0) { //Make sure the motors don't run at too low a speed.
+                } else if (-.2 < gamepadLeftX && gamepadLeftX < 0) { //Make sure the motors don't run at too low a speed.
                     gamepadLeftX = -.25;
                 }
                 setMotorStrafe(gamepadLeftX);
+            }
+            else if (315 < AngleLStick && AngleLStick < 360 || 0 <= AngleLStick && AngleLStick < 45) { //TURNING RIGHT
+                setMotors(Math.abs(gamepadRightX), -Math.abs(gamepadRightX));
+            }
+            else if (225 <= AngleRStick && AngleRStick <= 315) { //TURNING LEFT
+                setMotors(-Math.abs(gamepadRightX), Math.abs(gamepadRightX));
             }
 
             else if (gamepad1.left_bumper) { //Moves forwards/backwards slowly
@@ -136,7 +150,7 @@ public class Post extends MyOpMode {
             //Inversion of movement
 //          if (gamepad1.x) {
 //              gamepadLeft *= -1;
-//              gamepad1_right *= -1;
+//              gamepadRightY *= -1;
 //        }
               //End of Movement Modifiers
 

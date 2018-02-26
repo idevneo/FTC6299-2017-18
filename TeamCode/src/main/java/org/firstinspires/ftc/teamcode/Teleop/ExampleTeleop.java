@@ -49,25 +49,16 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
-@Disabled
 @TeleOp(name="manip and lift", group="Linear Opmode")
 public class ExampleTeleop extends MyOpMode {
 
     float gamepadLeft;
-    float gamepad1_right;
+    float gamepadRightY;
     double left = 1.0;
     double right = 1.0;
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    DcMotor motorBL;
-    DcMotor motorBR;
-    DcMotor motorFL;
-    DcMotor motorFR;
-    DcMotor manip;
-    DcMotor liftLeft;
-    DcMotor liftRight;
-
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -86,61 +77,16 @@ public class ExampleTeleop extends MyOpMode {
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive())
+        while (opModeIsActive()) {
 
-            telemetry.addData("Left Trigger", gamepad1.left_trigger);
-            telemetry.addData("Right Trigger", gamepad1.right_trigger);
-            telemetry.update();
-
-                if (gamepad1.left_trigger > .15){
-                    manip.setPower(-1);
-
-                } else if (gamepad1.right_trigger > .15 ) {
-                    manip.setPower(1);
-                } else {
-                    manip.setPower(0);
-                }
-
-                if ((Math.abs(gamepad2.left_stick_y) > .05)) {
-                    liftLeft.setPower(-gamepad2.left_stick_y * .5);
-                    liftRight.setPower(gamepad2.left_stick_y * .5);
-                } else {
-                    liftLeft.setPower(0);
-                    liftRight.setPower(0);
-                }
-
-                    //Lift Control + Modification
-//                if (gamepad2.y && bothStix == true) {
-//                    bothStix = false;
-//                    telemetry.addData("bothStix", bothStix);
-//                    telemetry.update();
-//                    sleep(250);
-//                }
-//                if (gamepad2.y && bothStix == false) {
-//                    bothStix = true;
-//                    telemetry.addData("bothStix", bothStix);
-//                    telemetry.update();
-//                    sleep(250);
-//                }
-//                    if ((Math.abs(gamepad2.left_stick_y) > .05)) {
-//                    liftLeft.setPower(-gamepad2.left_stick_y * .5);
-//                    liftRight.setPower(gamepad2.left_stick_y * .5);
-//                } else {
-//                    liftLeft.setPower(0);
-//                    liftRight.setPower(0);
-//                }
-
-//                if (bothStix == true) {
-//                    if ((Math.abs(gamepad2.left_stick_y) > .05)) {
-//                        liftLeft.setPower(-gamepad2.left_stick_y * .5);
-//                    } else {
-//                        liftLeft.setPower(0);
-//                    }
-//                    if ((Math.abs(gamepad2.right_stick_y) > .05)) {
-//                        liftRight.setPower(gamepad2.right_stick_y * .5);
-//                    } else {
-//                        liftRight.setPower(0);
-//                    }
-//                }
-                }
+            telemetry.addData("Left X", gamepad1.left_stick_x);
+            telemetry.addData("Left Y", gamepad1.left_stick_y);
+            double AngleLStick = Math.toDegrees(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x));
+            if (AngleLStick < 0) {
+                AngleLStick += 360;
             }
+            telemetry.addData("AngleLStick", AngleLStick);
+            telemetry.update();
+        }
+    }
+}
