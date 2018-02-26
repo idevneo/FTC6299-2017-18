@@ -49,7 +49,7 @@ public class Plz extends MyOpMode {
 
     // Declare OpMode members.
     double gamepadLeft;
-    double gamepad1_right;
+    double gamepadRightY;
 
     double left = 1;
     double right = 1;
@@ -86,10 +86,10 @@ public class Plz extends MyOpMode {
 
             if (!slow) {
                 gamepadLeft = gamepad1.left_stick_y;
-                gamepad1_right = gamepad1.right_stick_y;
+                gamepadRightY = gamepad1.right_stick_y;
             } else {
                 gamepadLeft = gamepad1.left_stick_y * .35;
-                gamepad1_right = gamepad1.right_stick_y* .35;
+                gamepadRightY = gamepad1.right_stick_y* .35;
             }
 
             telemetry.addData("slow", slow);
@@ -100,8 +100,8 @@ public class Plz extends MyOpMode {
             if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
                 motorFL.setPower(gamepadLeft);
                 motorBL.setPower(gamepadLeft);
-                motorFR.setPower(-gamepad1_right);
-                motorBR.setPower(-gamepad1_right);
+                motorFR.setPower(-gamepadRightY);
+                motorBR.setPower(-gamepadRightY);
             } else if (gamepad1.dpad_left) {
                 motorFL.setPower(left);
                 motorBL.setPower(-left);
@@ -209,7 +209,7 @@ public class Plz extends MyOpMode {
             //Inversion of movement
 //          if (gamepad1.x) {
 //              gamepadLeft *= -1;
-//              gamepad1_right *= -1;
+//              gamepadRightY *= -1;
 //        }
               //End of Movement Modifiers
 

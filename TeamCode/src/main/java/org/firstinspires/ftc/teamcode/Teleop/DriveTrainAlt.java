@@ -60,7 +60,7 @@ public class DriveTrainAlt extends LinearOpMode {
     DcMotor motorBR;
 
     double gamepadLeft= 0.0;
-    double gamepad1_right = 0.0;
+    double gamepadRightY = 0.0;
     double left = 0.0;
     double right = 0.0;
     @Override
@@ -76,7 +76,7 @@ public class DriveTrainAlt extends LinearOpMode {
         waitForStart();
 
         gamepadLeft = gamepad1.left_stick_y;
-        gamepad1_right = gamepad1.right_stick_y;
+        gamepadRightY = gamepad1.right_stick_y;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             if (Math.abs(gamepad1.left_stick_y) > .05 ) {
