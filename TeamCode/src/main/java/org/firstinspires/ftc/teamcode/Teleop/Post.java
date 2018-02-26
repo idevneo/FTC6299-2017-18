@@ -19,7 +19,7 @@ public class Post extends MyOpMode {
 
     double strafeSpeed = 1;
     double strafeMod = .25;
-    double turnSpeed = .5;
+    double turnSpeed = .5; //Speed Manipulated by buttons.
     double mWS = 0;
     boolean slow = false;
 
@@ -50,10 +50,11 @@ public class Post extends MyOpMode {
                 gamepadLeftX = gamepad1.left_stick_x;
                 gamepadRightX = gamepad1.right_stick_x;
                 gamepadRightY = gamepad1.right_stick_y;
+                turnSpeed = .5;
             } else {
                 gamepadLeftY = gamepad1.left_stick_y * .35;
                 gamepadLeftX = gamepad1.left_stick_x * .35;
-                gamepadRightY = gamepad1.right_stick_y * .35;
+                gamepadRightX = gamepad1.right_stick_x * .35;
                 turnSpeed = .15;
             }
 
