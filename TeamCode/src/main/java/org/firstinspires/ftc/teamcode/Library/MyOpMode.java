@@ -60,6 +60,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static ModernRoboticsI2cRangeSensor rangeF;
 
     public char column;
+    private boolean align;
 
     public String formatAngle(AngleUnit angleUnit, double angle) { //Formats the IMU Angle data into strings that can pass into telemetry.
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
@@ -217,6 +218,13 @@ public abstract class MyOpMode extends LinearOpMode {
         Thread.sleep(milliseconds);
     }
 
+    public void setMotorsAll(double linear, double strafe, double turn) {
+        motorFL.setPower(linear - strafe + turn); //Figure out the combinations for the setting of power.
+        motorBL.setPower(linear - strafe + turn);
+        motorFR.setPower(linear - strafe + turn);
+        motorBR.setPower(linear - strafe + turn);
+    }
+
     public void setMotors(double left, double right) { //Moves forward when both values are positive.
         if (!opModeIsActive())
             return;
@@ -360,26 +368,21 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar) { //Moving forward/backwards using a Range Sensor.
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-//      double differenceDis;
-//      double kP = .025; //to be determined
         double pow;
 
         double localRange;
-        while (((sensor < inAway - .35) || (sensor > inAway + .35)) && opModeIsActive()) { //While sensor isn't in the desired position, run.
+        while (((sensor < inAway - .35) || (sensor > inAway + .35)) && opModeIsActive() && align) { //While sensor isn't in the desired position, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
+            if (gamepad1.x)
+                align = false;
             while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
                 //If a faulty value is detected, don't update our used variable till a good one is found.
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
             sensor = localRange; //Sets all working and usable values into a variable we can utilize.
 
-//          differenceDis = Math.abs(sensor - inAway);
-//          pow = differenceDis*kP;
+
             pow = .15;
-//            if (pow > .2)
-//                pow = .2;
-//            if (pow < .1)
-//                pow = .1;
 
             if (sensor > inAway) { //If the sensor value is greater than the target, move forward.
                 setMotors(pow, pow);

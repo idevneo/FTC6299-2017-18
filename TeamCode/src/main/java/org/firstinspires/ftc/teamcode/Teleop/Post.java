@@ -21,7 +21,9 @@ public class Post extends MyOpMode {
     double strafeMod = .25;
     double turnSpeed = .5; //Speed Manipulated by buttons.
     double mWS = 0;
+
     boolean slow = false;
+    boolean align = false;
 
     @Override
     public void runOpMode() {
@@ -66,7 +68,7 @@ public class Post extends MyOpMode {
             if (AngleRStick < 0) {
                 AngleRStick += 360;
             }
-
+            telemetry.addData("align", align);
             telemetry.addData("slow", slow);
             telemetry.addData("Power", gamepadLeftY);
             telemetry.update();
@@ -102,10 +104,11 @@ public class Post extends MyOpMode {
                 motorBL.setPower(.25);
                 motorFR.setPower(-.25);
                 motorBR.setPower(-.25);
-            } else if (gamepad1.b) {
-                setMotors(turnSpeed, -turnSpeed); //Turns right
-            } else if (gamepad1.x) {
-                setMotors(-turnSpeed, turnSpeed); //Turns left
+            } else if (gamepad1.x && delay.time() > .5) { //Lines up with the crypto-box for placement of glyph.
+                if (!align) {
+                    align = true;
+                    rangeMovePID(7, rangeF);
+                }
             }
             else {
                 motorFL.setPower(0);
