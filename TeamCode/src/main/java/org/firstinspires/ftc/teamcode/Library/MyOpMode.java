@@ -219,11 +219,14 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void setMotorsAll(double linear, double strafe, double turn) {
+
         motorFL.setPower(linear - strafe + turn); //Figure out the combinations for the setting of power.
         motorBL.setPower(linear - strafe + turn);
         motorFR.setPower(linear - strafe + turn);
         motorBR.setPower(linear - strafe + turn);
     }
+
+
 
     public void setMotors(double left, double right) { //Moves forward when both values are positive.
         if (!opModeIsActive())
