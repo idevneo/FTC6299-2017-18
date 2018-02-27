@@ -110,6 +110,7 @@ public class SensorBNO055IMU extends LinearOpMode
     //----------------------------------------------------------------------------------------------
     // Telemetry Configuration
     //----------------------------------------------------------------------------------------------
+
     void composeTelemetry() {
 
         // At the beginning of each telemetry update, grab a bunch of data
@@ -123,6 +124,7 @@ public class SensorBNO055IMU extends LinearOpMode
                 gravity  = imu.getGravity();
                 }
             });
+
         telemetry.addLine()
             .addData("status", new Func<String>() {
                 @Override public String value() {

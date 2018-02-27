@@ -8,8 +8,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@Autonomous(name = "AltRedLeft", group = "Sensor")
-
+@Autonomous(name = "AltRedLeft", group = "Linear Opmode")
+@Disabled
 public class AltRedLeft extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -53,7 +53,7 @@ public class AltRedLeft extends MyOpMode {
         stopMotors();
         sleep(100);
         try {
-            turnCorr2(0.1,-85, 7000);
+            turnCorr(0.1,-85, 7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -91,7 +91,7 @@ public class AltRedLeft extends MyOpMode {
         manip.setPower(0);
 
         try {
-            turnCorr2(0.1,85, 7000);
+            turnCorr(0.1,85, 7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -103,7 +103,7 @@ public class AltRedLeft extends MyOpMode {
         manip.setPower(0);
 
         try {
-            turnCorr2(0.1,-85, 7000);
+            turnCorr(0.1,-85, 7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

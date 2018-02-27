@@ -20,8 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@Autonomous(name = "AutoRedRight", group = "Sensor")
-                            // Comment this out to add to the opmode list
+@Autonomous(name = "AutoRedRight", group = "Linear Opmode")
 public class AutoRedRight extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -32,33 +31,13 @@ public class AutoRedRight extends MyOpMode {
         hMap(hardwareMap);
         // Set up our telemetry dashboard
 //        composeTelemetry();
-        // Wait until we're told to go
 
+        // Wait until we're told to go
         waitForStart();
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
-        // Start the logging of measured acceleration
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-
         vfValue();
-
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.4);
-        sleep(750);
-        jewelArm.setPosition(.15);
-        sleep(1000);
-        if (jewelColor.red() > jewelColor.blue()) {
-            jewelHand.setPosition((.3));
-        } else if (jewelColor.red() < jewelColor.blue()) {
-            jewelHand.setPosition((.6));
-        }
-        sleep(500);
-
-        jewelArm.setPosition(.6);
-        jewelHand.setPosition(.45);
-        sleep(1000);
-        jewelHand.setPosition(.3);
-        sleep(500);
+        jewelKnockerRed();
 
         setMotors(.25,.25);
         sleep(1000);
@@ -66,14 +45,9 @@ public class AutoRedRight extends MyOpMode {
 
         rangeMoveStrafe(3.5, rangeR, 0);
         sleep(1000);
-        rangeMovePID(8, rangeF);
+        rangeMovePID(10, rangeF);
         sleep(500);
-//        try {
-//            turn(.25, 0.1);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        sleep(1000);
+
         rangeMoveStrafe(26.75, rangeR, 0);
         sleep(750);
 
