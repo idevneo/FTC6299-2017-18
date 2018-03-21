@@ -372,7 +372,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar) { //Moving forward/backwards using a Range Sensor.
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
         double pow;
-
+    // need to figure out how to get it in the method from teleop.
         double localRange;
         while (((sensor < inAway - .35) || (sensor > inAway + .35)) && opModeIsActive() && align) { //While sensor isn't in the desired position, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);

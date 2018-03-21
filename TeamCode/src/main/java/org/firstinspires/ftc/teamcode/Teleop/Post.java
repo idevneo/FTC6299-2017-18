@@ -70,7 +70,7 @@ public class Post extends MyOpMode {
             }
             telemetry.addData("align", align);
             telemetry.addData("slow", slow);
-            telemetry.addData("Power", gamepadLeftY);
+            telemetry.addData("Power Test", gamepadRightX);
             telemetry.update();
 
             /**Movement (Gamepad 1: Left Stick, Right Stick, DPAD, b) */
@@ -89,25 +89,25 @@ public class Post extends MyOpMode {
                 }
                 setMotorStrafe(gamepadLeftX);
             }
-            else if (315 < AngleLStick && AngleLStick < 360 || 0 <= AngleLStick && AngleLStick < 45) { //TURNING RIGHT
+            if (275 < AngleRStick && AngleRStick < 360 || 0 <= AngleRStick && AngleRStick < 85) { //TURNING RIGHT
                 setMotors(Math.abs(gamepadRightX), -Math.abs(gamepadRightX));
             }
-            else if (225 <= AngleRStick && AngleRStick <= 315) { //TURNING LEFT
+            else if (85 <= AngleRStick && AngleRStick <= 275) { //TURNING LEFT
                 setMotors(-Math.abs(gamepadRightX), Math.abs(gamepadRightX));
             }
 
-            // this is to try and drive forward / backwards and turn at the same time
-            else if ((315 < AngleLStick && AngleLStick < 360 || 0 <= AngleLStick && AngleLStick < 45) && (45 <= AngleLStick && AngleLStick <= 135) ) { //forwards or backwards and right turn
-                motorBL.setPower(gamepadLeftY);
-                motorFR.setPower(-gamepadLeftY / 2);
-                motorBR.setPower(-gamepadLeftY / 2);
-            }
-            else if ((225 <= AngleRStick && AngleRStick <= 315) && (45 <= AngleLStick && AngleLStick <= 135) ){ // forward or backwards and left turn
-                motorFL.setPower(gamepadLeftY / 2);
-                motorBL.setPower(gamepadLeftY / 2);
-                motorFR.setPower(-gamepadLeftY);
-                motorBR.setPower(-gamepadLeftY);
-            }
+//            // this is to try and drive forward / backwards and turn at the same time
+//            else if ((315 < AngleLStick && AngleLStick < 360 || 0 <= AngleLStick && AngleLStick < 45) && (45 <= AngleLStick && AngleLStick <= 135) ) { //forwards or backwards and right turn
+//                motorBL.setPower(gamepadLeftY);
+//                motorFR.setPower(-gamepadLeftY / 2);
+//                motorBR.setPower(-gamepadLeftY / 2);
+//            }
+//            else if ((225 <= AngleRStick && AngleRStick <= 315) && (45 <= AngleLStick && AngleLStick <= 135) ){ // forward or backwards and left turn
+//                motorFL.setPower(gamepadLeftY / 2);
+//                motorBL.setPower(gamepadLeftY / 2);
+//                motorFR.setPower(-gamepadLeftY);
+//                motorBR.setPower(-gamepadLeftY);
+//            }
 
             else if (gamepad1.left_bumper) { //Moves forwards/backwards slowly
                 motorFL.setPower(-.25);
