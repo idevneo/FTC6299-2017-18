@@ -23,7 +23,7 @@ public class Post extends MyOpMode {
     double mWS = 0;
 
     boolean slow = false;
-    boolean align = false;
+
 
     @Override
     public void runOpMode() {
@@ -40,6 +40,9 @@ public class Post extends MyOpMode {
 
         ElapsedTime relicDelay = new ElapsedTime();
         relicDelay.reset();
+
+        align = false;
+        xDelay.reset();
 
         resetStartTime();
         waitForStart();
@@ -119,7 +122,7 @@ public class Post extends MyOpMode {
                 motorBL.setPower(.25);
                 motorFR.setPower(-.25);
                 motorBR.setPower(-.25);
-            } else if (gamepad1.x && delay.time() > .5) { //Lines up with the crypto-box for placement of glyph.
+            } else if (gamepad1.x && xDelay.time() > .5) { //Lines up with the crypto-box for placement of glyph.
                 if (!align) {
                     align = true;
                     rangeMovePID(7, rangeF);

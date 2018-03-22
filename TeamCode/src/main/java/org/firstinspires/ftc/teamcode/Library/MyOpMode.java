@@ -60,7 +60,9 @@ public abstract class MyOpMode extends LinearOpMode {
     public static ModernRoboticsI2cRangeSensor rangeF;
 
     public char column;
-    private boolean align;
+    public static boolean align;
+
+    public ElapsedTime xDelay = new ElapsedTime();
 
     public String formatAngle(AngleUnit angleUnit, double angle) { //Formats the IMU Angle data into strings that can pass into telemetry.
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
@@ -372,13 +374,17 @@ public abstract class MyOpMode extends LinearOpMode {
     public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar) { //Moving forward/backwards using a Range Sensor.
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
         double pow;
-    // need to figure out how to get it in the method from teleop.
         double localRange;
         while (((sensor < inAway - .35) || (sensor > inAway + .35)) && opModeIsActive() && align) { //While sensor isn't in the desired position, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            if (gamepad1.x)
+            if (gamepad1.x && xDelay.time() > .5)
                 align = false;
-            while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
+                xDelay.reset();
+
+            while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive() && align) {
+                if (gamepad1.x && xDelay.time()> .5 )
+                    align = false;
+                    xDelay.reset();
                 //If a faulty value is detected, don't update our used variable till a good one is found.
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
