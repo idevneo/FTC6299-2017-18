@@ -29,6 +29,7 @@ public class AutoRedRight extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         hMap(hardwareMap);
+        align = true;
         // Set up our telemetry dashboard
 //        composeTelemetry();
 
