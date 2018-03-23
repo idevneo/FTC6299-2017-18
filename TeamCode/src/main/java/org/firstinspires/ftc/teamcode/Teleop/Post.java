@@ -136,12 +136,6 @@ public class Post extends MyOpMode {
                     rangeMovePID(7, rangeF);
                 }
             }
-            else {
-                motorFL.setPower(0);
-                motorBL.setPower(0);
-                motorFR.setPower(0);
-                motorBR.setPower(0);
-            }
 
             //Increasing/decreasing strafing power
             if (gamepad1.dpad_up && strafeSpeed <= .75) {
@@ -177,11 +171,6 @@ public class Post extends MyOpMode {
                     slow = false;
                 }
             }
-            //Inversion of movement
-//          if (gamepad1.x) {
-//              gamepadLeft *= -1;
-//              gamepadRightY *= -1;
-//        }
               //End of Movement Modifiers
 
             /**Manipulator (Gamepad 1,2: Right Trigger, Left Trigger) */
