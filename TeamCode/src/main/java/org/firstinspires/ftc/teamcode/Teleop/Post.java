@@ -56,6 +56,9 @@ public class Post extends MyOpMode {
             if (liner != 0 || straf != 0 || turno != 0) {
                 setMotorsAll(liner, straf, turno);
             }
+            else {
+                stopMotors();
+            }
 
             if (!slow) {
                 gamepadLeftY = gamepad1.left_stick_y;
@@ -80,6 +83,9 @@ public class Post extends MyOpMode {
             }
             telemetry.addData("align", align);
             telemetry.addData("slow", slow);
+            telemetry.addData("X", gamepad1.x);
+            telemetry.addData("xDelay", xDelay);
+
             telemetry.addData("Power Test", gamepadRightX);
             telemetry.update();
 
@@ -108,11 +114,11 @@ public class Post extends MyOpMode {
             else {
                 straf = 0;
             }
-            if (275 < AngleRStick && AngleRStick < 360 || 0 <= AngleRStick && AngleRStick < 85) { //TURNING RIGHT
+            if (270 < AngleRStick && AngleRStick < 360 || 0 <= AngleRStick && AngleRStick < 89) { //TURNING RIGHT
 //                setMotors(Math.abs(gamepadRightX), -Math.abs(gamepadRightX));
                   turno = gamepadRightX;
         }
-            else if (95 <= AngleRStick && AngleRStick <= 265) { //TURNING LEFT
+            else if (91 <= AngleRStick && AngleRStick <= 269) { //TURNING LEFT
 //                setMotors(-Math.abs(gamepadRightX), Math.abs(gamepadRightX));
                 turno = gamepadRightX;
             }
@@ -130,10 +136,11 @@ public class Post extends MyOpMode {
                 motorBL.setPower(.25);
                 motorFR.setPower(-.25);
                 motorBR.setPower(-.25);
-            } else if (gamepad1.x && xDelay.time() > .5) { //Lines up with the crypto-box for placement of glyph.
+            } else if (gamepad1.x && xDelay.time() > 1) { //Lines up with the crypto-box for placement of glyph.
                 if (!align) {
                     align = true;
                     rangeMovePID(7, rangeF);
+                    align = false;
                 }
             }
 

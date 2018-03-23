@@ -87,13 +87,18 @@ public class Plz extends MyOpMode {
             if (!slow) {
                 gamepadLeft = gamepad1.left_stick_y;
                 gamepad1_right = gamepad1.right_stick_y;
+                left = 1;
+                right = 1;
             } else {
                 gamepadLeft = gamepad1.left_stick_y * .35;
                 gamepad1_right = gamepad1.right_stick_y* .35;
+                left = .25;
+                right = .25;
+
             }
 
             telemetry.addData("slow", slow);
-            telemetry.addData("Power", gamepadLeft);
+            telemetry.addData("Strafe Power", left);
 
             //Movement (Gamepad 1: Left Stick, Right Stick, DPAD, b)
             //Driving forward/backwards
@@ -189,14 +194,10 @@ public class Plz extends MyOpMode {
                 if (gamepad1.a && slow == false) {
                     delay.reset();
                     resetStartTime();
-                    left = .25;
-                    right = .25;
                     slow = true;
                 } else if (gamepad1.a && slow == true) {
                     delay.reset();
                     resetStartTime();
-                    left = 1;
-                    right = 1;
                     slow = false;
                 } else if (gamepad1.y && slow == true) {
                     delay.reset();

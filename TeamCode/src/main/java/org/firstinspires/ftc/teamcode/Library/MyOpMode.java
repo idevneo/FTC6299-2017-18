@@ -60,7 +60,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static ModernRoboticsI2cRangeSensor rangeF;
 
     public char column;
-    public static boolean align;
+    public boolean align;
 
     public ElapsedTime xDelay = new ElapsedTime();
 
@@ -377,12 +377,12 @@ public abstract class MyOpMode extends LinearOpMode {
         double localRange;
         while (((sensor < inAway - .35) || (sensor > inAway + .35)) && opModeIsActive() && align) { //While sensor isn't in the desired position, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            if (gamepad1.x && xDelay.time() > .5)
+            if (gamepad1.x && xDelay.time() > 1)
                 align = false;
                 xDelay.reset();
 
             while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive() && align) {
-                if (gamepad1.x && xDelay.time()> .5 )
+                if (gamepad1.x && xDelay.time()> 1 )
                     align = false;
                     xDelay.reset();
                 //If a faulty value is detected, don't update our used variable till a good one is found.
@@ -422,7 +422,7 @@ public abstract class MyOpMode extends LinearOpMode {
             while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
                 //If a faulty value is detected, don't update our used variable till a good one is found.
                 stopTime.reset();
-                if (stopTime.milliseconds() > 300 && stopTime.milliseconds() < 600) { //Stops the robot from running off of outdated values for too long.
+                if (stopTime.milliseconds() > 150 && stopTime.milliseconds() < 300) { //Stops the robot from running off of outdated values for too long.
                     stopMotors();
                 }
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
