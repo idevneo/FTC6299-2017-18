@@ -60,7 +60,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static ModernRoboticsI2cRangeSensor rangeF;
 
     public char column;
-    private boolean align;
+    public boolean align = false;
 
     public String formatAngle(AngleUnit angleUnit, double angle) { //Formats the IMU Angle data into strings that can pass into telemetry.
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
@@ -220,10 +220,10 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public void setMotorsAll(double linear, double strafe, double turn) {
 
-        motorFL.setPower(linear - strafe + turn); //Figure out the combinations for the setting of power.
-        motorBL.setPower(linear - strafe + turn);
-        motorFR.setPower(linear - strafe + turn);
-        motorBR.setPower(linear - strafe + turn);
+        motorFL.setPower(-linear - turn - strafe);
+        motorBL.setPower(-linear - turn + strafe);
+        motorFR.setPower(linear - turn - strafe);
+        motorBR.setPower(linear - turn + strafe);
     }
 
 

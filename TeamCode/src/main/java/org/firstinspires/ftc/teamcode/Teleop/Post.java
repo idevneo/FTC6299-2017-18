@@ -25,6 +25,9 @@ public class Post extends MyOpMode {
     boolean slow = false;
     boolean align = false;
 
+    double liner = 0;
+    double straf = 0;
+    double turno = 0;
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -46,6 +49,10 @@ public class Post extends MyOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             telemetry.update();
+
+            if (liner != 0 || straf != 0 || turno != 0) {
+                setMotorsAll(liner, straf, turno);
+            }
 
             if (!slow) {
                 gamepadLeftY = gamepad1.left_stick_y;
@@ -75,41 +82,42 @@ public class Post extends MyOpMode {
 
             /**Movement (Gamepad 1: Left Stick, Right Stick, DPAD, b) */
             if (45 <= AngleLStick && AngleLStick <= 135 || 225 <= AngleLStick && AngleLStick <= 315) { //DRIVING FORWARDS/BACKWARDS
-                motorFL.setPower(gamepadLeftY); //In the future make a method which can set powers automatically.
-                motorBL.setPower(gamepadLeftY);
-                motorFR.setPower(-gamepadLeftY);
-                motorBR.setPower(-gamepadLeftY);
-
-                //setMotors(gamepadLeftY, gamepadLeftY);
-            } else if (315 < AngleLStick && AngleLStick < 360 || 0 <= AngleLStick && AngleLStick < 45 || 135 < AngleLStick && AngleLStick < 225) { //STRAFING LEFT/RIGHT
-                if (0 < gamepadLeftX && gamepadLeftX <= .2) { //Make sure the motors don't run at too low a speed.
-                    gamepadLeftX = .25;
-                } else if (-.2 < gamepadLeftX && gamepadLeftX < 0) { //Make sure the motors don't run at too low a speed.
-                    gamepadLeftX = -.25;
-                }
-                setMotorStrafe(gamepadLeftX);
-            }
-            if (275 < AngleRStick && AngleRStick < 360 || 0 <= AngleRStick && AngleRStick < 85) { //TURNING RIGHT
-                setMotors(Math.abs(gamepadRightX), -Math.abs(gamepadRightX));
-            }
-            else if (85 <= AngleRStick && AngleRStick <= 275) { //TURNING LEFT
-                setMotors(-Math.abs(gamepadRightX), Math.abs(gamepadRightX));
-            }
-
-//            // this is to try and drive forward / backwards and turn at the same time
-//            else if ((315 < AngleLStick && AngleLStick < 360 || 0 <= AngleLStick && AngleLStick < 45) && (45 <= AngleLStick && AngleLStick <= 135) ) { //forwards or backwards and right turn
+//                motorFL.setPower(gamepadLeftY);
 //                motorBL.setPower(gamepadLeftY);
-//                motorFR.setPower(-gamepadLeftY / 2);
-//                motorBR.setPower(-gamepadLeftY / 2);
-//            }
-//            else if ((225 <= AngleRStick && AngleRStick <= 315) && (45 <= AngleLStick && AngleLStick <= 135) ){ // forward or backwards and left turn
-//                motorFL.setPower(gamepadLeftY / 2);
-//                motorBL.setPower(gamepadLeftY / 2);
 //                motorFR.setPower(-gamepadLeftY);
 //                motorBR.setPower(-gamepadLeftY);
-//            }
+                liner = -1*gamepadLeftY;
+                //setMotors(gamepadLeftY, gamepadLeftY);
+            } else {
+                liner = 0;
+            }
+            if (315 < AngleLStick && AngleLStick < 360 || 0 <= AngleLStick && AngleLStick < 45 || 135 < AngleLStick && AngleLStick < 225) { //STRAFING LEFT/RIGHT
+                if (0 < gamepadLeftX && gamepadLeftX <= .2) { //Make sure the motors don't run at too low a speed.
+//                    gamepadLeftX = .25;
+                    straf = .25;
+                } else if (-.2 < gamepadLeftX && gamepadLeftX < 0) { //Make sure the motors don't run at too low a speed.
+//                    gamepadLeftX = -.25;
+                    straf = -.25;
+                }
+//                setMotorStrafe(gamepadLeftX);
+                straf = gamepadLeftX;
+            }
+            else {
+                straf = 0;
+            }
+            if (275 < AngleRStick && AngleRStick < 360 || 0 <= AngleRStick && AngleRStick < 85) { //TURNING RIGHT
+//                setMotors(Math.abs(gamepadRightX), -Math.abs(gamepadRightX));
+                  turno = gamepadRightX;
+        }
+            else if (95 <= AngleRStick && AngleRStick <= 265) { //TURNING LEFT
+//                setMotors(-Math.abs(gamepadRightX), Math.abs(gamepadRightX));
+                turno = gamepadRightX;
+            }
+            else {
+                turno = 0;
+            }
 
-            else if (gamepad1.left_bumper) { //Moves forwards/backwards slowly
+             if (gamepad1.left_bumper) { //Moves forwards/backwards slowly
                 motorFL.setPower(-.25);
                 motorBL.setPower(-.25);
                 motorFR.setPower(.25);
@@ -119,12 +127,12 @@ public class Post extends MyOpMode {
                 motorBL.setPower(.25);
                 motorFR.setPower(-.25);
                 motorBR.setPower(-.25);
-            } else if (gamepad1.x && delay.time() > .5) { //Lines up with the crypto-box for placement of glyph.
-                if (!align) {
-                    align = true;
-                    rangeMovePID(7, rangeF);
-                }
             }
+//              else if (gamepad1.x && delay.time() > .5) { //Lines up with the crypto-box for placement of glyph.
+//                if (!align) {
+//                    align = true;
+//                    rangeMovePID(7, rangeF);
+//                }
             else {
                 motorFL.setPower(0);
                 motorBL.setPower(0);
