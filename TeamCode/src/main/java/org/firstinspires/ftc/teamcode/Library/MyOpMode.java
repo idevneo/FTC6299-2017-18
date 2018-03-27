@@ -377,14 +377,22 @@ public abstract class MyOpMode extends LinearOpMode {
         double localRange;
         while (((sensor < inAway - .35) || (sensor > inAway + .35)) && opModeIsActive() && align) { //While sensor isn't in the desired position, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            if (gamepad1.x && xDelay.time() > .5)
+            if (gamepad1.x && xDelay.time() > .5) {
+                stopMotors();
                 align = false;
                 xDelay.reset();
-
+            }
             while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive() && align) {
-                if (gamepad1.x && xDelay.time()> .5 )
+                if (gamepad1.x && xDelay.time() > .5) {
                     align = false;
                     xDelay.reset();
+                 }
+                 else if (!gamepad1.atRest()) { //Supposed to make the loop exit if joysticks are pressed.
+                    stopMotors();
+                    align = false;
+
+                }
+
                 //If a faulty value is detected, don't update our used variable till a good one is found.
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
