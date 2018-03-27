@@ -136,9 +136,10 @@ public class Post extends MyOpMode {
                 motorBL.setPower(.25);
                 motorFR.setPower(-.25);
                 motorBR.setPower(-.25);
-            } else if (gamepad1.x && xDelay.time() > 1) { //Lines up with the crypto-box for placement of glyph.
+            } else if (gamepad1.x && xDelay.time() > .5) { //Lines up with the crypto-box for placement of glyph.
                 if (!align) {
                     align = true;
+                    xDelay.reset();
                     rangeMovePID(7, rangeF);
                     align = false;
                 }
