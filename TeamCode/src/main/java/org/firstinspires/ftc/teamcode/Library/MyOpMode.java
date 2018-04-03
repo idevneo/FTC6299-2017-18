@@ -520,6 +520,48 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
+    public double setTurn(double deg) { //Turns to a desired angle using the IMU in teleop.
+        double turnPow = 0;
+        double error;
+        double errorMove;
+        double pd = .0055;
+
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // currPos is the current position
+
+        if ((currPos > deg + 1 || currPos < deg - 1) && opModeIsActive()) { //While sensor isn't in the desired angle position, run.
+            error = deg - currPos; //Finding how far away we are from the target position.
+            errorMove = Math.abs(deg - currPos);
+            if (error > 180) {
+                error = error - 360;
+            } else if (error < -180) {
+                error = error + 360;
+            }
+
+            //The following code allows us to turn in the direction we need, and if we cross the axis
+            //at which 180 degrees becomes -180, our robot can turn back in the direction which is closest
+            //to the position we wish to be at (We won't make a full rotation to get to -175, if we hit 180).
+            if (currPos < deg) { //FIX TURNING PATHS
+                if (errorMove < 180) {
+                    turnPow = (pd * error); //Turns left
+                }
+                if (errorMove > 180) {
+                    turnPow = (pd * error); //Turns right if we go past the pos/neg mark.
+                }
+            } else if (currPos > deg) {
+                if (errorMove < 180) {
+                    turnPow = (pd * error); //Turns right
+                }
+                if (errorMove > 180) {
+                    turnPow = (pd * error); //Turns left if we go past the pos/neg mark.
+                }
+            }
+
+        }
+        return turnPow;
+
+    }
+
     public void jewelKnockerRed() { //Jewel Knocker code for the autonomous on the red side.
         //Hits the blue jewel.
         jewelArm.setPosition(.6);

@@ -79,13 +79,13 @@ public class ExampleTeleop extends MyOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            telemetry.addData("Left X", gamepad1.left_stick_x);
-            telemetry.addData("Left Y", gamepad1.left_stick_y);
-            double AngleLStick = Math.toDegrees(Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x));
+            telemetry.addData(" X", gamepad1.right_stick_x);
+            telemetry.addData(" Y", gamepad1.right_stick_y);
+            double AngleLStick = Math.toDegrees(Math.atan2(gamepad1.right_stick_y, gamepad1.right_stick_x));
             if (AngleLStick < 0) {
                 AngleLStick += 360;
             }
-            telemetry.addData("AngleLStick", AngleLStick);
+            telemetry.addData("AngleRStick", AngleLStick);
             telemetry.update();
         }
     }
