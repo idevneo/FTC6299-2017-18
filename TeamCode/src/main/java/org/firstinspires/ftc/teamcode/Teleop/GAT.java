@@ -105,16 +105,12 @@ public class GAT extends MyOpMode {
             if (AngleRStick < 0) {
                 AngleRStick += 360;
             }
-            telemetry.addData("align", align);
+
             telemetry.addData("slow", slow);
             telemetry.addData("turn speed", turno);
-            telemetry.addData("Angle", AngleRStick);
-            telemetry.addData("Angle B180", AngleRStick-180);
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             double telemA = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
             telemetry.addData("Gyro", telemA);
-
-            telemetry.addData("Power Test", gamepadRightX);
             telemetry.update();
 
             /**Movement (Gamepad 1: Left Stick, Right Stick, DPAD, b) */
@@ -145,6 +141,9 @@ public class GAT extends MyOpMode {
 
             if (Double.isNaN(AngleRStick) || (AngleRStick == 180 && gamepad1.right_stick_x != 1)) {
                 turno=0; }
+            else if (liner != 0 || straf != 0) {
+                turno = setTurn(AngleRStick - 180) * 3.25;
+            }
             else {
                 turno = setTurn(AngleRStick - 180); }
 

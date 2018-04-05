@@ -543,20 +543,26 @@ public abstract class MyOpMode extends LinearOpMode {
             //to the position we wish to be at (We won't make a full rotation to get to -175, if we hit 180).
             if (currPos < deg) { //FIX TURNING PATHS
                 if (errorMove < 180) {
-                    turnPow = (pd * error); //Turns left
+                    turnPow = - Math.abs(pd * error); //Turns left
                 }
                 if (errorMove > 180) {
-                    turnPow = (pd * error); //Turns right if we go past the pos/neg mark.
+                    turnPow = Math.abs(pd * error); //Turns right if we go past the pos/neg mark.
                 }
             } else if (currPos > deg) {
                 if (errorMove < 180) {
-                    turnPow = (pd * error); //Turns right
+                    turnPow = Math.abs(pd * error); //Turns right
                 }
                 if (errorMove > 180) {
-                    turnPow = (pd * error); //Turns left if we go past the pos/neg mark.
+                    turnPow = - Math.abs(pd * error); //Turns left if we go past the pos/neg mark.
                 }
             }
 
+        }
+        if (turnPow < 0 && -.075< turnPow) {
+            turnPow = -.075;
+        }
+        else if (turnPow > 0 && .075 > turnPow) {
+            turnPow = .075;
         }
         return turnPow;
 

@@ -81,12 +81,9 @@ public class Post extends MyOpMode {
             if (AngleRStick < 0) {
                 AngleRStick += 360;
             }
-            telemetry.addData("align", align);
-            telemetry.addData("slow", slow);
-            telemetry.addData("X", gamepad1.x);
-            telemetry.addData("xDelay", xDelay);
 
-            telemetry.addData("Power Test", gamepadRightX);
+            telemetry.addData("slow", slow);
+            telemetry.addData("TurnPow", setTurn(AngleRStick-180));
             telemetry.update();
 
             /**Movement (Gamepad 1: Left Stick, Right Stick, DPAD, b) */
