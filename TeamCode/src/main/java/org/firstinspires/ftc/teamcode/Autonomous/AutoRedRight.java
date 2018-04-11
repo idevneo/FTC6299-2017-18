@@ -29,6 +29,12 @@ public class AutoRedRight extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         hMap(hardwareMap);
+        while (!isStopRequested() && !imu.isGyroCalibrated()) {
+            sleep(50);
+            idle();
+            telemetry.addLine("Initializing IMU...");
+            telemetry.update();
+        }
         align = true;
         // Set up our telemetry dashboard
 //        composeTelemetry();
@@ -40,7 +46,7 @@ public class AutoRedRight extends MyOpMode {
         vfValue();
         jewelKnockerRed();
 
-        setMotors(.25,.25);
+        setMotorsAll(.25,0,0);
         sleep(1000);
         stopMotors();
 
@@ -56,20 +62,19 @@ public class AutoRedRight extends MyOpMode {
 
         manipAuto(-.75);
         sleep(500);
-
         manipAuto(-.75);
 
 //back up, push forward, back up
-        setMotors(-.2, -.2);
+        setMotorsAll(-.2,0,0);
         sleep(250);
         stopMotors();
 
         manip.setPower(-1);
-        setMotors(.4, .4);
+        setMotorsAll(.4,0,0);
         sleep(250);
         stopMotors();
 
-        setMotors(-.2, -.2);
+        setMotorsAll(-.2,0,0);
         sleep(250);
         stopMotors();
         manip.setPower(0);

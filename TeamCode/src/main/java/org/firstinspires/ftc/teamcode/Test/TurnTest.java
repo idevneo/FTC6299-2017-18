@@ -53,8 +53,8 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 
 @Autonomous(name="TurnTest", group="Test")
+@Disabled
 public class TurnTest extends MyOpMode {
-
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override

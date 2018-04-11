@@ -16,6 +16,12 @@ public class AutoBlueRight extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         hMap(hardwareMap);
+        while (!isStopRequested() && !imu.isGyroCalibrated()) {
+            sleep(50);
+            idle();
+            telemetry.addLine("Initializing IMU...");
+            telemetry.update();
+        }
         align = true;
         // Set up our telemetry dashboard
 //        composeTelemetry();
@@ -27,24 +33,19 @@ public class AutoBlueRight extends MyOpMode {
         vfValue();
         jewelKnockerBlue();
 
-        setMotors(-.4, -.4);
+        setMotorsAll(-.4, 0, 0);
         sleep(1000);
         stopMotors();
         sleep(100);
 
-       try {
-           turnCorr(0.1,-85, 7000);
-       } catch (InterruptedException e) {
-           e.printStackTrace();
-       }
+       setTurnAuto(-85);
         sleep(1000);
 
-
-        setMotorStrafe(-.4);
+        setMotorsAll(0,-.4,0);
         sleep(800);
         stopMotors();
 
-        setMotorStrafe(.4);
+        setMotorsAll(0,.4,0);
         sleep(825);
         stopMotors();
 
@@ -54,20 +55,19 @@ public class AutoBlueRight extends MyOpMode {
 
         manipAuto(-.75);
         sleep(500);
-
         manipAuto(-.75);
 
 //back up, push forward, back up
-        setMotors(-.2, -.2);
+        setMotorsAll(-.2,0,0);
         sleep(250);
         stopMotors();
 
         manip.setPower(-1);
-        setMotors(.3, .3);
+        setMotorsAll(.3,0,0);
         sleep(250);
         stopMotors();
 
-        setMotors(-.2, -.2);
+        setMotorsAll(-.2,0,0);
         sleep(250);
         stopMotors();
         manip.setPower(0);

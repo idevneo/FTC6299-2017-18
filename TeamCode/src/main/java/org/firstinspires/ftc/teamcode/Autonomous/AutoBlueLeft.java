@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
@@ -17,6 +20,13 @@ public class AutoBlueLeft extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         hMap(hardwareMap);
+        while (!isStopRequested() && !imu.isGyroCalibrated()) {
+            sleep(50);
+            idle();
+            telemetry.addLine("Initializing IMU...");
+            telemetry.update();
+        }
+
         align = true;
         // Set up our telemetry dashboard
 //        composeTelemetry();
@@ -28,19 +38,16 @@ public class AutoBlueLeft extends MyOpMode {
         vfValue();
         jewelKnockerBlue();
 
-        setMotors(-.25, -.25);
+        setMotorsAll(-.25,0,0);
         sleep(1550);
         stopMotors();
 
         rangeMoveStrafe(26.25, rangeR,0);
         sleep(350);
 
-        try {
-            turnCorr(.25, -178, 5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        sleep(1000);
+
+        setTurnAuto(-178);
+        sleep(500);
         telemetry.addData(formatAngle(angles.angleUnit, angles.firstAngle),"Angle");
         vfMovePar('b',rangeL, 1);
 
@@ -48,20 +55,19 @@ public class AutoBlueLeft extends MyOpMode {
 
         manipAuto(-.75);
         sleep(500);
-
         manipAuto(-.75);
 
 //back up, push forward, back up
-        setMotors(-.2, -.2);
+        setMotorsAll(-.2,0,0);
         sleep(250);
         stopMotors();
 
         manip.setPower(-1);
-        setMotors(.4, .4);
+        setMotorsAll(.4,0,0);
         sleep(250);
         stopMotors();
 
-        setMotors(-.2, -.2);
+        setMotorsAll(-.2,0,0);
         sleep(250);
         stopMotors();
         manip.setPower(0);

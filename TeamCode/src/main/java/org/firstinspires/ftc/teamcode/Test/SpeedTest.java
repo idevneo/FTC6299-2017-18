@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Test;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 @Autonomous(name = "Speed Test aut", group = "Test") // Comment this out to add to the opmode list
+@Disabled
 public class SpeedTest extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
