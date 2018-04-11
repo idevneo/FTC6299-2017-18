@@ -533,7 +533,7 @@ public abstract class MyOpMode extends LinearOpMode {
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
             if ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
-                pow =.1;
+                pow = .1;
                 if (bSet == 0) {
                     if (sensor > inAway) {
                         return pow;
@@ -551,6 +551,7 @@ public abstract class MyOpMode extends LinearOpMode {
                     if (sensor < inAway) {
                         return pow;
                     }
+                }
             }
             sensor = localRange; //Sets all working and usable values into a variable we can utilize.
 
