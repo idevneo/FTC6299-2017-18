@@ -52,7 +52,6 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 
 @Autonomous(name="StrafeTest", group="Test")
-@Disabled
 public class Strafe extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -62,8 +61,14 @@ public class Strafe extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         hMap(hardwareMap);
+        while (!isStopRequested() && !imu.isGyroCalibrated()) {
+            sleep(50);
+            idle();
+            telemetry.addLine("Initializing IMU...");
+            telemetry.update();
+        }
         // Set up our telemetry dashboard
-        composeTelemetry();
+//        composeTelemetry();
         // Wait until we're told to go
 
         waitForStart();
@@ -71,6 +76,6 @@ public class Strafe extends MyOpMode {
         // run until the end of the match (driver presses STOP)
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        rangeMoveStrafe(10, rangeL,1);
+        setStrafeAuto(20, rangeR, 0, 1);
     }
 }

@@ -42,13 +42,13 @@ public class AutoBlueLeft extends MyOpMode {
         sleep(1550);
         stopMotors();
 
-        rangeMoveStrafe(26.25, rangeR,0);
+        setStrafeAuto(26.25, rangeR, 0, 0);
+//        rangeMoveStrafe(26.25, rangeR,0);
         sleep(350);
 
 
         setTurnAuto(-178);
         sleep(500);
-        telemetry.addData(formatAngle(angles.angleUnit, angles.firstAngle),"Angle");
         vfMovePar('b',rangeL, 1);
 
         rangeMovePID(6, rangeF);

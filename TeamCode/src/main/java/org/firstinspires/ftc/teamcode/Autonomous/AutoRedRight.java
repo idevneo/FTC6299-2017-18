@@ -50,12 +50,14 @@ public class AutoRedRight extends MyOpMode {
         sleep(1000);
         stopMotors();
 
-        rangeMoveStrafe(3.5, rangeR, 0);
+        setStrafeAuto(3.5, rangeR, 0 , 0);
+//        rangeMoveStrafe(3.5, rangeR, 0);
         sleep(1000);
         rangeMovePID(10, rangeF);
         sleep(500);
 
-        rangeMoveStrafe(26.75, rangeR, 0);
+        setStrafeAuto(26.75, rangeR, 0, 0);
+//        rangeMoveStrafe(26.75, rangeR, 0);
         sleep(750);
 
         vfMovePar('r', rangeR,0);
