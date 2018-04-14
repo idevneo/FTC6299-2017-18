@@ -896,6 +896,129 @@ public abstract class MyOpMode extends LinearOpMode {
             }
         return 0;
     }
+
+
+
+
+    public double countsPerRev = 2240;
+    public double gearRed = 0.75;
+    public double diam = 4.0;
+    public double encoderInch = (countsPerRev * gearRed) / (diam * 3.14159265);
+    public double radius = 17.5;
+
+    public void arcTurnEncoder(double speed, double deg, int tim) throws InterruptedException {
+
+        int newLeftMidTarget;
+        int newRightMidTarget;
+        int newLeftBackTarget;
+        int newRightBackTarget;
+        ElapsedTime time = new ElapsedTime();
+
+
+        time.reset();
+
+        double arcLen = 2 * 3.141592653 * radius * (deg / 360);
+
+
+        motorBL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorBR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorFL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorFR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        /*
+         * Determine new target position and pass to motor controller
+         */
+
+        newLeftMidTarget = motorFL.getCurrentPosition() + (int) Math.round(arcLen * encoderInch);
+        newRightMidTarget = motorFR.getCurrentPosition() + (int) Math.round(arcLen * encoderInch);
+        newLeftBackTarget = motorBL.getCurrentPosition() + (int) Math.round(arcLen * encoderInch);
+        newRightBackTarget = motorBR.getCurrentPosition() + (int) Math.round(arcLen * encoderInch);
+
+        boolean lmEncoderSet = false;
+        boolean rmEncoderSet = false;
+        boolean lbEncoderSet = false;
+        boolean rbEncoderSet = false;
+
+        if (deg < 0) {
+            motorBL.setTargetPosition(newLeftBackTarget);
+            motorBR.setTargetPosition(0);
+            motorFL.setTargetPosition(newLeftMidTarget);
+            motorFR.setTargetPosition(0);
+        } else if (deg > 0) {
+
+            motorBL.setTargetPosition(0);
+            motorBR.setTargetPosition(newRightBackTarget);
+            motorFL.setTargetPosition(0);
+            motorFR.setTargetPosition(newRightMidTarget);
+        }
+
+
+
+
+        // keep looping while we are still active, and there is time left, and motors haven't made position.
+        boolean isBusy;
+        int lmCurPos;
+        int rmCurPos;
+        int lbCurPos;
+        int rbCurPos;
+
+        double leftPower;
+        double rightPower;
+
+        int HeadingLoop;
+
+        do {
+
+
+            if (deg < 0) {
+                leftPower = speed;
+                rightPower = 0;
+            } else if (deg > 0) {
+                leftPower = 0;
+                rightPower = speed;
+            } else if (deg ==  0){
+                leftPower = 0;
+                rightPower = 0;
+            }
+
+
+            setMotors(leftPower, rightPower);
+
+
+            lbCurPos = motorBL.getCurrentPosition();
+            rbCurPos = motorBR.getCurrentPosition();
+
+            lmCurPos = motorFL.getCurrentPosition();
+            rmCurPos = motorFR.getCurrentPosition();
+
+
+            if (deg < 0 ){
+                isBusy = (Math.abs(lmCurPos - newLeftMidTarget) >= 5) && (Math.abs(lbCurPos - newLeftBackTarget) >= 5);
+            } else if (deg > 0){
+                isBusy = (Math.abs(rmCurPos - newRightMidTarget) >= 5) && (Math.abs(rbCurPos - newRightBackTarget) >= 5);
+
+            } else if(deg == 0){
+                isBusy = false;
+            }
+
+
+
+        }
+            while (opModeIsActive() && isBusy && time.seconds() < tim) ;
+
+            stopMotors();
+
+            // Turn off RUN_TO_POSITION
+
+            motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        }
+
+
+
 //    public double gyroVal() {
 //
 //    }
