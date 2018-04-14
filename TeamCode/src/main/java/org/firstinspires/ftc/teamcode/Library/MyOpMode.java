@@ -226,8 +226,6 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setPower(linear - strafe + turn);
     }
 
-
-
     public void setMotors(double left, double right) { //Moves forward when both values are positive.
         if (!opModeIsActive())
             return;
