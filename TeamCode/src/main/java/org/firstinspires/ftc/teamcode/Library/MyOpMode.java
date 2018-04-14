@@ -956,14 +956,14 @@ public abstract class MyOpMode extends LinearOpMode {
 
 
         // keep looping while we are still active, and there is time left, and motors haven't made position.
-        boolean isBusy;
+        boolean isBusy = false; // not sure what this needs to be set to
         int lmCurPos;
         int rmCurPos;
         int lbCurPos;
         int rbCurPos;
 
-        double leftPower;
-        double rightPower;
+        double leftPower = 0;
+        double rightPower = 0;
 
         int HeadingLoop;
 
