@@ -62,6 +62,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public boolean align;
     public double lastPow;
 
+    public double gyroError = 0;
     public ElapsedTime xDelay = new ElapsedTime();
 
     public String formatAngle(AngleUnit angleUnit, double angle) { //Formats the IMU Angle data into strings that can pass into telemetry.
@@ -228,10 +229,7 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setPower(linear - turn + strafe);
     }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 849d80ca5dd3e7efd2c6f610e14dea9602be15a9
     public void setMotors(double left, double right) { //Moves forward when both values are positive.
         if (!opModeIsActive())
             return;
@@ -522,6 +520,123 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
+
+    public void  arcTurnAll(double pow, double deg, double radius, int tim) throws InterruptedException {
+        double error;
+        double errorMove;
+        double newPow;
+        double newLiner;
+
+
+        ElapsedTime time = new ElapsedTime();
+
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+
+        delay(100);
+        time.reset();
+
+        while ((currPos > deg + 1 || currPos < deg - 1) && (time.milliseconds() < tim) && opModeIsActive()) { //While sensor isn't in the desired angle position, run.
+            error = deg - currPos; //Finding how far away we are from the target position.
+            errorMove = Math.abs(deg - currPos);
+            if (error > 180) {
+                error = error - 360;
+            } else if (error < -180) {
+                error = error + 360;
+            }
+
+
+            newPow = pow * (Math.abs(error) / 70); //Using the error to calculate our power.
+            if (newPow < .15)
+                newPow = .1;
+
+            newLiner = (pow * radius)/360;
+
+            if (currPos < deg) {
+                if (errorMove < 180) {
+                    setMotorsAll(0,0,-newPow); //Turns left
+                }
+                if (errorMove > 180) {
+                    setMotorsAll(0,0, newPow); //Turns right if we go past the pos/neg mark.
+                }
+            } else if (currPos > deg) {
+                if (errorMove < 180) {
+                    setMotorsAll(0,0, newPow); //Turns right
+                }
+                if (errorMove > 180) {
+                    setMotorsAll(0,0,-newPow); //Turns left if we go past the pos/neg mark.
+                }
+            }
+            angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+            currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+            telemetry.addData("Gyro", currPos);
+            telemetry.update();
+        }
+        stopMotors();
+
+
+    }
+
+    public void  arcTurnLastYr(double pow, double deg, boolean stop, int tim) {
+
+        if (!opModeIsActive())
+            return;
+
+        double newPow;
+
+        ElapsedTime time = new ElapsedTime();
+
+
+        time.reset();
+
+        if (deg + gyroError > 0) {
+            while (opModeIsActive() && deg > getGyroYaw() + gyroError && time.milliseconds() < tim) {
+                newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 70);
+
+                if (newPow < .15)
+                    newPow = .15;
+
+                if (pow > 0)
+                    setMotors(newPow, 0);
+                else
+                    setMotors(0, -newPow);
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.update();
+                idle();
+            }
+        } else {
+            while (opModeIsActive() && deg < getGyroYaw() + gyroError && time.milliseconds() < tim) {
+                newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 70);
+
+
+                if (newPow < .15)
+                    newPow = .15;
+
+                if (pow > 0)
+                    setMotors(0, newPow);
+                else
+                    setMotors(-newPow, 0);
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.update();
+                idle();
+            }
+        }
+
+        if (stop)
+            stopMotors();
+
+        gyroError = getGyroYaw() + gyroError - deg;
+    }
+
+    public double getGyroYaw(){
+        double currPos;
+        angles = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+        return currPos;
+    }
+
+
+
     public double setStrafe(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet) { //Moving left/right using a Range Sensor.
         //bSet = Basing Switch | 1 = Left Range Sensor | 0 = Right Range Sensor
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
@@ -662,6 +777,8 @@ public abstract class MyOpMode extends LinearOpMode {
         }
         stopMotors();
     }
+
+
 
 
     public void jewelKnockerRed() { //Jewel Knocker code for the autonomous on the red side.
