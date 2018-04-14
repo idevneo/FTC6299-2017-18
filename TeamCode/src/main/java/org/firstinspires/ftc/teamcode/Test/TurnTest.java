@@ -53,8 +53,8 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  */
 
 @Autonomous(name="TurnTest", group="Test")
+@Disabled
 public class TurnTest extends MyOpMode {
-
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -70,15 +70,7 @@ public class TurnTest extends MyOpMode {
         waitForStart();
         runtime.reset();
         // run until the end of the match (driver presses STOP)
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        try {
-//            setMotors(-.1, .1);
-//            delay(1000);
-//            stopMotors();
-            turnCorr(.5, -90, 5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+       setTurnAuto(-180);
     }
 }

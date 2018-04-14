@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@TeleOp(name="PSTeleop", group="Linear Opmode")
-public class Post extends MyOpMode {
+@TeleOp(name="GATeleop", group="Linear Opmode")
+public class GAT extends MyOpMode {
     // Declare OpMode members.
     double gamepadLeftY; //Forwards/Backwards Movement
     double gamepadLeftX; //Strafing Movement
@@ -34,6 +39,24 @@ public class Post extends MyOpMode {
         telemetry.update();
 
         hMapT(hardwareMap);
+        BNO055IMU.Parameters Gparameters = new BNO055IMU.Parameters();
+        Gparameters.mode = BNO055IMU.SensorMode.IMU;
+        Gparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        Gparameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        Gparameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        Gparameters.loggingEnabled = true;
+        Gparameters.loggingTag = "IMU";
+        Gparameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(Gparameters);
+        while (!isStopRequested() && !imu.isGyroCalibrated()) {
+            sleep(50);
+            idle();
+            telemetry.addLine("Initializing IMU...");
+            telemetry.update();
+        }
+
+
         jewelArm.setPosition(.65);
         jewelHand.setPosition(.4);
         manipWall.setPosition(.75);
@@ -77,13 +100,17 @@ public class Post extends MyOpMode {
             if (AngleLStick < 0) {
                 AngleLStick += 360;
             }
-            AngleRStick = Math.toDegrees(Math.atan2(gamepad1.right_stick_y, gamepad1.right_stick_x));
+            AngleRStick = Math.toDegrees(Math.atan2(gamepad1.right_stick_y, -gamepad1.right_stick_x));
+            //In order for the turning to adhere to the plane we start on, we need to reflect our x values.
             if (AngleRStick < 0) {
                 AngleRStick += 360;
             }
 
             telemetry.addData("slow", slow);
-            telemetry.addData("TurnPow", setTurn(AngleRStick-180));
+            telemetry.addData("turn speed", turno);
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            double telemA = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+            telemetry.addData("Gyro", telemA);
             telemetry.update();
 
             /**Movement (Gamepad 1: Left Stick, Right Stick, DPAD, b) */
@@ -111,17 +138,14 @@ public class Post extends MyOpMode {
             else {
                 straf = 0;
             }
-            if (270 < AngleRStick && AngleRStick < 360 || 0 <= AngleRStick && AngleRStick < 89) { //TURNING RIGHT
-//                setMotors(Math.abs(gamepadRightX), -Math.abs(gamepadRightX));
-                  turno = gamepadRightX;
-        }
-            else if (91 <= AngleRStick && AngleRStick <= 269) { //TURNING LEFT
-//                setMotors(-Math.abs(gamepadRightX), Math.abs(gamepadRightX));
-                turno = gamepadRightX;
+
+            if (Double.isNaN(AngleRStick) || (AngleRStick == 180 && gamepad1.right_stick_x != 1)) {
+                turno=0; }
+            else if (liner != 0 || straf != 0) {
+                turno = setTurn(AngleRStick - 180) * 3.25;
             }
             else {
-                turno = 0;
-            }
+                turno = setTurn(AngleRStick - 180); }
 
              if (gamepad1.left_bumper) { //Moves forwards/backwards slowly
                 motorFL.setPower(-.25);

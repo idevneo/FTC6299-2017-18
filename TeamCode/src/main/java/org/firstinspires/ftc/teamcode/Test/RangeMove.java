@@ -51,8 +51,7 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="RangeMoveTest", group="Test")
-@Disabled
+@Autonomous(name="Strafe Ret", group="Test")
 public class RangeMove extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -71,7 +70,11 @@ public class RangeMove extends MyOpMode {
         // run until the end of the match (driver presses STOP)
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        rangeMovePID(10, rangeF);
+       while (opModeIsActive()) {
+           telemetry.addData("Strafe", setStrafeTest(20,rangeR, 0));
+
+           telemetry.update();
+       }
 
     }
 }

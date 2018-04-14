@@ -38,6 +38,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 @Autonomous(name="initTest", group="Test")
+@Disabled
 public class InitTest extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();

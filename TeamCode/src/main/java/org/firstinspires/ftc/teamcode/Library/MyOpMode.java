@@ -34,7 +34,6 @@ import java.util.Locale;
 public abstract class MyOpMode extends LinearOpMode {
 
     public static BNO055IMU imu;
-
     public VuforiaLocalizer vuforia;
 
     public static DcMotor motorBL;
@@ -60,7 +59,10 @@ public abstract class MyOpMode extends LinearOpMode {
     public static ModernRoboticsI2cRangeSensor rangeF;
 
     public char column;
-    private boolean align;
+    public boolean align;
+    public double lastPow;
+
+    public ElapsedTime xDelay = new ElapsedTime();
 
     public String formatAngle(AngleUnit angleUnit, double angle) { //Formats the IMU Angle data into strings that can pass into telemetry.
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
@@ -220,12 +222,16 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public void setMotorsAll(double linear, double strafe, double turn) {
 
-        motorFL.setPower(linear - strafe + turn); //Figure out the combinations for the setting of power.
-        motorBL.setPower(linear - strafe + turn);
-        motorFR.setPower(linear - strafe + turn);
-        motorBR.setPower(linear - strafe + turn);
+        motorFL.setPower(-linear - turn - strafe);
+        motorBL.setPower(-linear - turn + strafe);
+        motorFR.setPower(linear - turn - strafe);
+        motorBR.setPower(linear - turn + strafe);
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 849d80ca5dd3e7efd2c6f610e14dea9602be15a9
     public void setMotors(double left, double right) { //Moves forward when both values are positive.
         if (!opModeIsActive())
             return;
@@ -370,17 +376,29 @@ public abstract class MyOpMode extends LinearOpMode {
     public void rangeMovePID(double inAway, ModernRoboticsI2cRangeSensor sensorVar) { //Moving forward/backwards using a Range Sensor.
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
         double pow;
-
         double localRange;
         while (((sensor < inAway - .35) || (sensor > inAway + .35)) && opModeIsActive() && align) { //While sensor isn't in the desired position, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            if (gamepad1.x)
+            if (gamepad1.x && xDelay.time() > .5) {
+                stopMotors();
                 align = false;
-            while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
+                xDelay.reset();
+            }
+            while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive() && align) {
+                if (gamepad1.x && xDelay.time() > .5) {
+                    align = false;
+                    xDelay.reset();
+                 }
+                 else if (!gamepad1.atRest()) { //Supposed to make the loop exit if joysticks are pressed.
+                    stopMotors();
+                    align = false;
+
+                }
+
                 //If a faulty value is detected, don't update our used variable till a good one is found.
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
-            sensor = localRange; //Sets all working and usable values into a variable we can utilize.
+            sensor = localRange; //Sets all working an  d usable values into a variable we can utilize.
 
 
             pow = .15;
@@ -402,28 +420,28 @@ public abstract class MyOpMode extends LinearOpMode {
         //bSet = Basing Switch | 1 = Left Range Sensor | 0 = Right Range Sensor
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
 
-//      double range;
-        double pow = .15;
-//      double newPow;
+        double range;
+        double pow;
+        double PC = .045; //power constant
 
         double localRange;
-        ElapsedTime stopTime = new ElapsedTime(); //Time used to stop the robot from moving too far based on outdated values.
 
         while (((sensor < inAway - .5) || (sensor > inAway + .5)) && opModeIsActive()) { //While sensor isn't in the desired position, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
             while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
-                //If a faulty value is detected, don't update our used variable till a good one is found.
-                stopTime.reset();
-                if (stopTime.milliseconds() > 300 && stopTime.milliseconds() < 600) { //Stops the robot from running off of outdated values for too long.
-                    stopMotors();
-                }
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
             }
             sensor = localRange; //Sets all working and usable values into a variable we can utilize.
-            stopTime.reset();
 
-//          range = Math.abs(inAway - sensor);
-            pow = .15;
+            range = Math.abs(inAway - sensor);
+            pow = range * PC;
+            if (pow < .12) {
+                pow = .12;
+            }
+            else if (1 < pow) {
+                pow = 1;
+            }
+
 
             //RED SIDE AUTOS - Basing Switch
             if (bSet == 0) {
@@ -504,6 +522,148 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
+    public double setStrafe(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet) { //Moving left/right using a Range Sensor.
+        //bSet = Basing Switch | 1 = Left Range Sensor | 0 = Right Range Sensor
+        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
+
+        double range;
+        double pow;
+        double PC = .015; //power constant
+
+        double localRange;
+
+        if (((sensor < inAway - .5) || (sensor > inAway + .5)) && opModeIsActive()) { //While sensor isn't in the desired position, run.
+            localRange = sensorVar.getDistance(DistanceUnit.INCH);
+            if ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
+
+                if (bSet == 0) {
+                    if (sensor > inAway) {
+                        return lastPow; }
+                    if (sensor < inAway) {
+                        return -lastPow;  }
+                }
+                if (bSet == 1) {
+                    if (sensor > inAway) {
+                        return -lastPow;  }
+                    if (sensor < inAway) {
+                        return lastPow;  }
+                }
+
+            }
+            sensor = localRange; //Sets all working and usable values into a variable we can utilize.
+
+            range = Math.abs(inAway - sensor);
+            pow = range * PC;
+            if (pow < 1) { //If power is an invalid number, run the last valid number.
+                lastPow = pow; }
+
+            if (pow < .075) { //Don't run the motors too low.
+                pow = .075; }
+
+            telemetry.addData("rangeDis", sensor);
+            telemetry.addData("power", pow);
+            telemetry.update();
+
+
+            //RED SIDE AUTOS - Basing Switch
+            if (bSet == 0) {
+                if (sensor > inAway) {
+                    return pow;
+                }
+                if (sensor < inAway) {
+                    return -pow;
+                }
+            }
+
+            //BLUE SIDE AUTOS - Basing Switch
+            if (bSet == 1) {
+                if (sensor > inAway) {
+                    return -pow;
+                }
+                if (sensor < inAway) {
+                    return pow;
+                }
+            }
+        }
+        return 0;
+    }
+
+    public double setTurn(double deg) { //Turns to a desired angle using the IMU in teleop.
+        double turnPow = 0;
+        double error;
+        double errorMove;
+        double pd = .0055;
+
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle)); // currPos is the current position
+
+        if ((currPos > deg + 1 || currPos < deg - 1) && opModeIsActive()) { //While sensor isn't in the desired angle position, run.
+            error = deg - currPos; //Finding how far away we are from the target position.
+            errorMove = Math.abs(deg - currPos);
+            if (error > 180) {
+                error = error - 360;
+            } else if (error < -180) {
+                error = error + 360;
+            }
+
+            //The following code allows us to turn in the direction we need, and if we cross the axis
+            //at which 180 degrees becomes -180, our robot can turn back in the direction which is closest
+            //to the position we wish to be at (We won't make a full rotation to get to -175, if we hit 180).
+            if (currPos < deg) {
+                if (errorMove < 180) {
+                    turnPow = - Math.abs(pd * error); //Turns left
+                }
+                if (errorMove > 180) {
+                    turnPow = Math.abs(pd * error); //Turns right if we go past the pos/neg mark.
+                }
+            } else if (currPos > deg) {
+                if (errorMove < 180) {
+                    turnPow = Math.abs(pd * error); //Turns right
+                }
+                if (errorMove > 180) {
+                    turnPow = - Math.abs(pd * error); //Turns left if we go past the pos/neg mark.
+                }
+            }
+
+        }
+        if (turnPow < 0 && -.075< turnPow) {
+            turnPow = -.075;
+        }
+        else if (turnPow > 0 && .075 > turnPow) {
+            turnPow = .075;
+        }
+        return turnPow;
+    }
+
+    public void setTurnAuto(double deg) {
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        double currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+
+        while (currPos > deg + 1 || currPos < deg - 1) { //while we are not at the right degree.
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+            currPos = Double.parseDouble(formatAngle(angles.angleUnit, angles.firstAngle));
+            setMotorsAll(0, 0, setTurn(deg));
+            idle();
+        }
+    }
+
+    public void setStrafeAuto(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet, double deg) {
+        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
+        double localRange;
+
+        while ((sensor < inAway - .5) || (sensor > inAway + .5)) {
+            localRange = sensorVar.getDistance(DistanceUnit.INCH);
+            if ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) { //If we sense no value.
+                localRange = sensorVar.getDistance(DistanceUnit.INCH);
+            }
+            sensor = localRange;
+            setMotorsAll(0, setStrafe(inAway, sensorVar, bSet), setTurn(deg));
+            idle();
+        }
+        stopMotors();
+    }
+
+
     public void jewelKnockerRed() { //Jewel Knocker code for the autonomous on the red side.
         //Hits the blue jewel.
         jewelArm.setPosition(.6);
@@ -566,6 +726,58 @@ public abstract class MyOpMode extends LinearOpMode {
             motorFR.setPower(0);
             motorBR.setPower(0);
         }
+    }
+
+    public double setStrafeTest(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet) { //Moving left/right using a Range Sensor.
+        //bSet = Basing Switch | 1 = Left Range Sensor | 0 = Right Range Sensor
+        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
+
+        double range;
+        double pow;
+        double PC = .015; //power constant
+
+        double localRange;
+
+            localRange = sensorVar.getDistance(DistanceUnit.INCH);
+            while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
+                localRange = sensorVar.getDistance(DistanceUnit.INCH);
+
+            }
+            sensor = localRange; //Sets all working and usable values into a variable we can utilize.
+
+            range = Math.abs(inAway - sensor);
+            pow = range * PC;
+            if (pow < 1) { //If power is an invalid number, run the last valid number.
+                lastPow = pow; }
+
+            if (pow < .075) { //Don't run the motors too low.
+                pow = .075; }
+
+            telemetry.addData("rangeDis", sensor);
+            telemetry.addData("power", pow);
+            telemetry.update();
+
+
+            //RED SIDE AUTOS - Basing Switch
+            if (bSet == 0) {
+                if (sensor > inAway) {
+                    return pow;
+                }
+                if (sensor < inAway) {
+                    return -pow;
+                }
+            }
+
+            //BLUE SIDE AUTOS - Basing Switch
+            if (bSet == 1) {
+                if (sensor > inAway) {
+                    return -pow;
+                }
+                if (sensor < inAway) {
+                    return pow;
+                }
+            }
+        return 0;
     }
 //    public double gyroVal() {
 //
