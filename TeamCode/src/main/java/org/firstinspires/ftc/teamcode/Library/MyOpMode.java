@@ -908,6 +908,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public void arcTurnEncoder(double speed, double deg, int tim) throws InterruptedException {
 
+        double error = 0;
+        double newPow;
         int newLeftMidTarget;
         int newRightMidTarget;
         int newLeftBackTarget;
@@ -934,10 +936,6 @@ public abstract class MyOpMode extends LinearOpMode {
         newLeftBackTarget = motorBL.getCurrentPosition() + (int) Math.round(arcLen * encoderInch);
         newRightBackTarget = motorBR.getCurrentPosition() + (int) Math.round(arcLen * encoderInch);
 
-        boolean lmEncoderSet = false;
-        boolean rmEncoderSet = false;
-        boolean lbEncoderSet = false;
-        boolean rbEncoderSet = false;
 
         if (deg < 0) {
             motorBL.setTargetPosition(newLeftBackTarget);
@@ -956,26 +954,36 @@ public abstract class MyOpMode extends LinearOpMode {
 
 
         // keep looping while we are still active, and there is time left, and motors haven't made position.
-        boolean isBusy = false; // not sure what this needs to be set to
-        int lmCurPos;
-        int rmCurPos;
-        int lbCurPos;
-        int rbCurPos;
+        boolean isBusy = true; // not sure what this needs to be set to
+        int lmCurPos = 0;
+        int rmCurPos = 0;
+        int lbCurPos = 0;
+        int rbCurPos = 0;
 
         double leftPower = 0;
         double rightPower = 0;
 
-        int HeadingLoop;
 
         do {
 
 
             if (deg < 0) {
-                leftPower = speed;
+                error  = (Math.abs(lmCurPos - newLeftMidTarget) + Math.abs(lbCurPos - newLeftBackTarget)) /2;
+            } else if (deg > 0) {
+                error  = (Math.abs(rmCurPos - newRightMidTarget) + Math.abs(rbCurPos - newRightBackTarget)) /2;
+            } else if (deg ==  0){
+                error = 0;
+            }
+
+            newPow = speed * (Math.abs(error) / 70); //Using the error to calculate our power.
+
+
+            if (deg < 0) {
+                leftPower = newPow;
                 rightPower = 0;
             } else if (deg > 0) {
                 leftPower = 0;
-                rightPower = speed;
+                rightPower = newPow;
             } else if (deg ==  0){
                 leftPower = 0;
                 rightPower = 0;
