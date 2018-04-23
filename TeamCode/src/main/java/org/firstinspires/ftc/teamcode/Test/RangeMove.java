@@ -71,7 +71,7 @@ public class RangeMove extends MyOpMode {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
        while (opModeIsActive()) {
-           telemetry.addData("Strafe", setStrafeTest(20,rangeR, 0));
+           telemetry.addData("Strafe", setStrafe(20,rangeR, 0));
 
            telemetry.update();
        }

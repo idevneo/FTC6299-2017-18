@@ -529,7 +529,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
         double localRange;
 
-        if (((sensor < inAway - .5) || (sensor > inAway + .5)) && opModeIsActive()) { //While sensor isn't in the desired position, run.
+        if (((sensor < inAway - .75) || (sensor > inAway + .75)) && opModeIsActive()) { //While sensor isn't in the desired position, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
             if ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
 
@@ -551,11 +551,11 @@ public abstract class MyOpMode extends LinearOpMode {
 
             range = Math.abs(inAway - sensor);
             pow = range * PC;
-            if (pow < 1) { //If power is an invalid number, run the last valid number.
+            if (pow < .75) { //If power is an invalid number, run the last valid number.
                 lastPow = pow; }
 
-            if (pow < .075) { //Don't run the motors too low.
-                pow = .075; }
+            if (pow < .1) { //Don't run the motors too low.
+                pow = .1; }
 
             telemetry.addData("rangeDis", sensor);
             telemetry.addData("power", pow);
@@ -648,7 +648,7 @@ public abstract class MyOpMode extends LinearOpMode {
         double sensor = sensorVar.getDistance(DistanceUnit.INCH);
         double localRange;
 
-        while ((sensor < inAway - .5) || (sensor > inAway + .5)) {
+        while ((sensor < inAway - .75) || (sensor > inAway + .75)) {
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
             if ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) { //If we sense no value.
                 localRange = sensorVar.getDistance(DistanceUnit.INCH);
@@ -723,58 +723,6 @@ public abstract class MyOpMode extends LinearOpMode {
             motorFR.setPower(0);
             motorBR.setPower(0);
         }
-    }
-
-    public double setStrafeTest(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet) { //Moving left/right using a Range Sensor.
-        //bSet = Basing Switch | 1 = Left Range Sensor | 0 = Right Range Sensor
-        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-
-        double range;
-        double pow;
-        double PC = .015; //power constant
-
-        double localRange;
-
-            localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            while ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
-                localRange = sensorVar.getDistance(DistanceUnit.INCH);
-
-            }
-            sensor = localRange; //Sets all working and usable values into a variable we can utilize.
-
-            range = Math.abs(inAway - sensor);
-            pow = range * PC;
-            if (pow < 1) { //If power is an invalid number, run the last valid number.
-                lastPow = pow; }
-
-            if (pow < .075) { //Don't run the motors too low.
-                pow = .075; }
-
-            telemetry.addData("rangeDis", sensor);
-            telemetry.addData("power", pow);
-            telemetry.update();
-
-
-            //RED SIDE AUTOS - Basing Switch
-            if (bSet == 0) {
-                if (sensor > inAway) {
-                    return pow;
-                }
-                if (sensor < inAway) {
-                    return -pow;
-                }
-            }
-
-            //BLUE SIDE AUTOS - Basing Switch
-            if (bSet == 1) {
-                if (sensor > inAway) {
-                    return -pow;
-                }
-                if (sensor < inAway) {
-                    return pow;
-                }
-            }
-        return 0;
     }
 //    public double gyroVal() {
 //
