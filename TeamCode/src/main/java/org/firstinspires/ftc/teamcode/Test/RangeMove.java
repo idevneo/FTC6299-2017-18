@@ -62,7 +62,7 @@ public class RangeMove extends MyOpMode {
         telemetry.update();
         hMap(hardwareMap);
         // Set up our telemetry dashboard
-        composeTelemetry();
+//        composeTelemetry();
         // Wait until we're told to go
 
         waitForStart();
@@ -72,8 +72,6 @@ public class RangeMove extends MyOpMode {
 
        while (opModeIsActive()) {
            telemetry.addData("Strafe", setStrafe(20,rangeR, 0));
-
-           telemetry.update();
        }
 
     }

@@ -74,8 +74,9 @@ public class Strafe extends MyOpMode {
         waitForStart();
         runtime.reset();
         // run until the end of the match (driver presses STOP)
-        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        setStrafeAuto(20, rangeR, 0, 1);
+        while(opModeIsActive()) {
+            setStrafeTelem(30, rangeR, 0);
+        }
     }
 }

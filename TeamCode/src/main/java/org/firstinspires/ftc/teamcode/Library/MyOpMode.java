@@ -649,34 +649,36 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (((sensor < inAway - .75) || (sensor > inAway + .75)) && opModeIsActive()) { //While sensor isn't in the desired position, run.
             localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            if ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) {
-
-                if (bSet == 0) {
-                    if (sensor > inAway) {
-                        return lastPow; }
-                    if (sensor < inAway) {
-                        return -lastPow;  }
-                }
-                if (bSet == 1) {
-                    if (sensor > inAway) {
-                        return -lastPow;  }
-                    if (sensor < inAway) {
-                        return lastPow;  }
-                }
+            if (!(Double.isNaN(localRange) || (localRange > 100)) && opModeIsActive()) {
+                sensor = localRange;
+//                if (bSet == 0) {
+//                    if (sensor > inAway) {
+//                        return lastPow; }
+//                    if (sensor < inAway) {
+//                        return -lastPow;  }
+//                }
+//                if (bSet == 1) {
+//                    if (sensor > inAway) {
+//                        return -lastPow;  }
+//                    if (sensor < inAway) {
+//                        return lastPow;  }
+//                }
 
             }
-            sensor = localRange; //Sets all working and usable values into a variable we can utilize.
+            //sensor = localRange; //Sets all working and usable values into a variable we can utilize.
 
             range = Math.abs(inAway - sensor);
             pow = range * PC;
             if (pow < .75) { //If power is an invalid number, run the last valid number.
-                lastPow = pow; }
+                lastPow = pow;}
 
             if (pow < .1) { //Don't run the motors too low.
                 pow = .1; }
 
-            telemetry.addData("rangeDis", sensor);
+            telemetry.addData("sensor", sensor);
             telemetry.addData("power", pow);
+            telemetry.addData("lastg",lastPow);
+
             telemetry.update();
 
 
@@ -883,5 +885,74 @@ public abstract class MyOpMode extends LinearOpMode {
 //        }
 //        stopMotors();
 //    }
+
+    public double setStrafeTelem(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet) { //Moving left/right using a Range Sensor.
+        //bSet = Basing Switch | 1 = Left Range Sensor | 0 = Right Range Sensor
+        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
+
+        double range;
+        double pow;
+        double PC = .015; //power constant
+
+        double localRange;
+
+        if (((sensor < inAway - .75) || (sensor > inAway + .75)) && opModeIsActive()) { //While sensor isn't in the desired position, run.
+            localRange = sensorVar.getDistance(DistanceUnit.INCH);
+            while ((Double.isNaN(localRange) || (localRange > 100)) && opModeIsActive()) {
+                sensor = localRange;
+//                if (bSet == 0) {
+//                    if (sensor > inAway) {
+//                        return lastPow; }
+//                    if (sensor < inAway) {
+//                        return -lastPow;  }
+//                }
+//                if (bSet == 1) {
+//                    if (sensor > inAway) {
+//                        return -lastPow;  }
+//                    if (sensor < inAway) {
+//                        return lastPow;  }
+//                }
+
+            }
+            //sensor = localRange; //Sets all working and usable values into a variable we can utilize.
+
+            range = Math.abs(inAway - sensor);
+            pow = range * PC;
+            if (pow < .75) { //If power is an invalid number, run the last valid number.
+                lastPow = pow;}
+
+            if (pow < .1) { //Don't run the motors too low.
+                pow = .1; }
+
+            telemetry.addData("Actual Sensor", sensorVar.getDistance(DistanceUnit.INCH));
+            telemetry.addData("Altered Sensor", sensor);
+            telemetry.addData("Range", range);
+            telemetry.addData("Power", pow);
+            telemetry.addData("Last Power",lastPow);
+            telemetry.update();
+
+
+            //RED SIDE AUTOS - Basing Switch
+            if (bSet == 0) {
+                if (sensor > inAway) {
+                    return pow;
+                }
+                if (sensor < inAway) {
+                    return -pow;
+                }
+            }
+
+            //BLUE SIDE AUTOS - Basing Switch
+            if (bSet == 1) {
+                if (sensor > inAway) {
+                    return -pow;
+                }
+                if (sensor < inAway) {
+                    return pow;
+                }
+            }
+        }
+        return 0;
+    }
 
 }
