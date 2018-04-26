@@ -73,5 +73,6 @@ public class AutoRedLeft extends MyOpMode {
             sleep(250);
             stopMotors();
             manip.setPower(0);
+            setTurnAuto(90);
     }
 }

@@ -39,7 +39,7 @@ public class ArcTurnEncoder extends MyOpMode {
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
         try {
-            arcTurnEncoder(0.5,-90,5000);
+            arcTurnAll(0.5,-90,0, 10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
