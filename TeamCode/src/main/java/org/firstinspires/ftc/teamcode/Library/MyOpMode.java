@@ -49,6 +49,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static Servo jewelHand;
     public static Servo relicFlip;
     public static Servo relicHand;
+    public static Servo arm;
     public static ColorSensor jewelColor;
 
     public static Orientation angles;
@@ -215,6 +216,28 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void hMapRookie(HardwareMap type) { //Initialization of the Robot's hardware map in TeleOp.
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorFL = hardwareMap.dcMotor.get("motorFL");
+        motorFR = hardwareMap.dcMotor.get("motorFR");
+
+
+        manip = hardwareMap.dcMotor.get("manip");
+        arm = hardwareMap.servo.get("arm");
+
+
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     public void delay(long milliseconds) throws InterruptedException { //Delays the code via a sleep time.
         if (milliseconds < 0)
             milliseconds = 0;
@@ -259,6 +282,9 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void manipAuto(double pow) { //Runs the manipulator for a certain time in auto at a selected power.
+
+        // negative spins out, positive pulls in
+
         if (!opModeIsActive()) //Doesn't run if the OpMode isn't active.
             return;
         if (pow > 0 || pow < 0) { //Runs the manipulator at the given power if it is not 0.

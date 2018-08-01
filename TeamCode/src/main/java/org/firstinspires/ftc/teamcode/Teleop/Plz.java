@@ -118,10 +118,9 @@ public class Plz extends MyOpMode {
                 motorFR.setPower(-right);
                 motorBR.setPower(right);
             } else if (gamepad1.left_bumper) {
-                motorFL.setPower(-.25);
+                motorBR.setPower(.25);motorFL.setPower(-.25);
                 motorBL.setPower(-.25);
                 motorFR.setPower(.25);
-                motorBR.setPower(.25);
             } else if (gamepad1.right_bumper) {
                 motorFL.setPower(.25);
                 motorBL.setPower(.25);
