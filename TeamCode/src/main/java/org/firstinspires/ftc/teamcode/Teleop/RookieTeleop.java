@@ -83,15 +83,17 @@ public class RookieTeleop extends MyOpMode {
                 motorBL.setPower(gamepadLeft);
                 motorML.setPower(-gamepadLeft);
 
-//                motorFR.setPower(-gamepad1_right);
-//                motorBR.setPower(-gamepad1_right);
-//                motorMR.setPower(gamepad1_right);
+                motorFR.setPower(-gamepad1_right);
+                motorBR.setPower(-gamepad1_right);
+                motorMR.setPower(gamepad1_right);
 
             } else {
                 motorFL.setPower(0);
                 motorBL.setPower(0);
                 motorFR.setPower(0);
                 motorBR.setPower(0);
+                motorML.setPower(0);
+                motorMR.setPower(0);
             }
 
 
@@ -103,13 +105,7 @@ public class RookieTeleop extends MyOpMode {
                 manip.setPower(0);
             }
 
-            if (gamepad1.x){ // deploy position
-                arm.setPosition(.035);
-            }
 
-            if (gamepad1.b){ // starting position
-                arm.setPosition(.9);
-            }
 
         }
     }

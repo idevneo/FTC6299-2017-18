@@ -55,7 +55,6 @@ public abstract class MyOpMode extends LinearOpMode {
     public static Servo jewelHand;
     public static Servo relicFlip;
     public static Servo relicHand;
-    public static Servo arm;
     public static ColorSensor jewelColor;
 
     public static Orientation angles;
@@ -226,14 +225,13 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
-        //motorFR = hardwareMap.dcMotor.get("motorFR");
-        //motorML = hardwareMap.dcMotor.get("motorML");
-        //motorMR = hardwareMap.dcMotor.get("motorMR");
-        // make middle motors use the float zero pow behavior during auto to make them free spinning
+        motorFR = hardwareMap.dcMotor.get("motorFR");
+        motorML = hardwareMap.dcMotor.get("motorML");
+        motorMR = hardwareMap.dcMotor.get("motorMR");
 
 
 
-        //manip = hardwareMap.dcMotor.get("manip");
+        manip = hardwareMap.dcMotor.get("manip");
         //arm = hardwareMap.servo.get("arm");
 
 
@@ -241,11 +239,16 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorML.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorMR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorML.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motorMR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void delay(long milliseconds) throws InterruptedException { //Delays the code via a sleep time.

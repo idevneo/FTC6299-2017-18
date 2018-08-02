@@ -34,7 +34,9 @@ public class Rookie3BallPark extends MyOpMode {
         waitForStart();
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
-
+        // ******Motors powers may need to be reversed inside the setMotors method based on hardware mounting
+        //ex. to go forward, setMotor params might need to be -1, instead of 1
+        //make sure to pay attention to the movements to see if they need to be inverted
         manip.setPower(-1);
         setMotors(1,1);
         sleep(750);
