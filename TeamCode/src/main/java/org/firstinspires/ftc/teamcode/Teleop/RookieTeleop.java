@@ -58,6 +58,8 @@ public class RookieTeleop extends MyOpMode {
     DcMotor motorBL;
     DcMotor motorFR;
     DcMotor motorBR;
+    DcMotor motorML;
+    DcMotor motorMR;
 
     double gamepadLeft= 0.0;
     double gamepad1_right = 0.0;
@@ -79,8 +81,11 @@ public class RookieTeleop extends MyOpMode {
             if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
                 motorFL.setPower(gamepadLeft);
                 motorBL.setPower(gamepadLeft);
-                motorFR.setPower(-gamepad1_right);
-                motorBR.setPower(-gamepad1_right);
+                motorML.setPower(-gamepadLeft);
+
+//                motorFR.setPower(-gamepad1_right);
+//                motorBR.setPower(-gamepad1_right);
+//                motorMR.setPower(gamepad1_right);
 
             } else {
                 motorFL.setPower(0);
@@ -91,9 +96,9 @@ public class RookieTeleop extends MyOpMode {
 
 
             if (gamepad1.left_trigger > .15)  {
-                manip.setPower(1);
+                manip.setPower(gamepad1.left_trigger);
             } else if (gamepad1.right_trigger > .15) {
-                manip.setPower(-1);
+                manip.setPower(-gamepad1.right_trigger);
             } else {
                 manip.setPower(0);
             }

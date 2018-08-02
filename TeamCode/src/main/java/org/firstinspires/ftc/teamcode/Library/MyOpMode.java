@@ -40,6 +40,12 @@ public abstract class MyOpMode extends LinearOpMode {
     public static DcMotor motorBR;
     public static DcMotor motorFL;
     public static DcMotor motorFR;
+    public static DcMotor motorML;
+    public static DcMotor motorMR;
+
+
+
+
     public static DcMotor liftLeft;
     public static DcMotor liftRight;
     public static DcMotor manip;
@@ -220,11 +226,15 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
-        motorFR = hardwareMap.dcMotor.get("motorFR");
+        //motorFR = hardwareMap.dcMotor.get("motorFR");
+        //motorML = hardwareMap.dcMotor.get("motorML");
+        //motorMR = hardwareMap.dcMotor.get("motorMR");
+        // make middle motors use the float zero pow behavior during auto to make them free spinning
 
 
-        manip = hardwareMap.dcMotor.get("manip");
-        arm = hardwareMap.servo.get("arm");
+
+        //manip = hardwareMap.dcMotor.get("manip");
+        //arm = hardwareMap.servo.get("arm");
 
 
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

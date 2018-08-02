@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@Autonomous(name = "Rookie", group = "Linear Opmode")
-public class Rookie extends MyOpMode {
+@Autonomous(name = "Rookie3BallPark", group = "Linear Opmode")
+public class Rookie3BallPark extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -14,6 +15,11 @@ public class Rookie extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         hMapRookie(hardwareMap);
+        motorML.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorMR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+
+
         while (!isStopRequested() && !imu.isGyroCalibrated()) {
             sleep(50);
             idle();
@@ -29,19 +35,33 @@ public class Rookie extends MyOpMode {
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
 
-        goStraight(0, 1, 1250);
-        arcTurn(.8, 1);
-        goStraight(1,1,2000);
-        arcTurn(.8,2);
-        goStraight(2,1,2000);
-        arcTurn(.8, 3);
-        goStraight(3,1,2000);
-        arcTurn(.8, 4);
-        //TODO lower lever and reverse into parking
-        //lowerStick()
-        goStraight(3,-1,2000);
+        manip.setPower(-1);
+        setMotors(1,1);
+        sleep(750);
         stopMotors();
-        //auto portion ends
+        manip.setPower(0);
+
+
+        setMotors(-1,-1);
+        sleep(1750);
+        stopMotors();
+        manip.setPower(-1);
+
+
+        setMotors(-1,-1);
+        sleep(750);
+        stopMotors();
+
+        setMotors(.5,-.5);
+        sleep(500);
+        stopMotors();
+
+        setMotors(1,1);
+        sleep(3000);
+        stopMotors();
+
+
+
         //Controller picks up
 
         }
@@ -74,7 +94,8 @@ public class Rookie extends MyOpMode {
             while (yaw > target) {
                 yaw = getGyroYaw();
                 error = Math.abs((-90 * turnNum) - getGyroYaw());
-                power = power - (error / Math.abs(target));
+                power = power - (error / Math.abs(target) +.1);
+                //power = (error * .5) + .1;
                 setMotors(power - .2, power);
             }
             stopMotors();
