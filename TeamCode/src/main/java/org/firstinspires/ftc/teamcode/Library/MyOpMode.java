@@ -234,6 +234,16 @@ public abstract class MyOpMode extends LinearOpMode {
         manip = hardwareMap.dcMotor.get("manip");
         //arm = hardwareMap.servo.get("arm");
 
+        BNO055IMU.Parameters Gparameters = new BNO055IMU.Parameters();
+        Gparameters.mode = BNO055IMU.SensorMode.IMU;
+        Gparameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        Gparameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        Gparameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        Gparameters.loggingEnabled = true;
+        Gparameters.loggingTag = "IMU";
+        Gparameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(Gparameters);
 
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

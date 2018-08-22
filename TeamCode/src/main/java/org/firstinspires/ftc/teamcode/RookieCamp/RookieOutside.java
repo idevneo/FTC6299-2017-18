@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
-@Autonomous(name = "RookieInsideLap", group = "Linear Opmode")
-public class RookieInsideLap extends MyOpMode {
+@Autonomous(name = "RookieOutside", group = "Linear Opmode")
+public class RookieOutside extends MyOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -34,10 +34,29 @@ public class RookieInsideLap extends MyOpMode {
         waitForStart();
         runtime.reset();
 /**---------------------------------------------------------------------------------------------------------------*/
-
-        goStraight(3,1,1000);
+        // ******Motors powers may need to be reversed inside the setMotors method based on hardware mounting
+        //ex. to go forward, setMotor params might need to be -1, instead of 1
+        //make sure to pay attention to the movements to see if they need to be inverted
+        manip.setPower(1);
+        setMotors(1,1);
+        sleep(750);
         stopMotors();
-        //auto portion ends
+        manip.setPower(0);
+
+
+
+        setMotors(-.5,.5);
+        sleep(500);
+        stopMotors();
+
+        manip.setPower(-1);
+        setMotors(1,1);
+        sleep(3000);
+        stopMotors();
+        manip.setPower(0);
+
+
+
         //Controller picks up
 
         }
@@ -56,7 +75,6 @@ public class RookieInsideLap extends MyOpMode {
                 power = power - (error/ Math.abs(target));
                 l = (yaw > target) ? l - (error / Math.abs(target)): l;
                 r = (yaw < target) ? r - (error / Math.abs(target)): r;
-                currTime = runtime.milliseconds();
                 setMotors(l,r);
             }
             stopMotors();
@@ -66,21 +84,14 @@ public class RookieInsideLap extends MyOpMode {
 
         public void arcTurn(double power, int turnNum) {
             double yaw = getGyroYaw();
-            double ki = .0001;
-            double kp = .005;
             double error = 0;
-            double integral = 0;
-            double prevTime = runtime.milliseconds();
             double target = (turnNum > 2) ? 90*(turnNum-2): -90*turnNum;
             while (yaw > target) {
                 yaw = getGyroYaw();
                 error = Math.abs((-90 * turnNum) - getGyroYaw());
-                double currentTime = runtime.milliseconds();
-                integral += ( error * (currentTime-prevTime) * ki );
-                double proportion = error * kp;
-                power = power - (integral + proportion);
+                power = power - (error / Math.abs(target) +.1);
                 //power = (error * .5) + .1;
-                setMotors(power - .1, power);
+                setMotors(power - .2, power);
             }
             stopMotors();
         }

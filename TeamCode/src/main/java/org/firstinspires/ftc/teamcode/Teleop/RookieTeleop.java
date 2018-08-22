@@ -29,8 +29,6 @@
 
 package org.firstinspires.ftc.teamcode.Teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -53,14 +51,6 @@ import org.firstinspires.ftc.teamcode.Library.MyOpMode;
 
 public class RookieTeleop extends MyOpMode {
 
-
-    DcMotor motorFL;
-    DcMotor motorBL;
-    DcMotor motorFR;
-    DcMotor motorBR;
-    DcMotor motorML;
-    DcMotor motorMR;
-
     double gamepadLeft= 0.0;
     double gamepad1_right = 0.0;
     double left = 0.0;
@@ -73,19 +63,19 @@ public class RookieTeleop extends MyOpMode {
         hMapRookie(hardwareMap);
         waitForStart();
 
-        gamepadLeft = gamepad1.left_stick_y;
-        gamepad1_right = gamepad1.right_stick_y;
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            gamepadLeft = gamepad1.left_stick_y;
+            gamepad1_right = gamepad1.right_stick_y;
 
             if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
-                motorFL.setPower(gamepadLeft);
-                motorBL.setPower(gamepadLeft);
-                motorML.setPower(-gamepadLeft);
+                motorFL.setPower(-gamepad1_right);
+                motorBL.setPower(-gamepad1_right);
+                motorML.setPower(gamepad1_right);
 
-                motorFR.setPower(-gamepad1_right);
-                motorBR.setPower(-gamepad1_right);
-                motorMR.setPower(gamepad1_right);
+                motorFR.setPower(gamepadLeft);
+                motorBR.setPower(gamepadLeft);
+                motorMR.setPower(-gamepadLeft);
 
             } else {
                 motorFL.setPower(0);
@@ -97,9 +87,9 @@ public class RookieTeleop extends MyOpMode {
             }
 
 
-            if (gamepad1.left_trigger > .15)  {
+            if (gamepad1.left_trigger > .1) {
                 manip.setPower(gamepad1.left_trigger);
-            } else if (gamepad1.right_trigger > .15) {
+            } else if (gamepad1.right_trigger > .1) {
                 manip.setPower(-gamepad1.right_trigger);
             } else {
                 manip.setPower(0);

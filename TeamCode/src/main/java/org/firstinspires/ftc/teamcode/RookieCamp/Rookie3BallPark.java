@@ -19,14 +19,6 @@ public class Rookie3BallPark extends MyOpMode {
         motorMR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
 
-
-        while (!isStopRequested() && !imu.isGyroCalibrated()) {
-            sleep(50);
-            idle();
-            telemetry.addLine("Initializing IMU...");
-            telemetry.update();
-        }
-
         // Set up our telemetry dashboard
 //        composeTelemetry();
 
@@ -37,30 +29,12 @@ public class Rookie3BallPark extends MyOpMode {
         // ******Motors powers may need to be reversed inside the setMotors method based on hardware mounting
         //ex. to go forward, setMotor params might need to be -1, instead of 1
         //make sure to pay attention to the movements to see if they need to be inverted
-        manip.setPower(-1);
-        setMotors(1,1);
-        sleep(750);
-        stopMotors();
         manip.setPower(0);
-
-
         setMotors(-1,-1);
         sleep(1750);
         stopMotors();
-        manip.setPower(-1);
+        manip.setPower(0);
 
-
-        setMotors(-1,-1);
-        sleep(750);
-        stopMotors();
-
-        setMotors(.5,-.5);
-        sleep(500);
-        stopMotors();
-
-        setMotors(1,1);
-        sleep(3000);
-        stopMotors();
 
 
 
