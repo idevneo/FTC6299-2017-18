@@ -244,14 +244,6 @@ public abstract class MyOpModeNEW extends LinearOpMode {
         motorBR.setPower(right);
     }
 
-    public void setMotorStrafe(double pow) { //Strafes right when positive.
-        motorFL.setPower(-pow);
-        motorBL.setPower(pow);
-        motorFR.setPower(-pow);
-        motorBR.setPower(pow);
-
-    }
-
     public void stopMotors() { //Stops the motors.
         if (!opModeIsActive())
             return;
@@ -421,63 +413,6 @@ public abstract class MyOpModeNEW extends LinearOpMode {
         return currPos;
     }
 
-    public double setStrafe(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet) { //Moving left/right using a Range Sensor.
-        //bSet = Basing Switch | 1 = Left Range Sensor | 0 = Right Range Sensor
-        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-
-        double range;
-        double pow;
-        double PC = .015; //power constant
-
-        double localRange;
-
-        if (((sensor < inAway - .75) || (sensor > inAway + .75)) && opModeIsActive()) { //While sensor isn't in the desired position, run.
-            localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            if (!(Double.isNaN(localRange) || (localRange > 100)) && opModeIsActive()) {
-                sensor = localRange;
-
-
-            }
-            //sensor = localRange; //Sets all working and usable values into a variable we can utilize.
-
-            range = Math.abs(inAway - sensor);
-            pow = range * PC;
-            if (pow < .75) { //If power is an invalid number, run the last valid number.
-                lastPow = pow;}
-
-            if (pow < .1) { //Don't run the motors too low.
-                pow = .1; }
-
-            telemetry.addData("sensor", sensor);
-            telemetry.addData("power", pow);
-            telemetry.addData("lastg",lastPow);
-
-            telemetry.update();
-
-
-            //RED SIDE AUTOS - Basing Switch
-            if (bSet == 0) {
-                if (sensor > inAway) {
-                    return pow;
-                }
-                if (sensor < inAway) {
-                    return -pow;
-                }
-            }
-
-            //BLUE SIDE AUTOS - Basing Switch
-            if (bSet == 1) {
-                if (sensor > inAway) {
-                    return -pow;
-                }
-                if (sensor < inAway) {
-                    return pow;
-                }
-            }
-        }
-        return 0;
-    }
-
     public double setTurn(double deg) { //Turns to a desired angle using the IMU in teleop.
         double turnPow = 0;
         double error;
@@ -537,20 +472,6 @@ public abstract class MyOpModeNEW extends LinearOpMode {
         }
     }
 
-    public void setStrafeAuto(double inAway, ModernRoboticsI2cRangeSensor sensorVar, double bSet, double deg) {
-        double sensor = sensorVar.getDistance(DistanceUnit.INCH);
-        double localRange;
 
-        while ((sensor < inAway - .75) || (sensor > inAway + .75)) {
-            localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            if ((Double.isNaN(localRange) || (localRange > 1000)) && opModeIsActive()) { //If we sense no value.
-                localRange = sensorVar.getDistance(DistanceUnit.INCH);
-            }
-            sensor = localRange;
-            setMotorsAll(0, setStrafe(inAway, sensorVar, bSet), setTurn(deg));
-            idle();
-        }
-        stopMotors();
-    }
 
 }
